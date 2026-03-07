@@ -26,7 +26,7 @@
 
 | Name                             | Roll Number | GitHub ID |
 |----------------------------------|-------------|-----------|
-| Muhammad Shahbaz Aziz Khan       | 2710049     | ShahbazAzizK    |
+| Muhammad Shahbaz Aziz Khan       | 27100049     | ShahbazAzizK    |
 | Mujeeb Asad                      | asd1        | asd1      |
 | Hannan Mustafa                   | ahansen1    | ahansen1  |
 | Muhammad Hasan Musa Gondal       | mkwok1      | mkwok1    |

@@ -5,7 +5,7 @@
 
 - [Meeting Minutes](#meeting-minutes)
   - [Meeting – Feb 25, 2026](#meeting--feb-25-2026)
-  - [Meeting – March 2, 2026](#Meeting – March 2, 2026)
+  - [Meeting – March 2, 2026](#meeting-–march-2-2026)
 
 - [UML Diagrams](#uml-diagrams)
 

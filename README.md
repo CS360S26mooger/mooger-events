@@ -29,7 +29,7 @@
 | Muhammad Shahbaz Aziz Khan       | 27100049     | ShahbazAzizK    |
 | Mujeeb Asad                      | asd1        | asd1      |
 | Hannan Mustafa                   | ahansen1    | ahansen1  |
-| Muhammad Hasan Musa Gondal       | mkwok1      | mkwok1    |
+| Muhammad Hasan Musa Gondal       | 27100456     | Musa-Gondal    |
 | Muhammad Ibrahim                 | jehanzeb    | jehanzeb  |
 
 ---

@@ -45,7 +45,7 @@
 - Muhammad Hassan Musa Gondal (27100456)
 - Hannan Mustafa (27100330)
 - Mujeeb Asad (27100095)
-
+---
 #### Key Takeaways
 - Established the Wiki structure for the new repository.
 - Reviewed the sample project backlog to prepare for upcoming tasks.
@@ -84,20 +84,35 @@
 ### Meeting – March 2, 2026
 
 #### Date
-March 2, 2026
+2nd March 2026
 
+**Attendance:**
+- Muhammad Ibrahim (27100119)
+- Muhammad Shahbaz Aziz Khan (27100049)
+- Muhammad Hassan Musa Gondal (27100456)
+- Hannan Mustafa (27100330)
+- Mujeeb Asad (27100095)
+---
 #### Key Takeaways
-- *(Add your bullet points here)*
-- *(Add what was discussed regarding Part 2 deliverables)*
-
-#### Prepared Questions & Decisions
-- *(Add any issues or design decisions made)*
-
-#### Action Items
-- [ ] *(e.g., Finalize CRC cards)*
-- [ ] *(e.g., Export Figma screens to GitHub repo)*
+- Emphasized the importance of starting early on the Figma screens.
+- Focused on dividing work evenly and keeping track of everyone's contributions.
+- Planned the UI workflow: map out components with rough sketches in Android Studio first, then translate them to Figma.
 
 ---
+#### Prepared Questions & Decisions
+
+**TA Communication**
+- Are we allowed to give the TA updates over Slack in between meetings? → Yes, decided to give updates on Slack regularly.
+---
+#### General Notes
+- **Design Strategy:** Discussed making a rough sketch in Android Studio to map out which components we already have and which ones we need to make from scratch. 
+- **Accountability:** Discussed methods to ensure everyone is doing their part and decided on making a dedicated board or document that outlines the specific divisions of work.
+- **Deliverable Review:** Agreed that once the documentation and GitHub work are finalized, they will be sent over Slack for review.
+---
+#### Action Items
+- [ ] Map out rough component sketches in Android Studio and translate them into Figma
+- [ ] Finalize the documentation and GitHub repository work and send to the TA via Slack
+- [ ] Create a board or document outlining work divisions to track individual progress
 
 ## Product Backlog
 
@@ -169,6 +184,11 @@ March 2, 2026
 ![Search Flow Step 2](./imgs/calander.png)
 *Description: Counselor navigates the meetings scheduled with the students.*
 
+**Feedback Form**
+![Feedback Form](./imgs/Feedback_form.png)
+
+**Matching Quiz**
+![Quiz](./imgs/Quiz.png)
 ---
 
 ## UML Diagrams

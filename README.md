@@ -173,6 +173,12 @@ March 2, 2026
 ![AdminDashboard](./imgs/admin_dashboard.png)
 ![AdminDashboard](./imgs/admin_2.png)
 
+**Feedback Form**
+![Feedback Form](./imgs/Feedback_form.png)
+
+**Matching Quiz**
+![Quiz](./imgs/Quiz.png)
+
 ---
 
 ## UML Diagrams

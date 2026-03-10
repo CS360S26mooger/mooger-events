@@ -211,4 +211,4 @@
 ---
 
 ## UML Diagrams
-*(Keep your existing UML section or update with new architecture images)*
+*Not implemented yet*

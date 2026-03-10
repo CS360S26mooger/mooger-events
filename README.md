@@ -129,6 +129,7 @@
 |    |            |          |        | -->
 
 
+
 ### Product Backlog – Project Part 2
 
 
@@ -152,12 +153,13 @@
 | **US-16** | **As an admin**, I want to configure automated session reminders to be sent to students (24 hours and 1 hour before) so that no-shows are reduced without counselors manually following up. | High | 5 | Medium | Todo |
 | **US-17** | **As a counselor**, I want to see a 'returning student' indicator when a previously seen student books again so that I can quickly re-orient myself to their history before the session. | Medium | 3 | Low | Todo |
 | **US-18** | **As a counselor**, I want to send a secure pre-session message to a student (e.g., room number, what to bring, what to expect) so that they arrive prepared and less anxious. | Medium | 3 | Low | Todo |
-| **US-19** | **As a counselor**, I want all in-platform messages to be logged and encrypted so that communication is both trackable for professional purposes and private from unauthorized access. | High | 8 | High | Todo |
-| **US-20** | **As a counselor**, I want to set a temporary 'on leave' status with a custom message and a colleague referral so that students who try to book during my absence are gracefully redirected. | High | 5 | Medium | Todo |
-| **US-21** | **As a student**, I want a clearly visible emergency button on the home screen that immediately connects me to campus crisis services and mental health emergency lines — always accessible from the top level of the app, never buried behind other features — so that in a moment of urgent need, help is never more than a single tap away. | Critical | 5 | High | Todo |
-| **US-22** | **As a student**, I want the option to submit optional, fully anonymous post-session feedback after each appointment, so that my experience and perspective can meaningfully contribute to the ongoing improvement of the service for all users. | High | 3 | Low | Todo |
-| **US-23** | **As a student**, I want to register using my university email address or institutional SSO portal, set my preferred name and pronouns, and be guided through the platform's privacy policy in clear, plain language, so that I am formally verified, personally represented, and fully informed about how my data is handled before I begin using the service. | High | 5 | Medium | Todo |
-| **US-24** | **As a student**, I want to browse a searchable directory of all available counselors and filter results by specialization area, session format, spoken language, and counselor gender, so that I can identify a counselor who genuinely fits my needs and preferences without having to read through every profile manually. | High | 5 | Medium | Todo |
+| **US-19** | **As a counselor**, I want to set a temporary 'on leave' status with a custom message and a colleague referral so that students who try to book during my absence are gracefully redirected. | High | 5 | Medium | Todo |
+| **US-20** | **As a student**, I want a clearly visible emergency button on the home screen that immediately connects me to campus crisis services and mental health emergency lines — always accessible from the top level of the app, never buried behind other features — so that in a moment of urgent need, help is never more than a single tap away. | Critical | 5 | High | Todo |
+| **US-21** | **As a student**, I want the option to submit optional, fully anonymous post-session feedback after each appointment, so that my experience and perspective can meaningfully contribute to the ongoing improvement of the service for all users. | High | 3 | Low | Todo |
+| **US-22** | **As a student**, I want to register using my university email address or institutional SSO portal, set my preferred name and pronouns, and be guided through the platform's privacy policy in clear, plain language, so that I am formally verified, personally represented, and fully informed about how my data is handled before I begin using the service. | High | 5 | Medium | Todo |
+| **US-23** | **As a student**, I want to browse a searchable directory of all available counselors and filter results by specialization area, session format, spoken language, and counselor gender, so that I can identify a counselor who genuinely fits my needs and preferences without having to read through every profile manually. | High | 5 | Medium | Todo |
+| **US-24** | **As a student**, I want to join a waitlist for a fully-booked counselor so that I am automatically offered the next available slot when a cancellation occurs, without having to manually check back. | Medium | 5 | Medium | Todo |
+| **US-25** | **As a counselor**, I want to see the number of students waitlisted for each of my slots so that I can gauge demand and proactively adjust my availability or open additional sessions. | Medium | 3 | Low | Todo |
 
 ---
 

@@ -169,6 +169,10 @@ March 2, 2026
 ![Search Flow Step 2](./imgs/calander.png)
 *Description: Counselor navigates the meetings scheduled with the students.*
 
+**Admin's Screens**
+![AdminDashboard](./imgs/admin_dashboard.png)
+![AdminDashboard](./imgs/admin_2.png)
+
 ---
 
 ## UML Diagrams

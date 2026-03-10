@@ -121,13 +121,14 @@
 
 ![Kanban Backlog Screenshot](./imgs/kanban_board.png) 
 
+
 ### Product Backlog – Project Part 1
 | ID | User Story | Priority | Status |
 |----|------------|----------|--------|
 |    |            |          |        |
 
 ### Product Backlog – Project Part 2
-*Note: Requirements have been refined with size estimates (Story Points) and Risk Levels as per Part 2 guidelines. Registration/Onboarding stories have been intentionally excluded as counselor accounts are strictly university-assigned.*
+
 
 | ID | User Story | Priority | Story Points | Risk Level | Status |
 |----|------------|----------|--------------|------------|--------|
@@ -151,9 +152,10 @@
 | **US-18** | **As a counselor**, I want to send a secure pre-session message to a student (e.g., room number, what to bring, what to expect) so that they arrive prepared and less anxious. | Medium | 3 | Low | Todo |
 | **US-19** | **As a counselor**, I want all in-platform messages to be logged and encrypted so that communication is both trackable for professional purposes and private from unauthorized access. | High | 8 | High | Todo |
 | **US-20** | **As a counselor**, I want to set a temporary 'on leave' status with a custom message and a colleague referral so that students who try to book during my absence are gracefully redirected. | High | 5 | Medium | Todo |
-| **US-21** | **As a student**, I want to receive a quick feedback prompt or "action item" checklist after a session finishes, so that my counselor and I can track my progress. | Low | 3 | Low | Todo |
-| **US-22** | **As a user (student or counselor)**, I want a dedicated tab to view my past appointment history so that I can reference the dates and details of previous sessions. | Low | 3 | Low | Todo |
-| **US-23** | **As a counseling office administrator**, I want to view a dashboard showing no-show rates and scheduling analytics so that I can identify trends and improve center efficiency. | Medium | 5 | Medium | Todo |
+| **US-21** | **As a student**, I want a clearly visible emergency button on the home screen that immediately connects me to campus crisis services and mental health emergency lines — always accessible from the top level of the app, never buried behind other features — so that in a moment of urgent need, help is never more than a single tap away. | Critical | 5 | High | Todo |
+| **US-22** | **As a student**, I want the option to submit optional, fully anonymous post-session feedback after each appointment, so that my experience and perspective can meaningfully contribute to the ongoing improvement of the service for all users. | High | 3 | Low | Todo |
+| **US-23** | **As a student**, I want to register using my university email address or institutional SSO portal, set my preferred name and pronouns, and be guided through the platform's privacy policy in clear, plain language, so that I am formally verified, personally represented, and fully informed about how my data is handled before I begin using the service. | High | 5 | Medium | Todo |
+| **US-24** | **As a student**, I want to browse a searchable directory of all available counselors and filter results by specialization area, session format, spoken language, and counselor gender, so that I can identify a counselor who genuinely fits my needs and preferences without having to read through every profile manually. | High | 5 | Medium | Todo |
 
 ---
 

@@ -32,17 +32,19 @@
 
 ## Meeting Minutes
 **Duration:** 6 minutes
+
+
+### Meeting – Feb 20, 2026
+
+#### Date
+20th February 2026
+
 **Attendance:**
 - Muhammad Ibrahim (27100119)
 - Muhammad Shahbaz Aziz Khan (27100049)
 - Muhammad Hassan Musa Gondal (27100456)
 - Hannan Mustafa (27100330)
 - Mujeeb Asad (27100095)
-
-### Meeting – Feb 20, 2026
-
-#### Date
-20th February 2026
 
 #### Key Takeaways
 - Established the Wiki structure for the new repository.

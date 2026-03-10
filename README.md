@@ -5,6 +5,7 @@
 - [Meeting Minutes](#meeting-minutes)
   - [Meeting – Feb 20, 2026](#meeting--feb-20-2026)
   - [Meeting – March 2, 2026](#meeting--march-2-2026)
+  - [Meeting – March 5, 2026](#meeting--march-5-2026)
 - [Product Backlog](#product-backlog)
   - [Kanban Board Snapshots](#kanban-board-snapshots)
   - [Product Backlog – Project Part 1](#product-backlog--project-part-1)
@@ -113,7 +114,43 @@
 - [ ] Map out rough component sketches in Android Studio and translate them into Figma
 - [ ] Finalize the documentation and GitHub repository work and send to the TA via Slack
 - [ ] Create a board or document outlining work divisions to track individual progress
+---
 
+### Meeting – March 5, 2026
+
+#### Date
+5th March 2026
+**Duration:** 51 minutes
+
+**Attendance:**
+- Muhammad Ibrahim (27100119)
+- Muhammad Shahbaz Aziz Khan (27100049)
+- Muhammad Hassan Musa Gondal (27100456)
+- Hannan Mustafa (27100330)
+- Mujeeb Asad (27100095)
+---
+#### Key Takeaways
+- Brainstormed the core system architecture and identified the main actors (Students, Counselors, Administrators).
+- Drafted CRC cards to map out how different parts of the system will interact.
+- Brainstormed a list of User Stories based on the core project requirements.
+
+---
+#### Prepared Questions & Decisions
+
+- How should we assign priority and risk levels to the stories? → Prioritize core booking and privacy features first; assign higher risk to external integrations and encryption.
+---
+
+
+#### General Notes
+- **Brainstorming Roles:** Discussed what each user type needs to do on the platform. 
+- **Component Mapping:** Walked through the general lifecycle of an appointment (booking, attending, cancelling, feedback) and identified what system components need to "talk" to each other during that process.
+- **Feature Scope:** Reviewed the drafted features to make sure we aren't overcomplicating the system. 
+---
+#### Action Items
+- [ ] Format and digitize the drafted CRC cards for the final system documentation
+- [ ] Upload the finalized User Stories to the project backlog
+- [ ] Make sure the finalized User Stories and CRC cards are mapped accordingly
+---
 ## Product Backlog
 
 ### Kanban Board Snapshots

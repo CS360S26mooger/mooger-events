@@ -32,7 +32,10 @@
 ---
 
 ## Meeting Minutes
-**Duration:** 6 minutes
+
+- **Meeting-1 (20-feb)** 6 minutes
+- **Meeting-2 (02-mar)** 5 minutes
+- **Meeting-3 (05-mar)** 51 minutes
 
 
 ### Meeting – Feb 20, 2026
@@ -120,7 +123,6 @@
 
 #### Date
 5th March 2026
-**Duration:** 51 minutes
 
 **Attendance:**
 - Muhammad Ibrahim (27100119)

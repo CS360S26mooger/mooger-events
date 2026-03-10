@@ -45,7 +45,7 @@
 - Muhammad Hassan Musa Gondal (27100456)
 - Hannan Mustafa (27100330)
 - Mujeeb Asad (27100095)
-
+---
 #### Key Takeaways
 - Established the Wiki structure for the new repository.
 - Reviewed the sample project backlog to prepare for upcoming tasks.
@@ -84,20 +84,35 @@
 ### Meeting – March 2, 2026
 
 #### Date
-March 2, 2026
+2nd March 2026
 
+**Attendance:**
+- Muhammad Ibrahim (27100119)
+- Muhammad Shahbaz Aziz Khan (27100049)
+- Muhammad Hassan Musa Gondal (27100456)
+- Hannan Mustafa (27100330)
+- Mujeeb Asad (27100095)
+---
 #### Key Takeaways
-- *(Add your bullet points here)*
-- *(Add what was discussed regarding Part 2 deliverables)*
-
-#### Prepared Questions & Decisions
-- *(Add any issues or design decisions made)*
-
-#### Action Items
-- [ ] *(e.g., Finalize CRC cards)*
-- [ ] *(e.g., Export Figma screens to GitHub repo)*
+- Emphasized the importance of starting early on the Figma screens.
+- Focused on dividing work evenly and keeping track of everyone's contributions.
+- Planned the UI workflow: map out components with rough sketches in Android Studio first, then translate them to Figma.
 
 ---
+#### Prepared Questions & Decisions
+
+**TA Communication**
+- Are we allowed to give the TA updates over Slack in between meetings? → Yes, decided to give updates on Slack regularly.
+---
+#### General Notes
+- **Design Strategy:** Discussed making a rough sketch in Android Studio to map out which components we already have and which ones we need to make from scratch. 
+- **Accountability:** Discussed methods to ensure everyone is doing their part and decided on making a dedicated board or document that outlines the specific divisions of work.
+- **Deliverable Review:** Agreed that once the documentation and GitHub work are finalized, they will be sent over Slack for review.
+---
+#### Action Items
+- [ ] Map out rough component sketches in Android Studio and translate them into Figma
+- [ ] Finalize the documentation and GitHub repository work and send to the TA via Slack
+- [ ] Create a board or document outlining work divisions to track individual progress
 
 ## Product Backlog
 
@@ -106,13 +121,16 @@ March 2, 2026
 
 ![Kanban Backlog Screenshot](./imgs/kanban_board.png) 
 
-### Product Backlog – Project Part 1
+
+
+<!-- ### Product Backlog – Project Part 1
 | ID | User Story | Priority | Status |
 |----|------------|----------|--------|
-|    |            |          |        |
+|    |            |          |        | -->
+
 
 ### Product Backlog – Project Part 2
-*Note: Requirements have been refined with size estimates (Story Points) and Risk Levels as per Part 2 guidelines. Registration/Onboarding stories have been intentionally excluded as counselor accounts are strictly university-assigned.*
+
 
 | ID | User Story | Priority | Story Points | Risk Level | Status |
 |----|------------|----------|--------------|------------|--------|
@@ -136,6 +154,10 @@ March 2, 2026
 | **US-18** | **As a counselor**, I want to send a secure pre-session message to a student (e.g., room number, what to bring, what to expect) so that they arrive prepared and less anxious. | Medium | 3 | Low | Todo |
 | **US-19** | **As a counselor**, I want all in-platform messages to be logged and encrypted so that communication is both trackable for professional purposes and private from unauthorized access. | High | 8 | High | Todo |
 | **US-20** | **As a counselor**, I want to set a temporary 'on leave' status with a custom message and a colleague referral so that students who try to book during my absence are gracefully redirected. | High | 5 | Medium | Todo |
+| **US-21** | **As a student**, I want a clearly visible emergency button on the home screen that immediately connects me to campus crisis services and mental health emergency lines — always accessible from the top level of the app, never buried behind other features — so that in a moment of urgent need, help is never more than a single tap away. | Critical | 5 | High | Todo |
+| **US-22** | **As a student**, I want the option to submit optional, fully anonymous post-session feedback after each appointment, so that my experience and perspective can meaningfully contribute to the ongoing improvement of the service for all users. | High | 3 | Low | Todo |
+| **US-23** | **As a student**, I want to register using my university email address or institutional SSO portal, set my preferred name and pronouns, and be guided through the platform's privacy policy in clear, plain language, so that I am formally verified, personally represented, and fully informed about how my data is handled before I begin using the service. | High | 5 | Medium | Todo |
+| **US-24** | **As a student**, I want to browse a searchable directory of all available counselors and filter results by specialization area, session format, spoken language, and counselor gender, so that I can identify a counselor who genuinely fits my needs and preferences without having to read through every profile manually. | High | 5 | Medium | Todo |
 
 ---
 
@@ -179,6 +201,21 @@ March 2, 2026
 **Matching Quiz**
 ![Quiz](./imgs/Quiz.png)
 
+**Admin's Screens**
+![AdminDashboard](./imgs/admin_dashboard.png)
+![AdminDashboard](./imgs/admin_2.png)
+
+**Feedback Form**
+![Feedback Form](./imgs/Feedback_form.png)
+
+**Matching Quiz**
+![Quiz](./imgs/Quiz.png)
+
+**Feedback Form**
+![Feedback Form](./imgs/Feedback_form.png)
+
+**Matching Quiz**
+![Quiz](./imgs/Quiz.png)
 ---
 
 ## UML Diagrams

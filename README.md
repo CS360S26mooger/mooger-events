@@ -172,8 +172,7 @@
 
 ## User Interface Mockups & Wireframes
 
-### Figma Workspace
-*For detailed interaction, view our working Figma file [here](INSERT_FIGMA_LINK_HERE). Note: All required screens for evaluation are embedded below to ensure a self-contained repository.*
+
 
 ### UI Screens & Storyboards – Project Part 2
 *Diagrams of the main user interface layout, major dialogs, and storyboard sequences showing transitions based on user input.*
@@ -184,7 +183,12 @@
 
 **Main Application Screen**
 ![Main Screen](./imgs/Opening_page.png)
-*Description: Overview of the main dashboard. Addresses User Story #1.*
+
+**Feedback Form**
+![Feedback Form](./imgs/Feedback_form.png)
+
+**Matching Quiz**
+![Quiz](./imgs/Quiz.png)
 
 **Counselor's Screen**
 ![Search Flow Step 1](./imgs/Counselor_page.png)
@@ -195,27 +199,10 @@
 ![AdminDashboard](./imgs/admin_dashboard.png)
 ![AdminDashboard](./imgs/admin_2.png)
 
-**Feedback Form**
-![Feedback Form](./imgs/Feedback_form.png)
-
-**Matching Quiz**
-![Quiz](./imgs/Quiz.png)
-
 **Admin's Screens**
 ![AdminDashboard](./imgs/admin_dashboard.png)
 ![AdminDashboard](./imgs/admin_2.png)
 
-**Feedback Form**
-![Feedback Form](./imgs/Feedback_form.png)
-
-**Matching Quiz**
-![Quiz](./imgs/Quiz.png)
-
-**Feedback Form**
-![Feedback Form](./imgs/Feedback_form.png)
-
-**Matching Quiz**
-![Quiz](./imgs/Quiz.png)
 ---
 
 ## UML Diagrams

@@ -222,17 +222,17 @@ March 2, 2026
 | **US-03** | **As a student**, I want to use a "Slide-to-Cancel" action to release my booked slot so that another student can use it, without the friction of a standard cancellation button. | High | 2 | Low | Todo |
 | **US-04** | **As a student** seeking help, I want to answer a quick interactive triage questionnaire so that the system can match me with the best-fit counselor for my specific issues (e.g., academic stress). | Medium | 8 | High | Todo |
 | **US-05** | **As a counselor**, I want to view a dashboard of my upcoming appointments for the day so that I know exactly who I am seeing and can prepare for my sessions. | High | 5 | Medium | Todo |
-| **US-06** *(UC-07)* | **As a counselor**, I want to list specific areas of focus (e.g., anxiety, academic stress) as selectable tags on my profile so that the triage system can match me accurately with the right students. | High | 3 | Low | Todo |
-| **US-07** *(UC-10)* | **As a counselor**, I want to set my session language preferences on my profile so that students who need support in a specific language can find me easily. | Medium | 2 | Low | Todo |
-| **US-08** *(UC-15)* | **As a counselor**, I want to add buffer time between sessions (e.g., 10–15 minutes) so that I have breathing room for notes, self-regulation, and transitioning between students. | High | 5 | Medium | Todo |
-| **US-09** *(UC-20)* | **As a counselor**, I want to sync my availability with an external calendar (Google Calendar, Outlook) so that personal commitments automatically block my counseling slots without double entry. | Low | 8 | High | Todo |
-| **US-10** *(UC-21)* | **As a counselor**, I want to see all upcoming appointments on a clean daily/weekly/monthly dashboard view so that I can plan my workday at a glance. | High | 5 | Medium | Todo |
-| **US-11** *(UC-26)* | **As a counselor**, I want to mark an appointment as 'No Show' with a single tap so that the slot is accurately recorded and follow-up workflows can be triggered automatically. | High | 3 | Low | Todo |
-| **US-12** *(UC-32)* | **As a counselor**, I want to use a set of quick-insert note templates for common presenting concerns so that documentation is efficient without sacrificing thoroughness. | Medium | 3 | Low | Todo |
-| **US-13** *(UC-36)* | **As a counselor**, I want to view a chronological session history for any student so that I can track their progress and maintain continuity of care across multiple sessions. | High | 5 | Medium | Todo |
-| **US-14** *(UC-37)* | **As a counselor**, I want to view a student's self-reported profile (triage answers, reason for seeking help) before our first session so that I am adequately prepared. | High | 5 | Medium | Todo |
-| **US-15** *(UC-43)* | **As a counselor**, I want to trigger a crisis escalation workflow for a student directly from their profile (notifying campus emergency services) so that urgent situations are handled swiftly. | Critical | 8 | High | Todo |
-| **US-16** *(UC-51)* | **As an admin**, I want to configure automated session reminders to be sent to students (24 hours and 1 hour before) so that no-shows are reduced without counselors manually following up. | High | 5 | Medium | Todo |
+| **US-06**  | **As a counselor**, I want to list specific areas of focus (e.g., anxiety, academic stress) as selectable tags on my profile so that the triage system can match me accurately with the right students. | High | 3 | Low | Todo |
+| **US-07** | **As a counselor**, I want to set my session language preferences on my profile so that students who need support in a specific language can find me easily. | Medium | 2 | Low | Todo |
+| **US-08**  | **As a counselor**, I want to add buffer time between sessions (e.g., 10–15 minutes) so that I have breathing room for notes, self-regulation, and transitioning between students. | High | 5 | Medium | Todo |
+| **US-09**  | **As a counselor**, I want to sync my availability with an external calendar (Google Calendar, Outlook) so that personal commitments automatically block my counseling slots without double entry. | Low | 8 | High | Todo |
+| **US-10**  | **As a counselor**, I want to see all upcoming appointments on a clean daily/weekly/monthly dashboard view so that I can plan my workday at a glance. | High | 5 | Medium | Todo |
+| **US-11**  | **As a counselor**, I want to mark an appointment as 'No Show' with a single tap so that the slot is accurately recorded and follow-up workflows can be triggered automatically. | High | 3 | Low | Todo |
+| **US-12** | **As a counselor**, I want to use a set of quick-insert note templates for common presenting concerns so that documentation is efficient without sacrificing thoroughness. | Medium | 3 | Low | Todo |
+| **US-13**  | **As a counselor**, I want to view a chronological session history for any student so that I can track their progress and maintain continuity of care across multiple sessions. | High | 5 | Medium | Todo |
+| **US-14**  | **As a counselor**, I want to view a student's self-reported profile (triage answers, reason for seeking help) before our first session so that I am adequately prepared. | High | 5 | Medium | Todo |
+| **US-15**  | **As a counselor**, I want to trigger a crisis escalation workflow for a student directly from their profile (notifying campus emergency services) so that urgent situations are handled swiftly. | Critical | 8 | High | Todo |
+| **US-16** | **As an admin**, I want to configure automated session reminders to be sent to students (24 hours and 1 hour before) so that no-shows are reduced without counselors manually following up. | High | 5 | Medium | Todo |
 
 ---
 

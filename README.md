@@ -122,10 +122,12 @@
 ![Kanban Backlog Screenshot](./imgs/kanban_board.png) 
 
 
-### Product Backlog – Project Part 1
+
+<!-- ### Product Backlog – Project Part 1
 | ID | User Story | Priority | Status |
 |----|------------|----------|--------|
-|    |            |          |        |
+|    |            |          |        | -->
+
 
 ### Product Backlog – Project Part 2
 

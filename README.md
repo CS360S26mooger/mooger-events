@@ -166,9 +166,12 @@
 ## Object-Oriented Analysis (CRC Cards)
 *Initial object-oriented analysis focusing on the most important anticipated classes, their responsibilities, and collaborators.*
 
-![CRC Card - Controller Class](./images/crc_controller.png)
-![CRC Card - Model Class](./images/crc_model.png)
-*(Note: Add as many screenshots as necessary to cover your main classes)*
+![CRC Card - Class](./imgs/CRC_1.png)
+![CRC Card - Class](./imgs/CRC_2.png)
+![CRC Card - Class](./imgs/CRC_3.png)
+![CRC Card - Class](./imgs/CRC_4.png)
+![CRC Card - Class](./imgs/CRC_5.png)
+
 
 ---
 

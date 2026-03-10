@@ -136,6 +136,9 @@ March 2, 2026
 | **US-18** | **As a counselor**, I want to send a secure pre-session message to a student (e.g., room number, what to bring, what to expect) so that they arrive prepared and less anxious. | Medium | 3 | Low | Todo |
 | **US-19** | **As a counselor**, I want all in-platform messages to be logged and encrypted so that communication is both trackable for professional purposes and private from unauthorized access. | High | 8 | High | Todo |
 | **US-20** | **As a counselor**, I want to set a temporary 'on leave' status with a custom message and a colleague referral so that students who try to book during my absence are gracefully redirected. | High | 5 | Medium | Todo |
+| **US-21** | **As a student**, I want to receive a quick feedback prompt or "action item" checklist after a session finishes, so that my counselor and I can track my progress. | Low | 3 | Low | Todo |
+| **US-22** | **As a user (student or counselor)**, I want a dedicated tab to view my past appointment history so that I can reference the dates and details of previous sessions. | Low | 3 | Low | Todo |
+| **US-23** | **As a counseling office administrator**, I want to view a dashboard showing no-show rates and scheduling analytics so that I can identify trends and improve center efficiency. | Medium | 5 | Medium | Todo |
 
 ---
 

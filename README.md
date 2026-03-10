@@ -205,13 +205,20 @@
 ## Object-Oriented Analysis (CRC Cards)
 *Initial object-oriented analysis focusing on the most important anticipated classes, their responsibilities, and collaborators.*
 
-![CRC Card - Class](./imgs/CRC_1.png)
-![CRC Card - Class](./imgs/CRC_2.png)
-![CRC Card - Class](./imgs/CRC_3.png)
-![CRC Card - Class](./imgs/CRC_4.png)
-![CRC Card - Class](./imgs/CRC_5.png)
-
-
+![alt text](imgs/CRC/Administrator.png)
+![alt text](imgs/CRC/Appointment.png)
+![alt text](imgs/CRC/AvailabilitySchedule.png)
+![alt text](imgs/CRC/Counselor.png)
+![alt text](imgs/CRC/CounselorProfile.png)
+![alt text](imgs/CRC/CrisisIntervention.png)
+![alt text](imgs/CRC/FeedbackService.png)
+![alt text](imgs/CRC/IntakeAssessment.png)
+![alt text](imgs/CRC/NotificationService.png)
+![alt text](imgs/CRC/PrivacyFilter.png)
+![alt text](imgs/CRC/SecureMessaging.png)
+![alt text](imgs/CRC/SessionRecord.png)
+![alt text](imgs/CRC/Student.png)
+![alt text](imgs/CRC/Waitlist.png)
 ---
 
 ## User Interface Mockups & Wireframes

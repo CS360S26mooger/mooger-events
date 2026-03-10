@@ -239,14 +239,18 @@ March 2, 2026
 ### UI Screens & Storyboards – Project Part 2
 *Diagrams of the main user interface layout, major dialogs, and storyboard sequences showing transitions based on user input.*
 
+**Login Screen**
+![Login Screen](./imgs/Login_Page.png)
+*Description: User login details*
+
 **Main Application Screen**
 ![Main Screen](./imgs/Opening_page.png)
 *Description: Overview of the main dashboard. Addresses User Story #1.*
 
-**Experiment Search & Execution Flow (Storyboard)**
+**Counselor's Screen**
 ![Search Flow Step 1](./imgs/Counselor_page.png)
 ![Search Flow Step 2](./imgs/calander.png)
-*Description: User navigates from the search bar to the experiment details. Addresses User Story #3 and #4.*
+*Description: Counselor navigates the meetings scheduled with the students.*
 
 ---
 

@@ -1,10 +1,474 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".HomeActivity">
+    android:orientation="vertical"
+    android:background="#F2F4F8">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Top bar -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:background="#FFFFFF">
+
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@mipmap/ic_launcher_round" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome back,"
+                android:textSize="13sp"
+                android:textColor="#8A8A9A" />
+
+            <TextView
+                android:id="@+id/welcomeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Student"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/discreetModeBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/ic_menu_view"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#3D5AF1" />
+
+    </LinearLayout>
+
+    <!-- Scrollable content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Crisis Support Banner -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/crisisBanner"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#C0392B">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚠️"
+                        android:textSize="20sp"
+                        android:layout_marginEnd="12dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Crisis Support"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="24/7 Emergency Help - One Tap Away"
+                            android:textColor="#FFCCCC"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Two action cards -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+
+                <!-- AI Support Chat -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/aiChatCard"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#7B61FF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💬"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AI Support Chat"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="24/7 Available"
+                            android:textColor="#E0D9FF"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Find My Match -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/findMatchCard"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📋"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Find My Match"
+                            android:textColor="#1A1A2E"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Take Quiz"
+                            android:textColor="#8A8A9A"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <!-- Upcoming Session -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Upcoming Session"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A2E" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Post-Session Feedback"
+                    android:textColor="#3D5AF1"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Counselor info row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@mipmap/ic_launcher_round"
+                            android:layout_marginEnd="12dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/upcomingCounselorName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="No upcoming session"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="#1A1A2E" />
+
+                            <TextView
+                                android:id="@+id/upcomingCounselorRole"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Book an appointment below"
+                                android:textSize="13sp"
+                                android:textColor="#8A8A9A" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Date and time -->
+                    <LinearLayout
+                        android:id="@+id/sessionTimeRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/sessionDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📅 Tomorrow"
+                            android:textSize="13sp"
+                            android:textColor="#555566"
+                            android:layout_marginEnd="16dp" />
+
+                        <TextView
+                            android:id="@+id/sessionTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🕑 2:00 PM"
+                            android:textSize="13sp"
+                            android:textColor="#555566" />
+
+                    </LinearLayout>
+
+                    <!-- Slide to cancel -->
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/slideToCancelBtn"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        app:cardCornerRadius="24dp"
+                        app:cardElevation="0dp"
+                        app:cardBackgroundColor="#FFF0F0"
+                        app:strokeColor="#FFCCCC"
+                        app:strokeWidth="1dp">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="40dp"
+                                android:layout_height="40dp"
+                                android:layout_marginStart="4dp"
+                                app:cardCornerRadius="20dp"
+                                app:cardElevation="2dp"
+                                app:cardBackgroundColor="#FFFFFF">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:text="›"
+                                    android:textSize="22sp"
+                                    android:gravity="center"
+                                    android:textColor="#E74C3C" />
+
+                            </androidx.cardview.widget.CardView>
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Slide to Cancel"
+                                android:textColor="#E74C3C"
+                                android:textSize="14sp"
+                                android:gravity="center" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Find a Specialist -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Find a Specialist"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E"
+                android:layout_marginBottom="10dp" />
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="26dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🔍"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp" />
+
+                    <EditText
+                        android:id="@+id/searchField"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:hint="Search by name or issue..."
+                        android:textSize="14sp"
+                        android:textColorHint="#AAAAAA"
+                        android:background="@null"
+                        android:inputType="text" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- Bottom navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:elevation="8dp">
+
+        <ImageButton
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_dialog_info"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#3D5AF1" />
+
+        <ImageButton
+            android:id="@+id/navCalendar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_today"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#8A8A9A" />
+
+        <ImageButton
+            android:id="@+id/navHistory"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_recent_history"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#8A8A9A" />
+
+        <ImageButton
+            android:id="@+id/navLogout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#8A8A9A" />
+
+    </LinearLayout>
+
+</LinearLayout>

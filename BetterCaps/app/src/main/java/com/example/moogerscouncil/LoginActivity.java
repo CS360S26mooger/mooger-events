@@ -121,15 +121,22 @@ public class LoginActivity extends AppCompatActivity {
         animator.setDuration(ANIM_DURATION_MS);
         animator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
 
+        int currentIconTint = button.getIconTint() != null
+                ? button.getIconTint().getDefaultColor()
+                : colorGray;
+        int targetIconTint = selected ? colorBlue : colorGray;
+
         ArgbEvaluator evaluator = new ArgbEvaluator();
         animator.addUpdateListener(anim -> {
             float fraction = (float) anim.getAnimatedValue();
 
             int textColor   = (int) evaluator.evaluate(fraction, currentTextColor, targetTextColor);
             int strokeColor = (int) evaluator.evaluate(fraction, currentStrokeColor, targetStrokeColor);
+            int iconTint    = (int) evaluator.evaluate(fraction, currentIconTint, targetIconTint);
 
             button.setTextColor(textColor);
             button.setStrokeColor(ColorStateList.valueOf(strokeColor));
+            button.setIconTint(ColorStateList.valueOf(iconTint));
         });
 
         animator.start();
@@ -146,5 +153,6 @@ public class LoginActivity extends AppCompatActivity {
 
         button.setTextColor(selected ? colorBlue : colorGray);
         button.setStrokeColor(ColorStateList.valueOf(selected ? colorBlue : colorStroke));
+        button.setIconTint(ColorStateList.valueOf(selected ? colorBlue : colorGray));
     }
 }

@@ -84,21 +84,14 @@ public class LoginActivity extends AppCompatActivity {
     private void checkUserRole(String uid) {
         FirebaseFirestore.getInstance().collection("users").document(uid)
                 .get()
-                .addOnSuccessListener(doc -> {
-                    if (doc.exists()) {
-                        String role = doc.getString("role");
-                        if ("Counselor".equalsIgnoreCase(role)) {
-                            startActivity(new Intent(this, CounselorDashboardActivity.class));
-                        } else {
-                            startActivity(new Intent(this, HomeActivity.class));
-                        }
-                        finish();
+                .addOnSuccessListener(result -> {
+                    Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT).show();
+                    if (selectedRole.equals("Counselor")) {
+                        startActivity(new Intent(this, CounselorDashboardActivity.class));
                     } else {
-                        Toast.makeText(this, "User profile not found", Toast.LENGTH_SHORT).show();
-                        // Default to Student home if profile missing
                         startActivity(new Intent(this, HomeActivity.class));
-                        finish();
                     }
+                    finish();
                 })
                 .addOnFailureListener(e -> {
                     Toast.makeText(this, "Error fetching profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();

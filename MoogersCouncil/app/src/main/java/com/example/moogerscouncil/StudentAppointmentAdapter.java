@@ -34,24 +34,29 @@ public class StudentAppointmentAdapter extends RecyclerView.Adapter<StudentAppoi
         holder.statusText.setText("Status: " + apt.getStatus());
 
         // Fetch counselor name from 'counselors' collection
-        db.collection("counselors").document(apt.getCounselorId())
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        holder.counselorNameText.setText("Counselor: " + documentSnapshot.getString("name"));
-                    } else {
-                        // Sometimes the counselor ID might be in 'users' collection too
-                        db.collection("users").document(apt.getCounselorId())
-                                .get()
-                                .addOnSuccessListener(userDoc -> {
-                                    if (userDoc.exists()) {
-                                        holder.counselorNameText.setText("Counselor: " + userDoc.getString("name"));
-                                    } else {
-                                        holder.counselorNameText.setText("Counselor: Unknown");
-                                    }
-                                });
-                    }
-                });
+        String counselorId = apt.getCounselorId();
+        if (counselorId == null || counselorId.isEmpty()) {
+            holder.counselorNameText.setText("Counselor: Not Assigned");
+        } else {
+            db.collection("counselors").document(counselorId)
+                    .get()
+                    .addOnSuccessListener(documentSnapshot -> {
+                        if (documentSnapshot.exists()) {
+                            holder.counselorNameText.setText("Counselor: " + documentSnapshot.getString("name"));
+                        } else {
+                            // Sometimes the counselor ID might be in 'users' collection too
+                            db.collection("users").document(counselorId)
+                                    .get()
+                                    .addOnSuccessListener(userDoc -> {
+                                        if (userDoc.exists()) {
+                                            holder.counselorNameText.setText("Counselor: " + userDoc.getString("name"));
+                                        } else {
+                                            holder.counselorNameText.setText("Counselor: Unknown");
+                                        }
+                                    });
+                        }
+                    });
+        }
     }
 
     @Override
@@ -64,10 +69,22 @@ public class StudentAppointmentAdapter extends RecyclerView.Adapter<StudentAppoi
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            timeText = itemView.findViewById(R.id.aptTime);
-            dateText = itemView.findViewById(R.id.aptDate);
-            counselorNameText = itemView.findViewById(R.id.aptStudentName); // Using existing ID
-            statusText = itemView.findViewById(R.id.aptStatus);
+            timeText = itemView.findViewById(R.id.sessionTime);
+            dateText = itemView.findViewById(R.id.sessionDate);
+            counselorNameText = itemView.findViewById(R.id.studentName);
+            statusText = itemView.findViewById(R.id.sessionTopic);
+
+            // Hide counselor-only action buttons if they exist in the layout
+            View buttonsLayout = itemView.findViewById(R.id.joinButton);
+            if (buttonsLayout != null) {
+                // For simplicity, we can hide the whole action buttons row if they are in a container,
+                // but since they are in individual layouts, let's just hide the main ones.
+                itemView.findViewById(R.id.joinButton).setVisibility(View.GONE);
+                itemView.findViewById(R.id.noShowButton).setVisibility(View.GONE);
+                itemView.findViewById(R.id.crisisButton).setVisibility(View.GONE);
+                itemView.findViewById(R.id.profileButton).setVisibility(View.GONE);
+                itemView.findViewById(R.id.notesButton).setVisibility(View.GONE);
+            }
         }
     }
 }

@@ -59,6 +59,7 @@ public class BookingActivity extends AppCompatActivity implements TimeSlotAdapte
 
     private void fetchSlots() {
         progressBar.setVisibility(View.VISIBLE);
+        android.util.Log.d("BOOKING", "Searching for counselorId: " + counselorId);
         db.collection("slots")
                 .whereEqualTo("counselorId", counselorId)
                 .whereEqualTo("available", true)

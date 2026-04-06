@@ -12,6 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MoogersCouncil">
         <activity
+            android:name=".HistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CalendarActivity"
+            android:exported="false" />
+        <activity
             android:name=".CounselorDashboardActivity"
             android:exported="false" />
         <activity

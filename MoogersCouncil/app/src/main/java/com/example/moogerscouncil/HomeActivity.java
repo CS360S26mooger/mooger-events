@@ -3,11 +3,17 @@ package com.example.moogerscouncil;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ImageButton;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
+import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 /**
  * Home screen shown after successful login.
@@ -18,9 +24,10 @@ public class HomeActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private android.os.Handler privacyHandler = new android.os.Handler();
     private Runnable privacyRunnable;
-    private TextView counselorNameText, counselorRoleText;
+    private TextView counselorNameText, counselorRoleText, welcomeNameText;
     private String originalName, originalRole;
     private boolean isMasked = false;
+    private View privacyOverlay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +37,8 @@ public class HomeActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         counselorNameText = findViewById(R.id.upcomingCounselorName);
         counselorRoleText = findViewById(R.id.upcomingCounselorRole);
+        welcomeNameText = findViewById(R.id.welcomeName);
+        privacyOverlay = findViewById(R.id.privacyOverlay);
 
         // Redirect to login if not authenticated
         FirebaseUser user = mAuth.getCurrentUser();
@@ -39,17 +48,29 @@ public class HomeActivity extends AppCompatActivity {
             return;
         }
 
+        // Fetch user name from Firestore
+        FirebaseFirestore.getInstance().collection("users").document(user.getUid())
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists() && doc.getString("name") != null) {
+                        welcomeNameText.setText(doc.getString("name"));
+                    }
+                });
+
         // Initialize original values
         originalName = counselorNameText.getText().toString();
         originalRole = counselorRoleText.getText().toString();
 
         setupPrivacyTimer();
 
+        // Privacy Overlay Toggle
+        privacyOverlay.setOnClickListener(v -> privacyOverlay.setVisibility(View.GONE));
+
         // Crisis banner
         CardView crisisBanner = findViewById(R.id.crisisBanner);
         crisisBanner.setOnClickListener(v -> {
             resetPrivacyTimer();
-            new androidx.appcompat.app.AlertDialog.Builder(this)
+            new AlertDialog.Builder(this)
                     .setTitle("🚨 Crisis Support")
                     .setMessage("Umang helpline: 0317-4288665\nRozan Counseling: 051-2890505\nLUMS CAPS: 042-35608000")
                     .setPositiveButton("Call Now", null)
@@ -72,18 +93,18 @@ public class HomeActivity extends AppCompatActivity {
         });
 
         // Slide to cancel (SeekBar)
-        android:widget.SeekBar slideToCancelSlider = findViewById(R.id.slideToCancelSlider);
-        slideToCancelSlider.setOnSeekBarChangeListener(new android.widget.SeekBar.OnSeekBarChangeListener() {
+        SeekBar slideToCancelSlider = findViewById(R.id.slideToCancelSlider);
+        slideToCancelSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
-            public void onProgressChanged(android.widget.SeekBar seekBar, int progress, boolean fromUser) {}
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
 
             @Override
-            public void onStartTrackingTouch(android.widget.SeekBar seekBar) {
+            public void onStartTrackingTouch(SeekBar seekBar) {
                 resetPrivacyTimer();
             }
 
             @Override
-            public void onStopTrackingTouch(android.widget.SeekBar seekBar) {
+            public void onStopTrackingTouch(SeekBar seekBar) {
                 if (seekBar.getProgress() >= 95) {
                     // Fully slid
                     handleCancellation();
@@ -94,6 +115,15 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
+        // Navigation
+        findViewById(R.id.navCalendar).setOnClickListener(v ->
+                startActivity(new Intent(this, CalendarActivity.class))
+        );
+
+        findViewById(R.id.navHistory).setOnClickListener(v ->
+                startActivity(new Intent(this, HistoryActivity.class))
+        );
+
         // Logout
         ImageButton navLogout = findViewById(R.id.navLogout);
         navLogout.setOnClickListener(v -> {
@@ -102,16 +132,16 @@ public class HomeActivity extends AppCompatActivity {
             finish();
         });
 
-        // Discreet mode button (Manual toggle)
+        // Discreet mode button (Now toggles privacy screen)
         ImageButton discreetBtn = findViewById(R.id.discreetModeBtn);
         discreetBtn.setOnClickListener(v -> {
-            if (isMasked) unmaskPII(); else maskPII();
+            privacyOverlay.setVisibility(View.VISIBLE);
             resetPrivacyTimer();
         });
     }
 
     private void handleCancellation() {
-        new androidx.appcompat.app.AlertDialog.Builder(this)
+        new AlertDialog.Builder(this)
                 .setTitle("Cancel Appointment?")
                 .setMessage("Are you sure you want to release this slot?")
                 .setPositiveButton("Yes, Cancel", (dialog, which) -> {
@@ -123,7 +153,7 @@ public class HomeActivity extends AppCompatActivity {
                     findViewById(R.id.sessionTimeRow).setVisibility(View.GONE);
                 })
                 .setNegativeButton("No", (dialog, which) -> {
-                    ((android.widget.SeekBar)findViewById(R.id.slideToCancelSlider)).setProgress(0);
+                    ((SeekBar)findViewById(R.id.slideToCancelSlider)).setProgress(0);
                 })
                 .show();
     }

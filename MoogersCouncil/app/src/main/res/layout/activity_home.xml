@@ -446,4 +446,46 @@
 
     </LinearLayout>
 
+    <FrameLayout
+        android:id="@+id/privacyOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:visibility="gone"
+        android:elevation="20dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🔒"
+                android:textSize="80sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Privacy Screen Active"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E"
+                android:layout_marginTop="16dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tap to unlock"
+                android:textSize="14sp"
+                android:textColor="#8A8A9A"
+                android:layout_marginTop="8dp" />
+
+        </LinearLayout>
+    </FrameLayout>
 </LinearLayout>

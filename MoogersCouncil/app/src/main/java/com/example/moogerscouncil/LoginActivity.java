@@ -8,6 +8,7 @@ import android.widget.Toast;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * Login screen. Handles student/counselor/admin role selection
@@ -28,10 +29,9 @@ public class LoginActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
 
-        // If already logged in, skip to home
+        // If already logged in, skip to dashboard or home based on role
         if (mAuth.getCurrentUser() != null) {
-            startActivity(new Intent(this, HomeActivity.class));
-            finish();
+            checkUserRole(mAuth.getCurrentUser().getUid());
             return;
         }
 

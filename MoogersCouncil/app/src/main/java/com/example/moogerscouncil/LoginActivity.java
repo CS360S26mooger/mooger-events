@@ -68,9 +68,8 @@ public class LoginActivity extends AppCompatActivity {
 
             mAuth.signInWithEmailAndPassword(email, password)
                     .addOnSuccessListener(result -> {
-                        Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, HomeActivity.class));
-                        finish();
+                        String uid = result.getUser().getUid();
+                        checkUserRole(uid);
                     })
                     .addOnFailureListener(e ->
                             Toast.makeText(this, "Login failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
@@ -80,5 +79,29 @@ public class LoginActivity extends AppCompatActivity {
         registerLink.setOnClickListener(v ->
                 startActivity(new Intent(this, RegisterActivity.class))
         );
+    }
+
+    private void checkUserRole(String uid) {
+        FirebaseFirestore.getInstance().collection("users").document(uid)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        String role = doc.getString("role");
+                        if ("Counselor".equalsIgnoreCase(role)) {
+                            startActivity(new Intent(this, CounselorDashboardActivity.class));
+                        } else {
+                            startActivity(new Intent(this, HomeActivity.class));
+                        }
+                        finish();
+                    } else {
+                        Toast.makeText(this, "User profile not found", Toast.LENGTH_SHORT).show();
+                        // Default to Student home if profile missing
+                        startActivity(new Intent(this, HomeActivity.class));
+                        finish();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    Toast.makeText(this, "Error fetching profile: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 }

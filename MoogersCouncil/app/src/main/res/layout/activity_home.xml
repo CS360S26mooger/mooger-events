@@ -322,53 +322,28 @@
 
                     </LinearLayout>
 
-                    <!-- Slide to cancel -->
-                    <androidx.cardview.widget.CardView
-                        android:id="@+id/slideToCancelBtn"
+                    <!-- Slide to cancel (SeekBar) -->
+                    <SeekBar
+                        android:id="@+id/slideToCancelSlider"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        app:cardCornerRadius="24dp"
-                        app:cardElevation="0dp"
-                        app:cardBackgroundColor="#FFF0F0"
-                        app:strokeColor="#FFCCCC"
-                        app:strokeWidth="1dp">
+                        android:max="100"
+                        android:progress="0"
+                        android:progressDrawable="@android:color/transparent"
+                        android:thumb="@android:drawable/btn_star_big_on"
+                        android:background="@drawable/ic_launcher_background"
+                        android:splitTrack="false"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp" />
 
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-
-                            <androidx.cardview.widget.CardView
-                                android:layout_width="40dp"
-                                android:layout_height="40dp"
-                                android:layout_marginStart="4dp"
-                                app:cardCornerRadius="20dp"
-                                app:cardElevation="2dp"
-                                app:cardBackgroundColor="#FFFFFF">
-
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:text="›"
-                                    android:textSize="22sp"
-                                    android:gravity="center"
-                                    android:textColor="#E74C3C" />
-
-                            </androidx.cardview.widget.CardView>
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Slide to Cancel"
-                                android:textColor="#E74C3C"
-                                android:textSize="14sp"
-                                android:gravity="center" />
-
-                        </LinearLayout>
-
-                    </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Slide right to Cancel"
+                        android:textColor="#E74C3C"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:layout_marginTop="4dp" />
 
                 </LinearLayout>
 

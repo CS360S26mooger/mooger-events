@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.mooger.moogerscouncil"
+    namespace = "com.example.moogerscouncil"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.mooger.moogerscouncil"
+        applicationId = "com.example.moogerscouncil"
         minSdk = 24
         targetSdk = 35
         versionCode = 1
@@ -38,9 +38,10 @@ dependencies {
     implementation(libs.constraintlayout)
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.12.0"))
+    implementation(platform("com.google.firebase:firebase-bom:34.11.0"))
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-auth")
+    implementation("com.google.firebase:firebase-analytics")
 
     // Testing
     testImplementation(libs.junit)

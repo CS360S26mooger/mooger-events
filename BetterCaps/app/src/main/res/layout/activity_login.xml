@@ -11,16 +11,17 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:gravity="center_horizontal"
-        android:paddingTop="24dp"
-        android:paddingBottom="32dp"
-        android:paddingHorizontal="24dp">
+        android:paddingTop="28dp"
+        android:paddingBottom="24dp"
+        android:paddingHorizontal="10dp">
 
-        <!-- Brain icon -->
+        <!--
         <androidx.cardview.widget.CardView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="116dp"
+            android:layout_height="116dp"
             app:cardCornerRadius="24dp"
-            app:cardElevation="6dp"
+            app:cardElevation="8dp"
+            app:cardUseCompatPadding="true"
             app:cardBackgroundColor="@color/white">
             <TextView
                 android:layout_width="match_parent"
@@ -29,16 +30,31 @@
                 android:textSize="36sp"
                 android:gravity="center" />
         </androidx.cardview.widget.CardView>
+        -->
 
         <!-- App title -->
-        <TextView
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="BetterCAPS"
-            android:textSize="28sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_dark"
-            android:layout_marginTop="16dp" />
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="BetterCAPS"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_dark" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="℠"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="@color/text_dark"
+                android:layout_gravity="bottom"
+                android:paddingBottom="4dp" />
+        </LinearLayout>
 
         <!-- Subtitle -->
         <TextView
@@ -54,9 +70,10 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="28dp"
             app:cardCornerRadius="20dp"
-            app:cardElevation="4dp"
+            app:cardElevation="8dp"
+            app:cardUseCompatPadding="true"
             app:cardBackgroundColor="@color/white">
 
             <LinearLayout
@@ -318,10 +335,11 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🔒 Your privacy matters. All sessions are confidential and secure."
+            android:text="🔒 Your privacy matters.\nAll sessions are confidential and secure."
             android:textColor="@color/text_gray"
             android:textSize="12sp"
             android:gravity="center"
+            android:alpha="0.7"
             android:layout_marginTop="16dp" />
 
     </LinearLayout>

@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp"
+    android:paddingBottom="4dp">
+
+    <Button
+        android:id="@+id/btnCallCrisis"
+        style="?attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/call_crisis_line"
+        android:gravity="start|center_vertical"
+        android:textSize="15sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp" />
+
+    <Button
+        android:id="@+id/btnCallCampus"
+        style="?attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/call_campus_security"
+        android:gravity="start|center_vertical"
+        android:textSize="15sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp" />
+
+    <Button
+        android:id="@+id/btnDismissEmergency"
+        style="?attr/borderlessButtonStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/dismiss"
+        android:gravity="start|center_vertical"
+        android:textSize="15sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp" />
+
+</LinearLayout>

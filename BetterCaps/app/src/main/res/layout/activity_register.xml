@@ -1,0 +1,307 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:fillViewport="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingTop="24dp"
+        android:paddingBottom="24dp"
+        android:paddingHorizontal="16dp">
+
+        <!-- Back arrow -->
+        <ImageButton
+            android:id="@+id/backArrow"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_gravity="start"
+            android:layout_marginStart="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="Back"
+            android:src="@drawable/ic_arrow_back"
+            android:tint="@color/text_dark" />
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_register"
+            android:textSize="26sp"
+            android:textStyle="bold"
+            android:textColor="@color/text_dark"
+            android:paddingStart="24dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Subtitle -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/subtitle_register"
+            android:textSize="14sp"
+            android:textColor="@color/text_gray"
+            android:paddingStart="24dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Form card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp"
+            app:cardUseCompatPadding="true"
+            app:cardBackgroundColor="@color/white">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="24dp">
+
+                <!-- Full Name — MANDATORY -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_full_name"
+                    android:layout_marginBottom="16dp"
+                    android:importantForAutofill="noExcludeDescendants"
+                    app:startIconDrawable="@drawable/ic_required"
+                    app:startIconTint="#CC2222"
+                    app:errorIconDrawable="@null"
+                    app:hintTextColor="@color/register_pink"
+                    app:boxStrokeColor="@color/text_input_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:helperTextTextColor="@color/helper_text"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/text_dark"
+                        android:textColorHint="@color/hint_text"
+                        android:textSize="15sp"
+                        android:importantForAutofill="no"
+                        android:autofillHints="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- University Email — MANDATORY -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_email"
+                    app:helperText="@string/helper_email"
+                    android:layout_marginBottom="16dp"
+                    android:importantForAutofill="noExcludeDescendants"
+                    app:startIconDrawable="@drawable/ic_required"
+                    app:startIconTint="#CC2222"
+                    app:errorIconDrawable="@null"
+                    app:hintTextColor="@color/register_pink"
+                    app:boxStrokeColor="@color/text_input_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:helperTextTextColor="@color/helper_text"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/text_dark"
+                        android:textColorHint="@color/hint_text"
+                        android:textSize="15sp"
+                        android:importantForAutofill="no"
+                        android:autofillHints="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Preferred Name — optional, no asterisk -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_preferred_name"
+                    app:helperText="@string/helper_preferred_name"
+                    android:layout_marginBottom="16dp"
+                    android:importantForAutofill="noExcludeDescendants"
+                    app:errorIconDrawable="@null"
+                    app:hintTextColor="@color/register_pink"
+                    app:boxStrokeColor="@color/text_input_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:helperTextTextColor="@color/helper_text"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextPreferredName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/text_dark"
+                        android:textColorHint="@color/hint_text"
+                        android:textSize="15sp"
+                        android:importantForAutofill="no"
+                        android:autofillHints="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Pronouns — optional, no asterisk -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_pronouns"
+                    app:helperText="@string/helper_pronouns"
+                    android:layout_marginBottom="16dp"
+                    android:importantForAutofill="noExcludeDescendants"
+                    app:errorIconDrawable="@null"
+                    app:hintTextColor="@color/register_pink"
+                    app:boxStrokeColor="@color/text_input_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:helperTextTextColor="@color/helper_text"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextPronouns"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/text_dark"
+                        android:textColorHint="@color/hint_text"
+                        android:textSize="15sp"
+                        android:importantForAutofill="no"
+                        android:autofillHints="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Password — MANDATORY: asterisk left, eye right -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_password"
+                    app:helperText="@string/helper_password"
+                    android:layout_marginBottom="16dp"
+                    android:importantForAutofill="noExcludeDescendants"
+                    app:startIconDrawable="@drawable/ic_required"
+                    app:startIconTint="#CC2222"
+                    app:endIconMode="password_toggle"
+                    app:endIconTint="@color/field_stroke"
+                    app:errorIconDrawable="@null"
+                    app:hintTextColor="@color/register_pink"
+                    app:boxStrokeColor="@color/text_input_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:helperTextTextColor="@color/helper_text"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:imeOptions="actionNext"
+                        android:textColor="@color/text_dark"
+                        android:textColorHint="@color/hint_text"
+                        android:textSize="15sp"
+                        android:importantForAutofill="no"
+                        android:autofillHints="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Confirm Password — MANDATORY: asterisk left, eye right -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutConfirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_confirm_password"
+                    android:layout_marginBottom="24dp"
+                    android:importantForAutofill="noExcludeDescendants"
+                    app:startIconDrawable="@drawable/ic_required"
+                    app:startIconTint="#CC2222"
+                    app:endIconMode="password_toggle"
+                    app:endIconTint="@color/field_stroke"
+                    app:errorIconDrawable="@null"
+                    app:hintTextColor="@color/register_pink"
+                    app:boxStrokeColor="@color/text_input_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:helperTextTextColor="@color/helper_text"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextConfirmPassword"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPassword"
+                        android:imeOptions="actionDone"
+                        android:textColor="@color/text_dark"
+                        android:textColorHint="@color/hint_text"
+                        android:textSize="15sp"
+                        android:importantForAutofill="no"
+                        android:autofillHints="" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Create Account button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonRegister"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="@string/button_register"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/white"
+                    android:backgroundTint="@color/register_pink"
+                    app:cornerRadius="12dp" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- Log in link -->
+        <TextView
+            android:id="@+id/linkLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/link_login"
+            android:textColor="@color/register_pink"
+            android:textSize="14sp"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+    </LinearLayout>
+</ScrollView>

@@ -100,7 +100,15 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener(result -> routeToHome(selectedRole))
+                .addOnSuccessListener(result -> {
+                    if (UserRole.COUNSELOR.equals(selectedRole)) {
+                        // Skip Firestore role check for counselors — go directly to dashboard.
+                        startActivity(new Intent(this, CounselorDashboardActivity.class));
+                        finish();
+                    } else {
+                        routeToHome(selectedRole);
+                    }
+                })
                 .addOnFailureListener(e ->
                         Toast.makeText(this,
                                 getString(R.string.error_login_failed) + " " + e.getMessage(),
@@ -116,13 +124,14 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Fetches the user's role from Firestore and navigates to the correct home screen.
      * When {@code expectedRole} is non-null (manual login), the stored role must match
-     * the tab the user selected — otherwise the session is cancelled and an error is shown.
+     * the tab the user selected — otherwise the session is cancelled and an error shown.
+     * On auto-redirect ({@code expectedRole} is null), routing happens unconditionally.
      */
     private void routeToHome(String expectedRole) {
         userRepository.getCurrentUserRole(new UserRepository.OnRoleFetchedCallback() {
             @Override
             public void onSuccess(String role) {
-                // Enforce tab selection on manual login.
+                // Enforce tab selection on manual login only.
                 if (expectedRole != null && !expectedRole.equals(role)) {
                     mAuth.signOut();
                     String label = UserRole.COUNSELOR.equals(role) ? "Counselor"
@@ -136,9 +145,8 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent;
                 if (UserRole.COUNSELOR.equals(role)) {
                     intent = new Intent(LoginActivity.this, CounselorDashboardActivity.class);
-                } else if (UserRole.ADMIN.equals(role)) {
-                    intent = new Intent(LoginActivity.this, StudentHomeActivity.class);
                 } else {
+                    // Covers "student", "admin", and any unexpected value.
                     intent = new Intent(LoginActivity.this, StudentHomeActivity.class);
                 }
                 startActivity(intent);
@@ -147,8 +155,13 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
-                Toast.makeText(LoginActivity.this,
-                        getString(R.string.error_fetching_role), Toast.LENGTH_LONG).show();
+                mAuth.signOut();
+                // IllegalArgumentException = account not found in either collection.
+                // All other exceptions = Firestore read failure.
+                String msg = (e instanceof IllegalArgumentException)
+                        ? e.getMessage()
+                        : getString(R.string.error_fetching_role);
+                Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
                 // If the login screen was not inflated yet (auto-redirect path),
                 // inflate it now so the user can try again.
                 if (emailField == null) {

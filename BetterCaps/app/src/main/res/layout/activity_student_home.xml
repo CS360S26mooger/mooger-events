@@ -1,38 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F2F4F8">
+    android:layout_height="match_parent">
 
-    <!-- Top bar -->
+    <!-- Real app content -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="#F5F4F8">
+
+    <!-- Header — same height & colour as Evently overlay for seamless transition -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="58dp"
+        android:background="#C96B8E"
         android:gravity="center_vertical"
-        android:padding="16dp"
-        android:background="#FFFFFF">
+        android:paddingStart="16dp"
+        android:paddingEnd="4dp">
 
         <ImageView
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:src="@mipmap/ic_launcher_round" />
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:src="@mipmap/ic_launcher_round"
+            android:layout_marginEnd="10dp" />
 
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="12dp">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Welcome back,"
-                android:textSize="13sp"
-                android:textColor="#8A8A9A" />
+                android:textSize="11sp"
+                android:textColor="#F5D0E4" />
 
             <TextView
                 android:id="@+id/welcomeName"
@@ -41,17 +46,18 @@
                 android:text="Student"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#1A1A2E" />
+                android:textColor="#FFFFFF" />
 
         </LinearLayout>
 
         <ImageButton
             android:id="@+id/discreetModeBtn"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:src="@drawable/ic_eye_open"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="#3D5AF1" />
+            android:tint="#FFFFFF"
+            android:contentDescription="Discreet mode" />
 
     </LinearLayout>
 
@@ -60,56 +66,77 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="16dp">
+        android:scrollbars="none"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp">
 
-            <!-- Crisis Support Banner -->
+            <!-- Feedback prompt card — shown when a COMPLETED appointment needs feedback -->
             <androidx.cardview.widget.CardView
-                android:id="@+id/crisisBanner"
+                android:id="@+id/cardFeedbackPrompt"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
-                android:layout_marginBottom="16dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                android:visibility="gone"
                 app:cardCornerRadius="14dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="#C0392B">
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    android:gravity="center"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
                     android:padding="16dp">
 
                     <TextView
+                        android:id="@+id/textFeedbackPromptTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="⚠️"
-                        android:textSize="20sp"
-                        android:layout_marginEnd="12dp" />
+                        android:text="@string/feedback_prompt_title"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A2E" />
+
+                    <TextView
+                        android:id="@+id/textFeedbackPromptSubtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="#666666"
+                        android:layout_marginTop="4dp" />
 
                     <LinearLayout
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="horizontal"
+                        android:layout_marginTop="12dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/buttonGiveFeedback"
+                            style="@style/Widget.MaterialComponents.Button"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="Crisis Support"
-                            android:textColor="#FFFFFF"
-                            android:textSize="16sp"
-                            android:textStyle="bold" />
+                            android:layout_weight="1"
+                            android:text="@string/button_give_feedback"
+                            android:layout_marginEnd="8dp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/buttonDismissFeedback"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="24/7 Emergency Help - One Tap Away"
-                            android:textColor="#FFCCCC"
-                            android:textSize="12sp" />
+                            android:layout_weight="1"
+                            android:text="@string/button_dismiss"
+                            android:layout_marginStart="8dp" />
 
                     </LinearLayout>
 
@@ -117,23 +144,85 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Two action cards -->
+            <!-- Crisis Support — white card, vivid red text -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/crisisBanner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="#FFCDD2"
+                app:strokeWidth="1.5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp"
+                    android:paddingVertical="14dp">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_warning"
+                        android:tint="#D32F2F"
+                        android:layout_marginEnd="12dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Crisis Support"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:textColor="#D32F2F" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="24/7 Emergency Help · One Tap Away"
+                            android:textSize="12sp"
+                            android:textColor="#EF9A9A"
+                            android:layout_marginTop="2dp" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="›"
+                        android:textSize="26sp"
+                        android:textColor="#D32F2F" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Action cards row -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:layout_marginBottom="20dp">
 
-                <!-- AI Support Chat -->
+                <!-- AI Support Chat — purple card -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/aiChatCard"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="110dp"
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:cardBackgroundColor="#7B61FF">
+                    app:cardElevation="3dp"
+                    app:cardBackgroundColor="#8B6BAE">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -142,42 +231,46 @@
                         android:gravity="center"
                         android:padding="12dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="💬"
-                            android:textSize="24sp" />
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_chat"
+                            android:tint="#FFFFFF"
+                            android:layout_marginBottom="5dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="AI Support Chat"
-                            android:textColor="#FFFFFF"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold"
-                            android:layout_marginTop="8dp" />
+                            android:textColor="#FFFFFF"
+                            android:gravity="center" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="24/7 Available"
-                            android:textColor="#E0D9FF"
-                            android:textSize="11sp" />
+                            android:textSize="11sp"
+                            android:textColor="#DDD0F0"
+                            android:layout_marginTop="3dp" />
 
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- Find My Match -->
+                <!-- Find My Match — white card -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/findMatchCard"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="110dp"
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#FFFFFF">
+                    app:cardElevation="3dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:strokeColor="#E8D5F0"
+                    app:strokeWidth="1dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -186,27 +279,29 @@
                         android:gravity="center"
                         android:padding="12dp">
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="📋"
-                            android:textSize="24sp" />
+                        <ImageView
+                            android:layout_width="32dp"
+                            android:layout_height="32dp"
+                            android:src="@drawable/ic_quiz"
+                            android:tint="#8B6BAE"
+                            android:layout_marginBottom="5dp" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Find My Match"
-                            android:textColor="#1A1A2E"
-                            android:textSize="14sp"
+                            android:textSize="13sp"
                             android:textStyle="bold"
-                            android:layout_marginTop="8dp" />
+                            android:textColor="#2D2D2D"
+                            android:gravity="center" />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Take Quiz"
-                            android:textColor="#8A8A9A"
-                            android:textSize="11sp" />
+                            android:textSize="11sp"
+                            android:textColor="#9E9E9E"
+                            android:layout_marginTop="3dp" />
 
                     </LinearLayout>
 
@@ -214,7 +309,7 @@
 
             </LinearLayout>
 
-            <!-- Upcoming Session -->
+            <!-- Upcoming Session header row -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -227,7 +322,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Upcoming Session"
-                    android:textSize="17sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="#1A1A2E" />
 
@@ -235,15 +330,18 @@
                     android:id="@+id/btnPostSessionFeedback"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Post-Session Feedback"
-                    android:textColor="#3D5AF1"
-                    android:textSize="12sp"
+                    android:text="Post Session Feedback"
+                    android:textSize="11sp"
+                    android:textColor="#C96B8E"
                     android:clickable="true"
                     android:focusable="true"
-                    android:background="?attr/selectableItemBackground" />
+                    android:background="?attr/selectableItemBackground"
+                    android:paddingHorizontal="4dp"
+                    android:paddingVertical="4dp" />
 
             </LinearLayout>
 
+            <!-- Session card -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -264,17 +362,18 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:gravity="center_vertical"
-                        android:layout_marginBottom="12dp">
+                        android:layout_marginBottom="10dp">
 
                         <ImageView
-                            android:layout_width="48dp"
-                            android:layout_height="48dp"
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
                             android:src="@mipmap/ic_launcher_round"
                             android:layout_marginEnd="12dp" />
 
                         <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:orientation="vertical">
 
                             <TextView
@@ -282,7 +381,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="No upcoming session"
-                                android:textSize="15sp"
+                                android:textSize="14sp"
                                 android:textStyle="bold"
                                 android:textColor="#1A1A2E" />
 
@@ -291,63 +390,85 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Book an appointment below"
-                                android:textSize="13sp"
-                                android:textColor="#8A8A9A" />
+                                android:textSize="12sp"
+                                android:textColor="#9E9E9E"
+                                android:layout_marginTop="2dp" />
 
                         </LinearLayout>
 
                     </LinearLayout>
 
-                    <!-- Date and time -->
+                    <!-- Session time row -->
                     <LinearLayout
                         android:id="@+id/sessionTimeRow"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_marginBottom="12dp"
+                        android:layout_marginBottom="14dp"
                         android:visibility="gone">
 
                         <TextView
-                            android:id="@+id/sessionDate"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/upcomingSessionDate"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="📅 Tomorrow"
-                            android:textSize="13sp"
-                            android:textColor="#555566"
-                            android:layout_marginEnd="16dp" />
+                            android:layout_weight="1"
+                            android:text="📅  —"
+                            android:textSize="12sp"
+                            android:textColor="#8A8A9A" />
 
                         <TextView
-                            android:id="@+id/sessionTime"
-                            android:layout_width="wrap_content"
+                            android:id="@+id/upcomingSessionTime"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="🕑 2:00 PM"
-                            android:textSize="13sp"
-                            android:textColor="#555566" />
+                            android:layout_weight="1"
+                            android:text="🕑  —"
+                            android:textSize="12sp"
+                            android:textColor="#8A8A9A" />
 
                     </LinearLayout>
 
-                    <!-- Slide to cancel (SeekBar) -->
-                    <SeekBar
-                        android:id="@+id/slideToCancelSlider"
+                    <!-- Slide to Cancel -->
+                    <FrameLayout
+                        android:id="@+id/sliderContainer"
+                        android:visibility="gone"
                         android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:max="100"
-                        android:progress="0"
-                        android:progressDrawable="@android:color/transparent"
-                        android:thumb="@android:drawable/btn_star_big_on"
-                        android:background="@drawable/ic_launcher_background"
-                        android:splitTrack="false"
-                        android:paddingStart="10dp"
-                        android:paddingEnd="10dp" />
+                        android:layout_height="46dp"
+                        android:background="@drawable/slider_track">
 
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Slide right to Cancel"
-                        android:textColor="#E74C3C"
-                        android:textSize="12sp"
-                        android:gravity="center"
-                        android:layout_marginTop="4dp" />
+                        <!-- Pink fill — width driven programmatically to match thumb -->
+                        <View
+                            android:id="@+id/slideFill"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:background="@drawable/slider_fill" />
+
+                        <!-- Label -->
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:text="›  Slide to Cancel"
+                            android:textSize="12sp"
+                            android:textColor="#C96B8E"
+                            android:clickable="false"
+                            android:focusable="false" />
+
+                        <!-- Transparent SeekBar — touch handler only -->
+                        <SeekBar
+                            android:id="@+id/slideToCancelSlider"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:max="100"
+                            android:progress="0"
+                            android:progressDrawable="@android:color/transparent"
+                            android:thumb="@drawable/seekbar_thumb"
+                            android:thumbOffset="0dp"
+                            android:splitTrack="false"
+                            android:background="@android:color/transparent"
+                            android:paddingStart="0dp"
+                            android:paddingEnd="0dp" />
+
+                    </FrameLayout>
 
                 </LinearLayout>
 
@@ -358,17 +479,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Find a Specialist"
-                android:textSize="17sp"
+                android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="#1A1A2E"
                 android:layout_marginBottom="10dp" />
 
+            <!-- Search bar — tapping launches CounselorListActivity -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/searchBarHome"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="26dp"
-                app:cardElevation="2dp"
+                android:layout_height="46dp"
+                android:layout_marginBottom="12dp"
+                app:cardCornerRadius="23dp"
+                app:cardElevation="1dp"
                 app:cardBackgroundColor="#FFFFFF">
 
                 <LinearLayout
@@ -378,23 +501,293 @@
                     android:gravity="center_vertical"
                     android:paddingHorizontal="16dp">
 
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_search"
+                        android:tint="#BDBDBD"
+                        android:layout_marginEnd="8dp" />
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🔍"
-                        android:textSize="16sp"
+                        android:text="Search by name or issue..."
+                        android:textSize="13sp"
+                        android:textColor="#BDBDBD" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Filter chips -->
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="none"
+                android:layout_marginBottom="14dp"
+                android:clipToPadding="false">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:text="All"
+                        android:textSize="12sp"
+                        android:textColor="#FFFFFF"
+                        android:background="@drawable/chip_active"
+                        android:paddingHorizontal="14dp"
                         android:layout_marginEnd="8dp" />
 
-                    <EditText
-                        android:id="@+id/searchField"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:text="Academic Stress"
+                        android:textSize="12sp"
+                        android:textColor="#8B6BAE"
+                        android:background="@drawable/chip_inactive"
+                        android:paddingHorizontal="14dp"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:text="Career Anxiety"
+                        android:textSize="12sp"
+                        android:textColor="#8B6BAE"
+                        android:background="@drawable/chip_inactive"
+                        android:paddingHorizontal="14dp"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:text="General Therapy"
+                        android:textSize="12sp"
+                        android:textColor="#8B6BAE"
+                        android:background="@drawable/chip_inactive"
+                        android:paddingHorizontal="14dp"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:text="Relationships"
+                        android:textSize="12sp"
+                        android:textColor="#8B6BAE"
+                        android:background="@drawable/chip_inactive"
+                        android:paddingHorizontal="14dp"
+                        android:layout_marginEnd="8dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="32dp"
+                        android:gravity="center"
+                        android:text="Mindfulness"
+                        android:textSize="12sp"
+                        android:textColor="#8B6BAE"
+                        android:background="@drawable/chip_inactive"
+                        android:paddingHorizontal="14dp" />
+
+                </LinearLayout>
+
+            </HorizontalScrollView>
+
+            <!-- Counselor card 1 — tapping launches CounselorListActivity -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/counselorCard1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="14dp">
+
+                    <ImageView
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:src="@mipmap/ic_launcher_round"
+                        android:layout_marginEnd="12dp" />
+
+                    <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:hint="Search by name or issue..."
-                        android:textSize="14sp"
-                        android:textColorHint="#AAAAAA"
-                        android:background="@null"
-                        android:inputType="text" />
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Dr. Baz"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="#1A1A2E" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="★ 4.9"
+                                android:textSize="12sp"
+                                android:textColor="#F9A825" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Anxiety &amp; Depression"
+                            android:textSize="12sp"
+                            android:textColor="#9E9E9E"
+                            android:layout_marginTop="2dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="8dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Next: Today, 4:00 PM"
+                                android:textSize="11sp"
+                                android:textColor="#9E9E9E" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="View Slots"
+                                android:textSize="11sp"
+                                android:textColor="#8B6BAE"
+                                android:background="@drawable/chip_inactive"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="4dp"
+                                android:clickable="false"
+                                android:focusable="false" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Counselor card 2 — tapping launches CounselorListActivity -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/counselorCard2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="1dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="14dp">
+
+                    <ImageView
+                        android:layout_width="46dp"
+                        android:layout_height="46dp"
+                        android:src="@mipmap/ic_launcher_round"
+                        android:layout_marginEnd="12dp" />
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Dr. Musa Gondal"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="#1A1A2E" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="★ 4.8"
+                                android:textSize="12sp"
+                                android:textColor="#F9A825" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Career &amp; Academic Stress"
+                            android:textSize="12sp"
+                            android:textColor="#9E9E9E"
+                            android:layout_marginTop="2dp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginTop="8dp">
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Next: Tomorrow, 10:00 AM"
+                                android:textSize="11sp"
+                                android:textColor="#9E9E9E" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="View Slots"
+                                android:textSize="11sp"
+                                android:textColor="#8B6BAE"
+                                android:background="@drawable/chip_inactive"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="4dp"
+                                android:clickable="false"
+                                android:focusable="false" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -404,7 +797,7 @@
 
     </ScrollView>
 
-    <!-- Bottom navigation -->
+    <!-- Bottom navigation — minimalist 4-tab bar -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -412,43 +805,73 @@
         android:background="#FFFFFF"
         android:elevation="8dp">
 
-        <ImageButton
-            android:id="@+id/navHome"
+        <!-- Home tab (decorative, active highlight) -->
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_dialog_info"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="#3D5AF1" />
+            android:gravity="center"
+            android:orientation="vertical"
+            android:clickable="false"
+            android:focusable="false">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_home"
+                android:tint="#C96B8E" />
+        </LinearLayout>
 
-        <ImageButton
+        <!-- Calendar -->
+        <LinearLayout
             android:id="@+id/navCalendar"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_today"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="#8A8A9A" />
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackgroundBorderless">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_calendar"
+                android:tint="#9E9E9E" />
+        </LinearLayout>
 
-        <ImageButton
+        <!-- History -->
+        <LinearLayout
             android:id="@+id/navHistory"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_recent_history"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="#8A8A9A" />
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackgroundBorderless">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_history"
+                android:tint="#9E9E9E" />
+        </LinearLayout>
 
-        <ImageButton
+        <!-- Logout -->
+        <LinearLayout
             android:id="@+id/navLogout"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="#8A8A9A" />
+            android:gravity="center"
+            android:orientation="vertical"
+            android:background="?attr/selectableItemBackgroundBorderless">
+            <ImageView
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:src="@drawable/ic_nav_logout"
+                android:tint="#9E9E9E" />
+        </LinearLayout>
 
     </LinearLayout>
+
+    </LinearLayout><!-- end real app content -->
 
     <!-- ═══════════════════════════════════════════════════════
          PRIVACY OVERLAY — fake event discovery app (Evently)
@@ -1173,4 +1596,6 @@
 
         </LinearLayout>
     </FrameLayout>
-</LinearLayout>
+
+
+</FrameLayout>

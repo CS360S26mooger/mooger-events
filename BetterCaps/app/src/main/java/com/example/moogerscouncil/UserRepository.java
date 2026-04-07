@@ -134,11 +134,58 @@ public class UserRepository {
     }
 
     /**
-     * Fetches only the {@code role} field for the currently authenticated user.
-     * Used for post-login routing to the correct home screen.
+     * Callback for name-only user lookups.
+     * On failure, "Unknown" is returned so appointment cards degrade gracefully.
+     */
+    public interface OnUserNameCallback {
+        /**
+         * Called with the user's name, or "Unknown" if the document is missing
+         * or the lookup fails.
+         *
+         * @param name The user's display name.
+         */
+        void onSuccess(String name);
+    }
+
+    /**
+     * Fetches only the {@code name} field for a given user UID.
+     * Used by {@link AppointmentAdapter} to display student names on
+     * counselor dashboard appointment cards.
      *
-     * @param callback Receives the role string ("student", "counselor", "admin")
-     *                 on success, or an Exception on failure.
+     * <p>On Firestore failure, the callback still receives "Unknown" rather than
+     * propagating an error — student name is supplementary display data and should
+     * never block rendering an appointment card.</p>
+     *
+     * @param uid      The Firebase Auth UID of the user to look up.
+     * @param callback Receives the name string on success, or "Unknown" on failure.
+     */
+    public void getUserName(String uid, OnUserNameCallback callback) {
+        usersCollection.document(uid)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        String name = doc.getString("name");
+                        callback.onSuccess(name != null ? name : "Unknown");
+                    } else {
+                        callback.onSuccess("Unknown");
+                    }
+                })
+                .addOnFailureListener(e -> callback.onSuccess("Unknown"));
+    }
+
+    /**
+     * Resolves the role of the currently authenticated user by checking both
+     * Firestore collections:
+     * <ol>
+     *   <li>{@code users/{uid}} — students and admins; role is stored in the {@code role} field.</li>
+     *   <li>{@code counselors/{uid}} — counselors provisioned directly in this collection
+     *       (no {@code role} field required; presence in the collection implies counselor role).</li>
+     * </ol>
+     *
+     * <p>If the UID is found in neither collection, {@code onFailure} is called with an
+     * {@link IllegalArgumentException} so the caller can display a user-readable error.</p>
+     *
+     * @param callback Receives the role string on success, or an Exception on failure.
      */
     public void getCurrentUserRole(OnRoleFetchedCallback callback) {
         FirebaseUser firebaseUser = auth.getCurrentUser();
@@ -146,15 +193,39 @@ public class UserRepository {
             callback.onFailure(new IllegalStateException("No authenticated user"));
             return;
         }
-        usersCollection.document(firebaseUser.getUid())
+        String uid = firebaseUser.getUid();
+
+        // Step 1: check counselors collection first — a counselor may also have a student
+        // entry in users (e.g. from registering on the student tab), so counselors must
+        // be identified before falling through to the users collection.
+        FirebaseFirestore.getInstance().collection("counselors")
+                .document(uid)
                 .get()
-                .addOnSuccessListener(doc -> {
-                    if (doc.exists()) {
-                        String role = doc.getString("role");
-                        callback.onSuccess(role);
-                    } else {
-                        callback.onFailure(new IllegalStateException("User document not found"));
+                .addOnSuccessListener(counselorDoc -> {
+                    if (counselorDoc.exists()) {
+                        callback.onSuccess(UserRole.COUNSELOR);
+                        return;
                     }
+
+                    // Step 2: not a counselor — check users collection (students / admins)
+                    usersCollection.document(uid)
+                            .get()
+                            .addOnSuccessListener(userDoc -> {
+                                if (userDoc.exists()) {
+                                    String role = userDoc.getString("role");
+                                    if (role != null && !role.isEmpty()) {
+                                        callback.onSuccess(role);
+                                    } else {
+                                        callback.onFailure(new IllegalArgumentException(
+                                                "Account has no role assigned. "
+                                                        + "Please contact your administrator."));
+                                    }
+                                } else {
+                                    callback.onFailure(new IllegalArgumentException(
+                                            "Account not found. Please contact your administrator."));
+                                }
+                            })
+                            .addOnFailureListener(callback::onFailure);
                 })
                 .addOnFailureListener(callback::onFailure);
     }

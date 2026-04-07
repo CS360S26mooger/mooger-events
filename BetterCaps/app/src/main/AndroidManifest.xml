@@ -48,6 +48,15 @@
             android:name=".QuizActivity"
             android:exported="false" />
         <activity
+            android:name=".CounselorProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CounselorProfileEditActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AvailabilitySetupActivity"
+            android:exported="false" />
+        <activity
             android:name=".HomeActivity"
             android:exported="false" />
         <activity

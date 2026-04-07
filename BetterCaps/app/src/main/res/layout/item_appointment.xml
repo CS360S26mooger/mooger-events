@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Student info row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <!-- Avatar circle -->
+            <TextView
+                android:id="@+id/studentInitial"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:text="H"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#3D5AF1"
+                android:gravity="center"
+                android:background="@drawable/circle_bg"
+                android:layout_marginEnd="12dp" />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/studentName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Student Name"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A2E" />
+
+                <TextView
+                    android:id="@+id/sessionTopic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Academic Stress"
+                    android:textSize="13sp"
+                    android:textColor="#8A8A9A" />
+
+            </LinearLayout>
+
+            <!-- Time -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <TextView
+                    android:id="@+id/sessionTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🕙 10:00 AM"
+                    android:textSize="12sp"
+                    android:textColor="#3D5AF1"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/sessionDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today"
+                    android:textSize="11sp"
+                    android:textColor="#8A8A9A"
+                    android:layout_gravity="end" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <!-- Action buttons row 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="8dp">
+
+            <Button
+                android:id="@+id/profileButton"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:text="👤 Profile"
+                android:textSize="12sp"
+                android:textColor="#555566"
+                android:backgroundTint="#F2F4F8"
+                app:cornerRadius="8dp" />
+
+            <Button
+                android:id="@+id/notesButton"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginHorizontal="6dp"
+                android:text="📄 Notes"
+                android:textSize="12sp"
+                android:textColor="#555566"
+                android:backgroundTint="#F2F4F8"
+                app:cornerRadius="8dp" />
+
+            <Button
+                android:id="@+id/joinButton"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:text="Join"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF"
+                android:backgroundTint="#3D5AF1"
+                app:cornerRadius="8dp" />
+
+        </LinearLayout>
+
+        <!-- Action buttons row 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/noShowButton"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="6dp"
+                android:text="Mark No-Show"
+                android:textSize="11sp"
+                android:textColor="#B8860B"
+                android:backgroundTint="#FFFBEA"
+                app:cornerRadius="8dp" />
+
+            <Button
+                android:id="@+id/crisisButton"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:layout_marginStart="6dp"
+                android:text="⚠ Crisis Alert"
+                android:textSize="11sp"
+                android:textColor="#C0392B"
+                android:backgroundTint="#FFF0F0"
+                app:cornerRadius="8dp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

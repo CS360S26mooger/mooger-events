@@ -55,9 +55,7 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
     private void routeToHome(String role) {
         Intent intent;
         if (UserRole.COUNSELOR.equals(role)) {
-            // CounselorDashboardActivity will be created in Sprint 4.
-            // For now, fall back to StudentHomeActivity as a safe placeholder.
-            intent = new Intent(this, StudentHomeActivity.class);
+            intent = new Intent(this, CounselorDashboardActivity.class);
         } else {
             intent = new Intent(this, StudentHomeActivity.class);
         }

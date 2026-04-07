@@ -22,9 +22,10 @@
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:src="@mipmap/ic_launcher_round"
-            android:layout_marginEnd="12dp" />
+            android:layout_marginEnd="12dp"
+            android:contentDescription="@string/title_counselor_profile" />
 
-        <!-- Name, specialization, next slot -->
+        <!-- Name, specializations, language, on-leave badge -->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -50,44 +51,42 @@
                 android:layout_marginTop="2dp" />
 
             <TextView
-                android:id="@+id/counselorNextSlot"
+                android:id="@+id/counselorLanguage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Next: Loading..."
                 android:textSize="12sp"
-                android:textColor="#3D5AF1"
-                android:layout_marginTop="4dp" />
+                android:textColor="#8A8A9A"
+                android:layout_marginTop="2dp"
+                android:visibility="gone" />
 
-        </LinearLayout>
-
-        <!-- Right side: rating + button -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center_horizontal">
-
+            <!-- On-leave badge — shown when counselor.onLeave == true -->
             <TextView
-                android:id="@+id/counselorRating"
+                android:id="@+id/badgeOnLeave"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="★ 4.9"
-                android:textSize="13sp"
-                android:textColor="#F39C12"
-                android:textStyle="bold"
-                android:layout_marginBottom="8dp" />
-
-            <Button
-                android:id="@+id/viewSlotsButton"
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:text="View Slots"
-                android:textSize="12sp"
-                android:textColor="#3D5AF1"
-                android:backgroundTint="#EEF2FF"
-                app:cornerRadius="18dp" />
+                android:text="@string/currently_unavailable"
+                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                android:background="#E57373"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:layout_marginTop="4dp"
+                android:visibility="gone" />
 
         </LinearLayout>
+
+        <!-- Right side: View Profile button -->
+        <Button
+            android:id="@+id/viewSlotsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="@string/view_profile"
+            android:textSize="12sp"
+            android:textColor="#3D5AF1"
+            android:backgroundTint="#EEF2FF"
+            app:cornerRadius="18dp" />
 
     </LinearLayout>
 

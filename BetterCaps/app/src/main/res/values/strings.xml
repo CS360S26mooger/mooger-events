@@ -1,3 +1,42 @@
 <resources>
     <string name="app_name">BetterCaps</string>
+
+    <!-- Registration Screen -->
+    <string name="title_register">Create Account</string>
+    <string name="subtitle_register">Join BetterCAPS to access counseling services</string>
+    <string name="hint_full_name">Full Name</string>
+    <string name="hint_email">University Email</string>
+    <string name="helper_email">Must be a @lums.edu.pk address</string>
+    <string name="hint_preferred_name">Preferred Name</string>
+    <string name="helper_preferred_name">What should we call you?</string>
+    <string name="hint_pronouns">Pronouns</string>
+    <string name="helper_pronouns">e.g. he/him, she/her, they/them</string>
+    <string name="hint_password">Password</string>
+    <string name="helper_password">Minimum 6 characters</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="button_register">Create Account</string>
+    <string name="link_login">Already have an account? Log in</string>
+
+    <!-- Validation Errors -->
+    <string name="error_name_required">Name is required</string>
+    <string name="error_email_required">Email is required</string>
+    <string name="error_email_domain">Must be a @lums.edu.pk email address</string>
+    <string name="error_password_length">Password must be at least 6 characters</string>
+    <string name="error_password_mismatch">Passwords do not match</string>
+    <string name="error_registration_failed">Registration failed. Please try again.</string>
+    <string name="error_firestore_write">Account created but profile save failed. Please log in again.</string>
+    <string name="error_fetching_role">Unable to determine account type. Please try again.</string>
+    <string name="error_login_failed">Login failed. Please check your credentials.</string>
+
+    <!-- Privacy Policy -->
+    <string name="title_privacy_policy">Privacy Policy</string>
+    <string name="button_agree">I Agree and Continue</string>
+    <string name="privacy_policy_text">BetterCAPS Privacy Policy\n\nYour privacy is important to us. This policy explains how we collect, use, and protect your personal information when you use the BetterCAPS counseling platform.\n\n1. Information We Collect\nWe collect your university email address, name, preferred name, and pronouns when you register. Appointment records are stored to provide you with counseling services.\n\n2. How We Use Your Information\nYour information is used solely to connect you with university counseling services. We do not sell or share your data with third parties.\n\n3. Anonymity of Feedback\nPost-session feedback is fully anonymous. Your identity is never linked to feedback submissions.\n\n4. Data Security\nAll data is stored in secure cloud infrastructure with encryption at rest and in transit.\n\n5. Your Rights\nYou may request deletion of your account and associated data at any time by contacting campus counseling services.\n\nBy tapping \'I Agree and Continue\', you acknowledge that you have read and understood this policy.</string>
+
+    <!-- Student Home -->
+    <string name="greeting_prefix">Welcome back,</string>
+    <string name="home_subtitle">BetterCAPS</string>
+    <string name="home_placeholder">Your counseling hub</string>
+    <string name="home_coming_soon">Features coming soon: browse counselors, book appointments</string>
+    <string name="button_logout">Log Out</string>
 </resources>

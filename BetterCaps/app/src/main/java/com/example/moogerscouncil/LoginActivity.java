@@ -1,3 +1,14 @@
+/*
+ * LoginActivity.java
+ * Role: Login screen. Handles role selection (Student / Counselor / Admin),
+ *       Firebase email authentication, and role-based routing to the correct home screen.
+ *       Auto-redirects to the correct home screen if a live Firebase Auth session exists.
+ *
+ * Pattern: Uses UserRepository (Repository pattern) for post-login role lookup.
+ *          Never accesses FirebaseFirestore directly.
+ *
+ * Part of the BetterCAPS counseling platform.
+ */
 package com.example.moogerscouncil;
 
 import android.animation.ArgbEvaluator;
@@ -17,31 +28,39 @@ import com.google.firebase.auth.FirebaseAuth;
 
 /**
  * Login screen. Handles student/counselor/admin role selection
- * and Firebase email authentication.
+ * and Firebase email authentication, then routes to the correct home screen
+ * based on the user's {@code role} field in Firestore.
  */
 public class LoginActivity extends AppCompatActivity {
 
     private static final int ANIM_DURATION_MS = 200;
 
-    private TextInputEditText emailField, passwordField;
-    private MaterialButton loginButton, btnStudent, btnCounselor, btnAdmin;
+    private TextInputEditText emailField;
+    private TextInputEditText passwordField;
+    private MaterialButton loginButton;
+    private MaterialButton btnStudent;
+    private MaterialButton btnCounselor;
+    private MaterialButton btnAdmin;
     private TextView registerLink;
+
     private FirebaseAuth mAuth;
-    private String selectedRole = "Student";
+    private UserRepository userRepository;
+    private String selectedRole = UserRole.STUDENT;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
 
         mAuth = FirebaseAuth.getInstance();
+        userRepository = new UserRepository();
 
-        // If already logged in, skip to home
+        // If already logged in, skip login UI and route based on stored role
         if (mAuth.getCurrentUser() != null) {
-            startActivity(new Intent(this, HomeActivity.class));
-            finish();
+            routeToHome();
             return;
         }
+
+        setContentView(R.layout.activity_login);
 
         emailField    = findViewById(R.id.emailField);
         passwordField = findViewById(R.id.passwordField);
@@ -54,82 +73,138 @@ public class LoginActivity extends AppCompatActivity {
         // Apply initial selection to Student immediately (no animation on first load)
         applySelectedStyle(btnStudent, true);
 
-        // Role selection with animated color transitions
-        btnStudent.setOnClickListener(v -> selectRole("Student"));
-        btnCounselor.setOnClickListener(v -> selectRole("Counselor"));
-        btnAdmin.setOnClickListener(v -> selectRole("Admin"));
+        btnStudent.setOnClickListener(v -> selectRole(UserRole.STUDENT, "Student"));
+        btnCounselor.setOnClickListener(v -> selectRole(UserRole.COUNSELOR, "Counselor"));
+        btnAdmin.setOnClickListener(v -> selectRole(UserRole.ADMIN, "Admin"));
 
-        loginButton.setOnClickListener(v -> {
-            String email    = emailField.getText().toString().trim();
-            String password = passwordField.getText().toString().trim();
+        loginButton.setOnClickListener(v -> attemptLogin());
 
-            if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please fill in all fields", Toast.LENGTH_SHORT).show();
-                return;
+        registerLink.setOnClickListener(v -> {
+            Intent intent = new Intent(this, RegisterActivity.class);
+            intent.putExtra("selected_role", selectedRole);
+            startActivity(intent);
+        });
+    }
+
+    /**
+     * Reads email and password from the form fields and signs in with Firebase Auth.
+     * On success, fetches the user's role from Firestore and routes to the correct screen.
+     */
+    private void attemptLogin() {
+        String email    = emailField.getText().toString().trim();
+        String password = passwordField.getText().toString().trim();
+
+        if (email.isEmpty() || password.isEmpty()) {
+            Toast.makeText(this, getString(R.string.error_login_failed), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener(result -> routeToHome())
+                .addOnFailureListener(e ->
+                        Toast.makeText(this,
+                                getString(R.string.error_login_failed) + " " + e.getMessage(),
+                                Toast.LENGTH_LONG).show()
+                );
+    }
+
+    /**
+     * Fetches the current user's role from Firestore and starts the appropriate
+     * home Activity, finishing this Activity so the back stack does not return here.
+     */
+    private void routeToHome() {
+        userRepository.getCurrentUserRole(new UserRepository.OnRoleFetchedCallback() {
+            @Override
+            public void onSuccess(String role) {
+                Intent intent;
+                if (UserRole.COUNSELOR.equals(role)) {
+                    // CounselorDashboardActivity will be created in Sprint 4.
+                    // Fall back to StudentHomeActivity as a placeholder.
+                    intent = new Intent(LoginActivity.this, StudentHomeActivity.class);
+                } else {
+                    intent = new Intent(LoginActivity.this, StudentHomeActivity.class);
+                }
+                startActivity(intent);
+                finish();
             }
 
-            mAuth.signInWithEmailAndPassword(email, password)
-                    .addOnSuccessListener(result -> {
-                        Toast.makeText(this, "Welcome!", Toast.LENGTH_SHORT).show();
-                        startActivity(new Intent(this, HomeActivity.class));
-                        finish();
-                    })
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Login failed: " + e.getMessage(), Toast.LENGTH_LONG).show()
-                    );
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(LoginActivity.this,
+                        getString(R.string.error_fetching_role), Toast.LENGTH_LONG).show();
+                // If the login screen was not inflated yet (auto-redirect path),
+                // inflate it now so the user can try again.
+                if (emailField == null) {
+                    setContentView(R.layout.activity_login);
+                    emailField    = findViewById(R.id.emailField);
+                    passwordField = findViewById(R.id.passwordField);
+                    loginButton   = findViewById(R.id.loginButton);
+                    registerLink  = findViewById(R.id.registerLink);
+                    btnStudent    = findViewById(R.id.btnStudent);
+                    btnCounselor  = findViewById(R.id.btnCounselor);
+                    btnAdmin      = findViewById(R.id.btnAdmin);
+                    applySelectedStyle(btnStudent, true);
+                    loginButton.setOnClickListener(v2 -> attemptLogin());
+                    registerLink.setOnClickListener(v2 -> {
+                        Intent i = new Intent(LoginActivity.this, RegisterActivity.class);
+                        i.putExtra("selected_role", selectedRole);
+                        startActivity(i);
+                    });
+                    btnStudent.setOnClickListener(v2 -> selectRole(UserRole.STUDENT, "Student"));
+                    btnCounselor.setOnClickListener(v2 -> selectRole(UserRole.COUNSELOR, "Counselor"));
+                    btnAdmin.setOnClickListener(v2 -> selectRole(UserRole.ADMIN, "Admin"));
+                }
+            }
         });
-
-        registerLink.setOnClickListener(v ->
-                startActivity(new Intent(this, RegisterActivity.class))
-        );
     }
 
     /**
-     * Deselects all role buttons, then animates the newly selected one to blue.
+     * Updates the selected role and animates the role-selector buttons accordingly.
+     *
+     * @param roleConstant the {@link UserRole} constant string to store.
+     * @param displayLabel the label shown in the login button text.
      */
-    private void selectRole(String role) {
-        if (role.equals(selectedRole)) return;
-        selectedRole = role;
+    private void selectRole(String roleConstant, String displayLabel) {
+        if (roleConstant.equals(selectedRole)) return;
+        selectedRole = roleConstant;
 
-        loginButton.setText("Log In as " + role);
+        loginButton.setText("Log In as " + displayLabel);
 
-        // Animate every button to its correct state
-        animateRoleButton(btnStudent,   "Student".equals(role));
-        animateRoleButton(btnCounselor, "Counselor".equals(role));
-        animateRoleButton(btnAdmin,     "Admin".equals(role));
+        animateRoleButton(btnStudent,   UserRole.STUDENT.equals(roleConstant));
+        animateRoleButton(btnCounselor, UserRole.COUNSELOR.equals(roleConstant));
+        animateRoleButton(btnAdmin,     UserRole.ADMIN.equals(roleConstant));
     }
 
     /**
-     * Smoothly interpolates stroke color and text color between selected (blue) and
-     * unselected (gray) states using a ValueAnimator.
+     * Smoothly interpolates stroke color, text color, and icon tint between
+     * selected (blue) and unselected (gray) states.
+     *
+     * @param button   the role button to animate.
+     * @param selected {@code true} if this button should appear selected.
      */
     private void animateRoleButton(MaterialButton button, boolean selected) {
-        int colorBlue  = ContextCompat.getColor(this, R.color.primary_blue);
-        int colorGray  = ContextCompat.getColor(this, R.color.text_gray);
+        int colorBlue   = ContextCompat.getColor(this, R.color.primary_blue);
+        int colorGray   = ContextCompat.getColor(this, R.color.text_gray);
         int colorStroke = ContextCompat.getColor(this, R.color.card_stroke);
 
-        // Determine start colors from the button's current tint lists
         int currentTextColor   = button.getCurrentTextColor();
         int currentStrokeColor = button.getStrokeColor() != null
                 ? button.getStrokeColor().getDefaultColor()
                 : colorStroke;
+        int currentIconTint    = button.getIconTint() != null
+                ? button.getIconTint().getDefaultColor()
+                : colorGray;
 
         int targetTextColor   = selected ? colorBlue : colorGray;
         int targetStrokeColor = selected ? colorBlue : colorStroke;
-
-        ValueAnimator animator = ValueAnimator.ofFloat(0f, 1f);
-        animator.setDuration(ANIM_DURATION_MS);
-        animator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
-
-        int currentIconTint = button.getIconTint() != null
-                ? button.getIconTint().getDefaultColor()
-                : colorGray;
-        int targetIconTint = selected ? colorBlue : colorGray;
+        int targetIconTint    = selected ? colorBlue : colorGray;
 
         ArgbEvaluator evaluator = new ArgbEvaluator();
+        ValueAnimator animator  = ValueAnimator.ofFloat(0f, 1f);
+        animator.setDuration(ANIM_DURATION_MS);
+        animator.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
         animator.addUpdateListener(anim -> {
-            float fraction = (float) anim.getAnimatedValue();
-
+            float fraction  = (float) anim.getAnimatedValue();
             int textColor   = (int) evaluator.evaluate(fraction, currentTextColor, targetTextColor);
             int strokeColor = (int) evaluator.evaluate(fraction, currentStrokeColor, targetStrokeColor);
             int iconTint    = (int) evaluator.evaluate(fraction, currentIconTint, targetIconTint);
@@ -138,13 +213,15 @@ public class LoginActivity extends AppCompatActivity {
             button.setStrokeColor(ColorStateList.valueOf(strokeColor));
             button.setIconTint(ColorStateList.valueOf(iconTint));
         });
-
         animator.start();
     }
 
     /**
-     * Instantly applies selected or unselected styling without animation
-     * (used for the initial state on screen load).
+     * Instantly applies selected or unselected styling without animation.
+     * Used for the initial state on screen load.
+     *
+     * @param button   the button to style.
+     * @param selected {@code true} for blue selected style; {@code false} for gray.
      */
     private void applySelectedStyle(MaterialButton button, boolean selected) {
         int colorBlue   = ContextCompat.getColor(this, R.color.primary_blue);

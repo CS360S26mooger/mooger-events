@@ -110,7 +110,73 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:singleSelection="false"
-            android:layout_marginBottom="32dp" />
+            android:layout_marginBottom="24dp" />
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#E0E0E0"
+            android:layout_marginBottom="16dp" />
+
+        <!-- On-Leave Section header -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_on_leave_section"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#1A1A2E"
+            android:layout_marginBottom="8dp" />
+
+        <!-- On-leave toggle -->
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switchOnLeave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_on_leave_toggle"
+            android:textSize="14sp"
+            android:layout_marginBottom="8dp" />
+
+        <!-- Leave message field (shown only when on leave) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutLeaveMessage"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_leave_message"
+            app:helperText="@string/helper_leave_message"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextLeaveMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textMultiLine"
+                android:minLines="2"
+                android:gravity="top" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Referral counselor dropdown (shown only when on leave) -->
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/layoutReferralCounselor"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/hint_referral_counselor"
+            app:helperText="@string/helper_referral_counselor"
+            android:visibility="gone"
+            android:layout_marginBottom="24dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/dropdownReferral"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
 
         <!-- Save button -->
         <com.google.android.material.button.MaterialButton

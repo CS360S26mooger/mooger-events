@@ -12,7 +12,9 @@ package com.example.moogerscouncil;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Repository for the Firestore 'counselors' collection.
@@ -174,6 +176,32 @@ public class CounselorRepository {
                                        OnUpdateCallback callback) {
         counselorsCollection.document(counselorId)
                 .set(counselor)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
+     * Updates only the on-leave status fields for a counselor.
+     * Uses {@code update()} instead of {@code set()} to avoid overwriting
+     * existing profile fields (bio, specializations, etc.) when only the
+     * leave status is changing.
+     *
+     * @param counselorId The Firestore document ID.
+     * @param onLeave     Whether the counselor is on leave.
+     * @param leaveMessage Custom message shown to students (nullable).
+     * @param referralId  Document ID of the referral counselor (nullable).
+     * @param callback    Success/failure callback.
+     */
+    public void setOnLeaveStatus(String counselorId, boolean onLeave,
+                                 String leaveMessage, String referralId,
+                                 OnUpdateCallback callback) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("onLeave", onLeave);
+        updates.put("onLeaveMessage", leaveMessage);
+        updates.put("referralCounselorId", referralId);
+
+        counselorsCollection.document(counselorId)
+                .update(updates)
                 .addOnSuccessListener(unused -> callback.onSuccess())
                 .addOnFailureListener(callback::onFailure);
     }

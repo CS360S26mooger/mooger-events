@@ -147,7 +147,11 @@ public class CounselorListActivity extends AppCompatActivity {
         TreeSet<String> genders = new TreeSet<>();
         for (Counselor c : counselors) {
             if (c.getLanguage() != null && !c.getLanguage().isEmpty()) {
-                languages.add(c.getLanguage());
+                // Language field may be comma-separated (e.g. "English, Urdu, Pashto")
+                for (String lang : c.getLanguage().split(",")) {
+                    String trimmed = lang.trim();
+                    if (!trimmed.isEmpty()) languages.add(trimmed);
+                }
             }
             if (c.getGender() != null && !c.getGender().isEmpty()) {
                 genders.add(c.getGender());
@@ -221,20 +225,28 @@ public class CounselorListActivity extends AppCompatActivity {
             filtered.removeIf(c -> {
                 if (c.getSpecializations() == null) return true;
                 for (String tag : filterState.selectedSpecializations) {
-                    if (c.getSpecializations().contains(tag)) return false;
+                    for (String spec : c.getSpecializations()) {
+                        if (spec.equalsIgnoreCase(tag)) return false;
+                    }
                 }
                 return true;
             });
         }
 
-        // Language filter
+        // Language filter — counselor's language field may be comma-separated
         if (filterState.language != null) {
-            filtered.removeIf(c -> !filterState.language.equals(c.getLanguage()));
+            filtered.removeIf(c -> {
+                if (c.getLanguage() == null || c.getLanguage().isEmpty()) return true;
+                for (String lang : c.getLanguage().split(",")) {
+                    if (lang.trim().equalsIgnoreCase(filterState.language)) return false;
+                }
+                return true;
+            });
         }
 
         // Gender filter
         if (filterState.gender != null) {
-            filtered.removeIf(c -> !filterState.gender.equals(c.getGender()));
+            filtered.removeIf(c -> !filterState.gender.equalsIgnoreCase(c.getGender()));
         }
 
         adapter.setData(filtered);

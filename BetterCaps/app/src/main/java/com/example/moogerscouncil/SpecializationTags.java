@@ -21,7 +21,7 @@ package com.example.moogerscouncil;
 public final class SpecializationTags {
 
     /** Anxiety-related counseling specialization. */
-    public static final String ANXIETY = "Anxiety";
+    public static final String ANXIETY = "General Anxiety";
 
     /** Academic stress counseling specialization. */
     public static final String ACADEMIC_STRESS = "Academic Stress";

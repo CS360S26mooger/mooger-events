@@ -92,12 +92,23 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
-                android:hint="@string/filter_language">
+                android:hint="@string/filter_language"
+                app:boxStrokeColor="@color/login_field_stroke"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeWidthFocused="1.5dp"
+                app:boxBackgroundColor="#08D4688A"
+                app:hintTextColor="@color/register_pink"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
 
                 <AutoCompleteTextView
                     android:id="@+id/dropdownLanguage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_dark"
                     android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -108,12 +119,23 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
-                android:hint="@string/filter_gender">
+                android:hint="@string/filter_gender"
+                app:boxStrokeColor="@color/login_field_stroke"
+                app:boxStrokeWidth="1.5dp"
+                app:boxStrokeWidthFocused="1.5dp"
+                app:boxBackgroundColor="#08D4688A"
+                app:hintTextColor="@color/register_pink"
+                app:boxCornerRadiusTopStart="12dp"
+                app:boxCornerRadiusTopEnd="12dp"
+                app:boxCornerRadiusBottomStart="12dp"
+                app:boxCornerRadiusBottomEnd="12dp">
 
                 <AutoCompleteTextView
                     android:id="@+id/dropdownGender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:textColor="@color/text_dark"
                     android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>

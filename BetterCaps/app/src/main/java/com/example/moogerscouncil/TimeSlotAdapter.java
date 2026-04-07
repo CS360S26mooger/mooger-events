@@ -23,6 +23,12 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.ViewHo
         this.listener = listener;
     }
 
+    /** Replaces the slot list and refreshes the RecyclerView. */
+    public void setData(List<TimeSlot> newSlots) {
+        this.slots = newSlots;
+        notifyDataSetChanged();
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {

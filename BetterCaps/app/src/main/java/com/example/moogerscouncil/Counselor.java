@@ -28,7 +28,7 @@ public class Counselor {
     private List<String> specializations;
     private String language;
     private String gender;
-    private Boolean onLeave;
+    private Boolean isOnLeave;
     private String onLeaveMessage;
     private String referralCounselorId;
 
@@ -144,14 +144,14 @@ public class Counselor {
      *
      * @return Boolean true if on leave, false or null if available.
      */
-    public Boolean getOnLeave() { return onLeave; }
+    public Boolean getOnLeave() { return isOnLeave; }
 
     /**
      * Sets the counselor's on-leave status.
      *
      * @param onLeave True if the counselor is currently on leave.
      */
-    public void setOnLeave(Boolean onLeave) { this.onLeave = onLeave; }
+    public void setOnLeave(Boolean onLeave) { this.isOnLeave = onLeave; }
 
     /**
      * Returns the custom message displayed when the counselor is on leave.

@@ -13,6 +13,8 @@ package com.example.moogerscouncil;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -20,7 +22,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
@@ -40,8 +44,16 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
     private ChipGroup chipGroupSpecializations;
     private Button buttonSaveProfile;
 
+    private SwitchMaterial switchOnLeave;
+    private TextInputLayout layoutLeaveMessage;
+    private TextInputLayout layoutReferralCounselor;
+    private TextInputEditText editTextLeaveMessage;
+    private AutoCompleteTextView dropdownReferral;
+
     private CounselorRepository counselorRepository;
     private String counselorId;
+    private List<Counselor> allCounselors = new ArrayList<>();
+    private String selectedReferralId = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +74,21 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
         editTextGender = findViewById(R.id.editTextGender);
         chipGroupSpecializations = findViewById(R.id.chipGroupSpecializations);
         buttonSaveProfile = findViewById(R.id.buttonSaveProfile);
+
+        switchOnLeave = findViewById(R.id.switchOnLeave);
+        layoutLeaveMessage = findViewById(R.id.layoutLeaveMessage);
+        layoutReferralCounselor = findViewById(R.id.layoutReferralCounselor);
+        editTextLeaveMessage = findViewById(R.id.editTextLeaveMessage);
+        dropdownReferral = findViewById(R.id.dropdownReferral);
+
+        switchOnLeave.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            int visibility = isChecked ? View.VISIBLE : View.GONE;
+            layoutLeaveMessage.setVisibility(visibility);
+            layoutReferralCounselor.setVisibility(visibility);
+            if (isChecked) {
+                loadReferralCounselors();
+            }
+        });
 
         buildSpecializationChips(null);
         loadCurrentProfile();
@@ -105,6 +132,17 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
                             editTextGender.setText(counselor.getGender());
                         }
                         buildSpecializationChips(counselor.getSpecializations());
+
+                        // Pre-fill on-leave state
+                        if (Boolean.TRUE.equals(counselor.getOnLeave())) {
+                            switchOnLeave.setChecked(true);
+                            // Visibility is triggered by the listener above
+                            if (counselor.getOnLeaveMessage() != null) {
+                                editTextLeaveMessage.setText(counselor.getOnLeaveMessage());
+                            }
+                            // Pre-select referral after dropdown loads (handled in loadReferralCounselors)
+                            selectedReferralId = counselor.getReferralCounselorId();
+                        }
                     }
 
                     @Override
@@ -112,6 +150,70 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
                         // Profile may not exist yet (first-time setup); chips stay unchecked.
                         Toast.makeText(CounselorProfileEditActivity.this,
                                 getString(R.string.error_loading_profile),
+                                Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+    /**
+     * Fetches all counselors from Firestore and populates the referral dropdown.
+     * Excludes the current counselor from the list so they cannot refer to themselves.
+     */
+    private void loadReferralCounselors() {
+        String currentUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        counselorRepository.getAllCounselors(
+                new CounselorRepository.OnCounselorsLoadedCallback() {
+                    @Override
+                    public void onSuccess(List<Counselor> counselors) {
+                        allCounselors = counselors;
+                        List<String> names = new ArrayList<>();
+                        names.add(getString(R.string.referral_none_option));
+                        for (Counselor c : counselors) {
+                            if (!currentUid.equals(c.getUid())) {
+                                names.add(c.getName());
+                            }
+                        }
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                                CounselorProfileEditActivity.this,
+                                android.R.layout.simple_list_item_1, names);
+                        dropdownReferral.setAdapter(adapter);
+
+                        // Pre-select the saved referral if one exists
+                        if (selectedReferralId != null) {
+                            int adjustedPos = 0;
+                            for (int i = 0; i < allCounselors.size(); i++) {
+                                if (!currentUid.equals(allCounselors.get(i).getUid())) {
+                                    adjustedPos++;
+                                    if (selectedReferralId.equals(allCounselors.get(i).getId())) {
+                                        dropdownReferral.setText(allCounselors.get(i).getName(), false);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        dropdownReferral.setOnItemClickListener((parent, view, pos, id) -> {
+                            if (pos == 0) {
+                                selectedReferralId = null;
+                            } else {
+                                int counselorPos = 0;
+                                for (Counselor c : allCounselors) {
+                                    if (!currentUid.equals(c.getUid())) {
+                                        counselorPos++;
+                                        if (counselorPos == pos) {
+                                            selectedReferralId = c.getId();
+                                            break;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        Toast.makeText(CounselorProfileEditActivity.this,
+                                getString(R.string.error_loading_counselors),
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -143,6 +245,19 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
         updatedCounselor.setLanguage(language);
         updatedCounselor.setGender(gender);
         updatedCounselor.setSpecializations(selectedTags);
+
+        // On-leave fields
+        boolean isOnLeave = switchOnLeave.isChecked();
+        updatedCounselor.setOnLeave(isOnLeave);
+        if (isOnLeave) {
+            String leaveMsg = editTextLeaveMessage.getText() != null
+                    ? editTextLeaveMessage.getText().toString().trim() : "";
+            updatedCounselor.setOnLeaveMessage(leaveMsg);
+            updatedCounselor.setReferralCounselorId(selectedReferralId);
+        } else {
+            updatedCounselor.setOnLeaveMessage(null);
+            updatedCounselor.setReferralCounselorId(null);
+        }
 
         buttonSaveProfile.setEnabled(false);
 

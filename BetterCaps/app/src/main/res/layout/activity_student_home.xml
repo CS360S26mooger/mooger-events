@@ -80,6 +80,70 @@
             android:paddingTop="16dp"
             android:paddingBottom="16dp">
 
+            <!-- Feedback prompt card — shown when a COMPLETED appointment needs feedback -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardFeedbackPrompt"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                android:visibility="gone"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/textFeedbackPromptTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/feedback_prompt_title"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#1A1A2E" />
+
+                    <TextView
+                        android:id="@+id/textFeedbackPromptSubtitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:textColor="#666666"
+                        android:layout_marginTop="4dp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginTop="12dp">
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/buttonGiveFeedback"
+                            style="@style/Widget.MaterialComponents.Button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/button_give_feedback"
+                            android:layout_marginEnd="8dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/buttonDismissFeedback"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="@string/button_dismiss"
+                            android:layout_marginStart="8dp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
             <!-- Crisis Support — white card, vivid red text -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/crisisBanner"
@@ -344,18 +408,20 @@
                         android:visibility="gone">
 
                         <TextView
+                            android:id="@+id/upcomingSessionDate"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="📅  Tomorrow"
+                            android:text="📅  —"
                             android:textSize="12sp"
                             android:textColor="#8A8A9A" />
 
                         <TextView
+                            android:id="@+id/upcomingSessionTime"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="🕑  2:00 PM"
+                            android:text="🕑  —"
                             android:textSize="12sp"
                             android:textColor="#8A8A9A" />
 
@@ -364,6 +430,7 @@
                     <!-- Slide to Cancel -->
                     <FrameLayout
                         android:id="@+id/sliderContainer"
+                        android:visibility="gone"
                         android:layout_width="match_parent"
                         android:layout_height="46dp"
                         android:background="@drawable/slider_track">
@@ -417,8 +484,9 @@
                 android:textColor="#1A1A2E"
                 android:layout_marginBottom="10dp" />
 
-            <!-- Search bar -->
+            <!-- Search bar — tapping launches CounselorListActivity -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/searchBarHome"
                 android:layout_width="match_parent"
                 android:layout_height="46dp"
                 android:layout_marginBottom="12dp"
@@ -533,8 +601,9 @@
 
             </HorizontalScrollView>
 
-            <!-- Counselor card 1 -->
+            <!-- Counselor card 1 — tapping launches CounselorListActivity -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/counselorCard1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -628,8 +697,9 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Counselor card 2 -->
+            <!-- Counselor card 2 — tapping launches CounselorListActivity -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/counselorCard2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
@@ -1526,4 +1596,6 @@
 
         </LinearLayout>
     </FrameLayout>
+
+
 </FrameLayout>

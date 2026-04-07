@@ -76,4 +76,75 @@
     <string name="button_save_profile">Save Profile</string>
     <string name="success_profile_saved">Profile updated successfully</string>
     <string name="error_saving_profile">Failed to save profile. Please try again.</string>
+
+    <!-- Booking Flow (US-01) -->
+    <string name="title_booking">Book with %s</string>
+    <string name="label_available_times">Available Times</string>
+    <string name="no_slots_for_date">No available slots for this date.</string>
+    <string name="no_slots_available">This counselor has no available slots at the moment.</string>
+    <string name="booking_success">Appointment booked successfully!</string>
+    <string name="error_slot_taken">This slot was just booked by someone else. Please choose another.</string>
+    <string name="error_booking_failed">Unable to book appointment. Please try again.</string>
+    <string name="error_loading_slots">Unable to load available slots.</string>
+    <string name="confirm_booking_title">Confirm Your Appointment</string>
+    <string name="label_counselor">Counselor:</string>
+    <string name="label_date">Date:</string>
+    <string name="label_time">Time:</string>
+    <string name="button_confirm_booking">Confirm Booking</string>
+    <string name="button_cancel">Cancel</string>
+
+    <!-- Counselor Dashboard Tabs (US-05/US-10) -->
+    <string name="tab_today">Today</string>
+    <string name="tab_this_week">This Week</string>
+    <string name="tab_this_month">This Month</string>
+    <string name="error_loading_appointments">Unable to load appointments.</string>
+    <string name="status_confirmed">Confirmed</string>
+    <string name="status_completed">Completed</string>
+    <string name="status_cancelled">Cancelled</string>
+    <string name="status_no_show">No Show</string>
+    <string name="marked_no_show">Marked as No Show</string>
+
+    <!-- Availability Setup (US-05/US-10) -->
+    <string name="title_manage_availability">Manage Availability</string>
+    <string name="button_add_slot">Add New Slot</string>
+    <string name="label_your_slots">Your Time Slots</string>
+    <string name="no_slots_added">No slots added yet.</string>
+    <string name="slot_added">Slot added successfully.</string>
+    <string name="slot_removed">Slot removed.</string>
+    <string name="error_adding_slot">Failed to add slot.</string>
+    <string name="error_removing_slot">Failed to remove slot.</string>
+
+    <!-- On-Leave Status (US-19) -->
+    <string name="label_on_leave_section">Leave Status</string>
+    <string name="label_on_leave_toggle">I am currently on leave</string>
+    <string name="hint_leave_message">Leave Message</string>
+    <string name="helper_leave_message">Message shown to students who view your profile</string>
+    <string name="hint_referral_counselor">Refer Students To</string>
+    <string name="helper_referral_counselor">Select a colleague to handle your students</string>
+    <string name="referral_none_option">None (optional)</string>
+    <string name="currently_away">Currently Away</string>
+    <string name="button_see_referred_counselor">See Referred Counselor</string>
+    <string name="success_leave_status_updated">Leave status updated</string>
+    <string name="error_saving_leave_status">Failed to update leave status</string>
+
+    <!-- Anonymous Feedback (US-21) -->
+    <string name="feedback_prompt_title">How was your session?</string>
+    <string name="feedback_prompt_subtitle">Share your experience with %s</string>
+    <string name="feedback_prompt_subtitle_generic">Share your experience</string>
+    <string name="button_give_feedback">Give Feedback</string>
+    <string name="button_dismiss">Dismiss</string>
+    <string name="error_rating_required">Please select a rating</string>
+    <string name="feedback_submitted">Thank you for your feedback!</string>
+    <string name="error_feedback_submission">Unable to submit feedback. Please try again.</string>
+    <string name="no_pending_feedback">No completed sessions awaiting feedback.</string>
+
+    <!-- Emergency Button (US-20) -->
+    <string name="emergency_title">Emergency Contacts</string>
+    <string name="emergency_message">If you or someone you know is in immediate danger, please contact one of the following services.</string>
+    <string name="call_crisis_line">Call Crisis Line</string>
+    <string name="call_campus_security">Campus Emergency</string>
+    <string name="crisis_line_number">0311-7786264</string>
+    <string name="campus_security_number">042-35608000</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="emergency_button_desc">Emergency contact button</string>
 </resources>

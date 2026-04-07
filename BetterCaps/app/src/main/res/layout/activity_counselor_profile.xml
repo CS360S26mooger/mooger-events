@@ -151,6 +151,15 @@
                     android:textSize="13sp"
                     android:textColor="#856404" />
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonSeeReferral"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/button_see_referred_counselor"
+                    android:visibility="gone"
+                    android:layout_marginTop="8dp" />
+
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>

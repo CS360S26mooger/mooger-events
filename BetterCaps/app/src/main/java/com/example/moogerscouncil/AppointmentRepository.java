@@ -15,6 +15,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -171,6 +172,35 @@ public class AppointmentRepository {
                 .addOnFailureListener(callback::onFailure);
     }
 
+    /**
+     * Cancels an appointment by setting its status to CANCELLED and
+     * restoring the linked slot's availability so another student can book it.
+     *
+     * <p>The slot restore is best-effort — if the slot document does not exist
+     * (e.g. demo data) the appointment is still marked CANCELLED and
+     * {@link OnStatusUpdateCallback#onSuccess()} is called.</p>
+     *
+     * @param appointmentId The Firestore document ID of the appointment.
+     * @param slotId        The Firestore document ID of the linked slot.
+     * @param callback      Success/failure callback.
+     */
+    public void cancelAppointment(String appointmentId, String slotId,
+                                  OnStatusUpdateCallback callback) {
+        appointmentsCollection.document(appointmentId)
+                .update("status", "CANCELLED")
+                .addOnSuccessListener(unused -> {
+                    // Best-effort: restore slot availability
+                    if (slotId != null && !slotId.isEmpty()) {
+                        db.collection("slots").document(slotId)
+                                .update("available", true)
+                                .addOnCompleteListener(task -> callback.onSuccess());
+                    } else {
+                        callback.onSuccess();
+                    }
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
     // -------------------------------------------------------------------------
     // Read operations
     // -------------------------------------------------------------------------
@@ -186,7 +216,6 @@ public class AppointmentRepository {
                                             OnAppointmentsLoadedCallback callback) {
         appointmentsCollection
                 .whereEqualTo("counselorId", counselorId)
-                .orderBy("date")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<Appointment> appointments = querySnapshot.toObjects(Appointment.class);
@@ -194,6 +223,9 @@ public class AppointmentRepository {
                         appointments.get(i).setId(
                                 querySnapshot.getDocuments().get(i).getId());
                     }
+                    // Sort client-side — avoids requiring a composite Firestore index
+                    Collections.sort(appointments, (a, b) ->
+                            String.valueOf(a.getDate()).compareTo(String.valueOf(b.getDate())));
                     callback.onSuccess(appointments);
                 })
                 .addOnFailureListener(callback::onFailure);
@@ -210,7 +242,6 @@ public class AppointmentRepository {
                                           OnAppointmentsLoadedCallback callback) {
         appointmentsCollection
                 .whereEqualTo("studentId", studentId)
-                .orderBy("date")
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<Appointment> appointments = querySnapshot.toObjects(Appointment.class);
@@ -218,6 +249,9 @@ public class AppointmentRepository {
                         appointments.get(i).setId(
                                 querySnapshot.getDocuments().get(i).getId());
                     }
+                    // Sort client-side — avoids requiring a composite Firestore index
+                    Collections.sort(appointments, (a, b) ->
+                            String.valueOf(a.getDate()).compareTo(String.valueOf(b.getDate())));
                     callback.onSuccess(appointments);
                 })
                 .addOnFailureListener(callback::onFailure);
@@ -244,6 +278,45 @@ public class AppointmentRepository {
                                 querySnapshot.getDocuments().get(i).getId());
                     }
                     callback.onSuccess(appointments);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
+     * Fetches completed appointments for a student.
+     * Used by {@link StudentHomeActivity} to find appointments that need
+     * a feedback prompt. The caller is responsible for filtering out those
+     * that already have feedback submitted (via {@link FeedbackRepository}).
+     *
+     * <p>This two-step approach (fetch COMPLETED, then check feedback per-appointment)
+     * is necessary because Firestore does not support cross-collection joins.</p>
+     *
+     * @param studentId The student's UID.
+     * @param callback  Receives the list of COMPLETED appointments on success.
+     */
+    /**
+     * Fetches completed appointments for a student that don't yet have
+     * feedback submitted. Filters by status in memory after a single
+     * studentId query — avoids requiring a composite Firestore index.
+     */
+    public void getCompletedAppointmentsNeedingFeedback(String studentId,
+                                                        OnAppointmentsLoadedCallback callback) {
+        appointmentsCollection
+                .whereEqualTo("studentId", studentId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Appointment> all = querySnapshot.toObjects(Appointment.class);
+                    for (int i = 0; i < all.size(); i++) {
+                        all.get(i).setId(querySnapshot.getDocuments().get(i).getId());
+                    }
+                    // Filter for COMPLETED in memory — no composite index needed
+                    List<Appointment> completed = new java.util.ArrayList<>();
+                    for (Appointment a : all) {
+                        if ("COMPLETED".equals(a.getStatus())) {
+                            completed.add(a);
+                        }
+                    }
+                    callback.onSuccess(completed);
                 })
                 .addOnFailureListener(callback::onFailure);
     }

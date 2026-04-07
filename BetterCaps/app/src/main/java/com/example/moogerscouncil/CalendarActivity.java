@@ -1,27 +1,40 @@
+/*
+ * CalendarActivity.java
+ * Role: Shows a student's appointments for a selected date via a CalendarView.
+ *       All Firestore reads go through AppointmentRepository.
+ *
+ * Design pattern: Repository pattern (AppointmentRepository).
+ * Part of the BetterCAPS counseling platform.
+ */
 package com.example.moogerscouncil;
 
 import android.os.Bundle;
 import android.widget.CalendarView;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * Calendar screen for students showing appointments on a selected date.
+ * Fetches appointments per-date via {@link AppointmentRepository}.
+ */
 public class CalendarActivity extends AppCompatActivity {
 
     private CalendarView calendarView;
     private TextView selectedDateText;
     private RecyclerView recyclerView;
     private StudentAppointmentAdapter adapter;
-    private List<Appointment> appointmentList;
-    private FirebaseFirestore db;
+    private final List<Appointment> appointmentList = new ArrayList<>();
+    private AppointmentRepository appointmentRepository;
     private String studentId;
 
     @Override
@@ -29,7 +42,7 @@ public class CalendarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_calendar);
 
-        db = FirebaseFirestore.getInstance();
+        appointmentRepository = new AppointmentRepository();
         studentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
 
         calendarView = findViewById(R.id.calendarView);
@@ -37,13 +50,13 @@ public class CalendarActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.appointmentsForDateRecyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        appointmentList = new ArrayList<>();
         adapter = new StudentAppointmentAdapter(appointmentList);
         recyclerView.setAdapter(adapter);
 
-        // Get today's date in "yyyy-MM-dd" format
+        // Load today's appointments on open
         Calendar today = Calendar.getInstance();
-        String todayString = formatDate(today.get(Calendar.YEAR), today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
+        String todayString = formatDate(today.get(Calendar.YEAR),
+                today.get(Calendar.MONTH), today.get(Calendar.DAY_OF_MONTH));
         fetchAppointmentsForDate(todayString);
 
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
@@ -54,23 +67,28 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     private String formatDate(int year, int month, int day) {
-        // Match the format used in Firestore (e.g. 2026-04-10)
-        return String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, day);
+        return String.format(Locale.US, "%04d-%02d-%02d", year, month + 1, day);
     }
 
+    /**
+     * Fetches appointments for a student on a specific date via {@link AppointmentRepository}.
+     *
+     * @param date Date in "yyyy-MM-dd" format.
+     */
     private void fetchAppointmentsForDate(String date) {
-        db.collection("appointments")
-                .whereEqualTo("studentId", studentId)
-                .whereEqualTo("date", date)
-                .get()
-                .addOnSuccessListener(querySnapshot -> {
-                    appointmentList.clear();
-                    for (QueryDocumentSnapshot doc : querySnapshot) {
-                        Appointment apt = doc.toObject(Appointment.class);
-                        apt.setId(doc.getId());
-                        appointmentList.add(apt);
+        appointmentRepository.getAppointmentsForStudentOnDate(studentId, date,
+                new AppointmentRepository.OnAppointmentsLoadedCallback() {
+                    @Override
+                    public void onSuccess(List<Appointment> appointments) {
+                        appointmentList.clear();
+                        appointmentList.addAll(appointments);
+                        adapter.notifyDataSetChanged();
                     }
-                    adapter.notifyDataSetChanged();
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        // Non-critical: empty list remains — no toast needed here
+                    }
                 });
     }
 }

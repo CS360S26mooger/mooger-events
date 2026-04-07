@@ -85,21 +85,20 @@ public class CounselorAdapter extends RecyclerView.Adapter<CounselorAdapter.View
             holder.languageText.setVisibility(View.GONE);
         }
 
-        // On-leave badge
+        // On-leave badge — show "Currently Away" chip but still allow profile navigation.
+        // The profile itself handles disabling the book button and showing the leave card.
         boolean isOnLeave = Boolean.TRUE.equals(counselor.getOnLeave());
         if (isOnLeave) {
             holder.badgeOnLeave.setVisibility(View.VISIBLE);
-            holder.viewProfileButton.setEnabled(false);
-            holder.viewProfileButton.setText(R.string.currently_unavailable);
+            holder.badgeOnLeave.setText(R.string.currently_away);
         } else {
             holder.badgeOnLeave.setVisibility(View.GONE);
-            holder.viewProfileButton.setEnabled(true);
-            holder.viewProfileButton.setText(R.string.view_profile);
         }
+        holder.viewProfileButton.setEnabled(true);
+        holder.viewProfileButton.setText(R.string.view_profile);
 
-        // Card tap → CounselorProfileActivity
+        // Card tap → CounselorProfileActivity (on-leave counselors can still be viewed)
         View.OnClickListener profileClickListener = v -> {
-            if (isOnLeave) return;
             Intent intent = new Intent(context, CounselorProfileActivity.class);
             intent.putExtra("COUNSELOR_ID", counselor.getId());
             intent.putExtra("COUNSELOR_NAME", counselor.getName());

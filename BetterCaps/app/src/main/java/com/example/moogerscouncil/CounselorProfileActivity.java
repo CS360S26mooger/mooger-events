@@ -40,6 +40,7 @@ public class CounselorProfileActivity extends AppCompatActivity {
     private TextView textOnLeaveTitle;
     private TextView textOnLeaveMessage;
     private CardView cardOnLeave;
+    private com.google.android.material.button.MaterialButton buttonSeeReferral;
     private ChipGroup chipGroupSpecializations;
     private Button buttonBookAppointment;
 
@@ -70,6 +71,7 @@ public class CounselorProfileActivity extends AppCompatActivity {
         textOnLeaveTitle = findViewById(R.id.textOnLeaveTitle);
         textOnLeaveMessage = findViewById(R.id.textOnLeaveMessage);
         cardOnLeave = findViewById(R.id.cardOnLeave);
+        buttonSeeReferral = findViewById(R.id.buttonSeeReferral);
         chipGroupSpecializations = findViewById(R.id.chipGroupSpecializations);
         buttonBookAppointment = findViewById(R.id.buttonBookAppointment);
 
@@ -149,8 +151,23 @@ public class CounselorProfileActivity extends AppCompatActivity {
             textOnLeaveMessage.setText(leaveMsg != null ? leaveMsg : "");
             buttonBookAppointment.setEnabled(false);
             buttonBookAppointment.setText(R.string.currently_unavailable);
+
+            // Show "See Referred Counselor" button if a referral is set
+            String referralId = counselor.getReferralCounselorId();
+            if (referralId != null && !referralId.isEmpty()) {
+                buttonSeeReferral.setVisibility(View.VISIBLE);
+                buttonSeeReferral.setOnClickListener(v -> {
+                    Intent intent = new Intent(CounselorProfileActivity.this,
+                            CounselorProfileActivity.class);
+                    intent.putExtra("COUNSELOR_ID", referralId);
+                    startActivity(intent);
+                });
+            } else {
+                buttonSeeReferral.setVisibility(View.GONE);
+            }
         } else {
             cardOnLeave.setVisibility(View.GONE);
+            buttonSeeReferral.setVisibility(View.GONE);
             buttonBookAppointment.setEnabled(true);
             buttonBookAppointment.setText(R.string.button_book_appointment);
             buttonBookAppointment.setOnClickListener(v -> {

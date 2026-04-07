@@ -101,6 +101,10 @@ public class AvailabilityRepository {
      * Fetches only available slots for a given counselor.
      * Used by {@link BookingActivity} where unavailable slots must never be shown.
      *
+     * <p>Filters by counselorId only (single-field index, no composite index required),
+     * then removes booked slots in memory — consistent with how other repositories
+     * in this project avoid composite Firestore index requirements.</p>
+     *
      * @param counselorId The counselor whose available slots to fetch.
      * @param callback    Receives the available slot list on success.
      */
@@ -108,14 +112,18 @@ public class AvailabilityRepository {
                                                OnSlotsLoadedCallback callback) {
         slotsCollection
                 .whereEqualTo("counselorId", counselorId)
-                .whereEqualTo("available", true)
                 .get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<TimeSlot> slots = querySnapshot.toObjects(TimeSlot.class);
                     for (int i = 0; i < slots.size(); i++) {
                         slots.get(i).setId(querySnapshot.getDocuments().get(i).getId());
                     }
-                    callback.onSuccess(slots);
+                    // Filter available-only in memory — avoids requiring a composite index
+                    List<TimeSlot> available = new java.util.ArrayList<>();
+                    for (TimeSlot slot : slots) {
+                        if (slot.isAvailable()) available.add(slot);
+                    }
+                    callback.onSuccess(available);
                 })
                 .addOnFailureListener(callback::onFailure);
     }

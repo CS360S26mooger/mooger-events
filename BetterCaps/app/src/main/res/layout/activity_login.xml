@@ -49,11 +49,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="℠"
-                android:textSize="13sp"
-                android:textStyle="bold"
+                android:textSize="10sp"
                 android:textColor="@color/text_dark"
-                android:layout_gravity="bottom"
-                android:paddingBottom="4dp" />
+                android:layout_gravity="bottom" />
         </LinearLayout>
 
         <!-- Subtitle -->
@@ -194,6 +192,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="16dp"
+                    app:boxStrokeColor="@color/login_field_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:boxStrokeWidthFocused="1.5dp"
+                    app:boxBackgroundColor="#08D4688A"
+                    app:hintTextColor="@color/register_pink"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
@@ -205,7 +208,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="your.email@university.edu"
-                        android:inputType="textEmailAddress" />
+                        android:inputType="textEmailAddress"
+                        android:textColor="@color/text_dark"
+                        android:textColorHint="@color/hint_text"
+                        android:textSize="15sp"
+                        android:importantForAutofill="no"
+                        android:autofillHints="" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -223,6 +231,11 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     app:passwordToggleEnabled="true"
+                    app:boxStrokeColor="@color/login_field_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:boxStrokeWidthFocused="1.5dp"
+                    app:boxBackgroundColor="#08D4688A"
+                    app:hintTextColor="@color/register_pink"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
@@ -234,7 +247,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="••••••••"
-                        android:inputType="textPassword" />
+                        android:inputType="textPassword"
+                        android:textColor="@color/text_dark"
+                        android:textColorHint="@color/hint_text"
+                        android:textSize="15sp"
+                        android:importantForAutofill="no"
+                        android:autofillHints="" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 

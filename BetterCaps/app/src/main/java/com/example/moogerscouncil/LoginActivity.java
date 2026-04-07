@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener(result -> routeToHome())
+                .addOnSuccessListener(result -> routeToHome(selectedRole))
                 .addOnFailureListener(e ->
                         Toast.makeText(this,
                                 getString(R.string.error_login_failed) + " " + e.getMessage(),
@@ -108,18 +108,35 @@ public class LoginActivity extends AppCompatActivity {
                 );
     }
 
-    /**
-     * Fetches the current user's role from Firestore and starts the appropriate
-     * home Activity, finishing this Activity so the back stack does not return here.
-     */
+    /** Auto-redirect path: route based on stored role with no tab-selection check. */
     private void routeToHome() {
+        routeToHome(null);
+    }
+
+    /**
+     * Fetches the user's role from Firestore and navigates to the correct home screen.
+     * When {@code expectedRole} is non-null (manual login), the stored role must match
+     * the tab the user selected — otherwise the session is cancelled and an error is shown.
+     */
+    private void routeToHome(String expectedRole) {
         userRepository.getCurrentUserRole(new UserRepository.OnRoleFetchedCallback() {
             @Override
             public void onSuccess(String role) {
+                // Enforce tab selection on manual login.
+                if (expectedRole != null && !expectedRole.equals(role)) {
+                    mAuth.signOut();
+                    String label = UserRole.COUNSELOR.equals(role) ? "Counselor"
+                            : UserRole.ADMIN.equals(role) ? "Admin" : "Student";
+                    Toast.makeText(LoginActivity.this,
+                            "Wrong login type selected. Please choose \"" + label + "\".",
+                            Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 Intent intent;
                 if (UserRole.COUNSELOR.equals(role)) {
-                    // CounselorDashboardActivity will be created in Sprint 4.
-                    // Fall back to StudentHomeActivity as a placeholder.
+                    intent = new Intent(LoginActivity.this, CounselorDashboardActivity.class);
+                } else if (UserRole.ADMIN.equals(role)) {
                     intent = new Intent(LoginActivity.this, StudentHomeActivity.class);
                 } else {
                     intent = new Intent(LoginActivity.this, StudentHomeActivity.class);

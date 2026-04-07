@@ -29,6 +29,7 @@ public class StudentHomeActivity extends AppCompatActivity {
     private TextView counselorNameText, counselorRoleText, welcomeNameText;
     private String originalName, originalRole;
     private boolean isMasked = false;
+    private boolean isOverlayActive = false;
     private View privacyOverlay;
     private UserRepository userRepository;
 
@@ -73,8 +74,15 @@ public class StudentHomeActivity extends AppCompatActivity {
 
         setupPrivacyTimer();
 
-        // Tap the overlay to dismiss privacy screen
-        privacyOverlay.setOnClickListener(v -> privacyOverlay.setVisibility(View.GONE));
+        // Eye-slash button inside the fake app overlay — only way to return to real app
+        ImageButton overlayExitBtn = privacyOverlay.findViewById(R.id.overlayExitBtn);
+        if (overlayExitBtn == null) throw new IllegalStateException("overlayExitBtn missing from privacy overlay layout");
+        overlayExitBtn.setOnClickListener(v -> {
+            isOverlayActive = false;
+            privacyOverlay.setVisibility(View.GONE);
+            unmaskPII();
+            resetPrivacyTimer();
+        });
 
         // Crisis support banner
         CardView crisisBanner = findViewById(R.id.crisisBanner);
@@ -139,12 +147,9 @@ public class StudentHomeActivity extends AppCompatActivity {
             finish();
         });
 
-        // Discreet mode → show privacy overlay
+        // Eye button in real top bar → activate discreet mode (fake event app)
         ImageButton discreetBtn = findViewById(R.id.discreetModeBtn);
-        discreetBtn.setOnClickListener(v -> {
-            privacyOverlay.setVisibility(View.VISIBLE);
-            resetPrivacyTimer();
-        });
+        discreetBtn.setOnClickListener(v -> activateDiscreetMode());
     }
 
     private void showFeedbackDialog() {
@@ -190,9 +195,14 @@ public class StudentHomeActivity extends AppCompatActivity {
         resetPrivacyTimer();
     }
 
+    private void activateDiscreetMode() {
+        isOverlayActive = true;
+        privacyOverlay.setVisibility(View.VISIBLE);
+        privacyHandler.removeCallbacks(privacyRunnable);
+    }
+
     private void resetPrivacyTimer() {
         privacyHandler.removeCallbacks(privacyRunnable);
-        if (isMasked) unmaskPII();
         privacyHandler.postDelayed(privacyRunnable, 5000);
     }
 
@@ -203,6 +213,7 @@ public class StudentHomeActivity extends AppCompatActivity {
         counselorNameText.setText("••••••••••••");
         counselorRoleText.setText("••••••••••••");
         isMasked = true;
+        activateDiscreetMode();
     }
 
     private void unmaskPII() {
@@ -214,7 +225,11 @@ public class StudentHomeActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(android.view.MotionEvent ev) {
-        resetPrivacyTimer();
+        // Don't reset the inactivity timer while the fake-app overlay is showing —
+        // only the eye-slash button inside the overlay can dismiss it.
+        if (!isOverlayActive) {
+            resetPrivacyTimer();
+        }
         return super.dispatchTouchEvent(ev);
     }
 

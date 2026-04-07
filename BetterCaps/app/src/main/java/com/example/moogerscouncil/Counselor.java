@@ -1,4 +1,4 @@
-package com.mooger.moogerscouncil;
+package com.example.moogerscouncil;
 import java.util.List;
 
 /**

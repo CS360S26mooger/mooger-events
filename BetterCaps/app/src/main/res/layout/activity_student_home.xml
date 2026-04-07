@@ -1,117 +1,1176 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:orientation="vertical"
+    android:background="#F2F4F8">
 
-    <!-- Welcome header -->
+    <!-- Top bar -->
     <LinearLayout
-        android:id="@+id/headerLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp"
+        android:background="#FFFFFF">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/greeting_prefix"
-            android:textSize="16sp"
-            android:textColor="@color/text_gray" />
+        <ImageView
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@mipmap/ic_launcher_round" />
 
-        <TextView
-            android:id="@+id/textPreferredName"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text=""
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:textColor="@color/text_dark"
-            android:layout_marginTop="2dp" />
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/home_subtitle"
-            android:textSize="14sp"
-            android:textColor="@color/text_gray"
-            android:layout_marginTop="2dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Welcome back,"
+                android:textSize="13sp"
+                android:textColor="#8A8A9A" />
+
+            <TextView
+                android:id="@+id/welcomeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Student"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E" />
+
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/discreetModeBtn"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_eye_open"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#3D5AF1" />
 
     </LinearLayout>
 
-    <!-- Center card -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/centerCard"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="24dp"
-        app:cardCornerRadius="20dp"
-        app:cardElevation="4dp"
-        app:cardUseCompatPadding="true"
-        app:cardBackgroundColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/headerLayout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/buttonLogout"
-        app:layout_constraintVertical_bias="0.3">
+    <!-- Scrollable content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="32dp"
-            android:gravity="center">
+            android:orientation="vertical">
 
+            <!-- Crisis Support Banner -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/crisisBanner"
+                android:layout_width="match_parent"
+                android:layout_height="72dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="14dp"
+                app:cardElevation="0dp"
+                app:cardBackgroundColor="#C0392B">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⚠️"
+                        android:textSize="20sp"
+                        android:layout_marginEnd="12dp" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Crisis Support"
+                            android:textColor="#FFFFFF"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="24/7 Emergency Help - One Tap Away"
+                            android:textColor="#FFCCCC"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Two action cards -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                android:orientation="horizontal"
+                android:layout_marginBottom="20dp">
+
+                <!-- AI Support Chat -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/aiChatCard"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="0dp"
+                    app:cardBackgroundColor="#7B61FF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💬"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AI Support Chat"
+                            android:textColor="#FFFFFF"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="24/7 Available"
+                            android:textColor="#E0D9FF"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Find My Match -->
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/findMatchCard"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:layout_marginStart="8dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:padding="12dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📋"
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Find My Match"
+                            android:textColor="#1A1A2E"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:layout_marginTop="8dp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Take Quiz"
+                            android:textColor="#8A8A9A"
+                            android:textSize="11sp" />
+
+                    </LinearLayout>
+
+                </androidx.cardview.widget.CardView>
+
+            </LinearLayout>
+
+            <!-- Upcoming Session -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Upcoming Session"
+                    android:textSize="17sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A2E" />
+
+                <TextView
+                    android:id="@+id/btnPostSessionFeedback"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Post-Session Feedback"
+                    android:textColor="#3D5AF1"
+                    android:textSize="12sp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:background="?attr/selectableItemBackground" />
+
+            </LinearLayout>
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="20dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <!-- Counselor info row -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:layout_marginBottom="12dp">
+
+                        <ImageView
+                            android:layout_width="48dp"
+                            android:layout_height="48dp"
+                            android:src="@mipmap/ic_launcher_round"
+                            android:layout_marginEnd="12dp" />
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/upcomingCounselorName"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="No upcoming session"
+                                android:textSize="15sp"
+                                android:textStyle="bold"
+                                android:textColor="#1A1A2E" />
+
+                            <TextView
+                                android:id="@+id/upcomingCounselorRole"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Book an appointment below"
+                                android:textSize="13sp"
+                                android:textColor="#8A8A9A" />
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- Date and time -->
+                    <LinearLayout
+                        android:id="@+id/sessionTimeRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginBottom="12dp"
+                        android:visibility="gone">
+
+                        <TextView
+                            android:id="@+id/sessionDate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="📅 Tomorrow"
+                            android:textSize="13sp"
+                            android:textColor="#555566"
+                            android:layout_marginEnd="16dp" />
+
+                        <TextView
+                            android:id="@+id/sessionTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🕑 2:00 PM"
+                            android:textSize="13sp"
+                            android:textColor="#555566" />
+
+                    </LinearLayout>
+
+                    <!-- Slide to cancel (SeekBar) -->
+                    <SeekBar
+                        android:id="@+id/slideToCancelSlider"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressDrawable="@android:color/transparent"
+                        android:thumb="@android:drawable/btn_star_big_on"
+                        android:background="@drawable/ic_launcher_background"
+                        android:splitTrack="false"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp" />
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Slide right to Cancel"
+                        android:textColor="#E74C3C"
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:layout_marginTop="4dp" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
+            <!-- Find a Specialist -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="&#129504;"
-                android:textSize="48sp"
-                android:layout_marginBottom="16dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/home_placeholder"
-                android:textSize="18sp"
+                android:text="Find a Specialist"
+                android:textSize="17sp"
                 android:textStyle="bold"
-                android:textColor="@color/text_dark"
-                android:gravity="center" />
+                android:textColor="#1A1A2E"
+                android:layout_marginBottom="10dp" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/home_coming_soon"
-                android:textSize="13sp"
-                android:textColor="@color/text_gray"
-                android:gravity="center"
-                android:layout_marginTop="8dp" />
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="26dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingHorizontal="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🔍"
+                        android:textSize="16sp"
+                        android:layout_marginEnd="8dp" />
+
+                    <EditText
+                        android:id="@+id/searchField"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:hint="Search by name or issue..."
+                        android:textSize="14sp"
+                        android:textColorHint="#AAAAAA"
+                        android:background="@null"
+                        android:inputType="text" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
 
-    <!-- Log Out button -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/buttonLogout"
-        android:layout_width="0dp"
-        android:layout_height="52dp"
-        android:text="@string/button_logout"
-        android:textSize="15sp"
-        android:textColor="@color/primary_blue"
-        android:layout_marginHorizontal="24dp"
-        android:layout_marginBottom="32dp"
-        app:cornerRadius="12dp"
-        app:strokeColor="@color/primary_blue"
-        app:strokeWidth="1.5dp"
-        android:backgroundTint="@color/white"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    </ScrollView>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- Bottom navigation -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:orientation="horizontal"
+        android:background="#FFFFFF"
+        android:elevation="8dp">
+
+        <ImageButton
+            android:id="@+id/navHome"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_dialog_info"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#3D5AF1" />
+
+        <ImageButton
+            android:id="@+id/navCalendar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_today"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#8A8A9A" />
+
+        <ImageButton
+            android:id="@+id/navHistory"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_recent_history"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#8A8A9A" />
+
+        <ImageButton
+            android:id="@+id/navLogout"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#8A8A9A" />
+
+    </LinearLayout>
+
+    <!-- ═══════════════════════════════════════════════════════
+         PRIVACY OVERLAY — fake event discovery app (Evently)
+         Shown by eye button / inactivity timer.
+         Only dismissible via the eye-slash button inside.
+         ═══════════════════════════════════════════════════════ -->
+    <FrameLayout
+        android:id="@+id/privacyOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FDF2F8"
+        android:visibility="gone"
+        android:elevation="20dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <!-- Fake app top bar -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="58dp"
+                android:background="#C96B8E"
+                android:gravity="center_vertical"
+                android:paddingStart="18dp"
+                android:paddingEnd="8dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Evently"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:textColor="#FFFFFF"
+                    android:letterSpacing="0.04" />
+
+                <ImageButton
+                    android:id="@+id/overlayExitBtn"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:src="@drawable/ic_eye_slash"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:tint="#FFFFFF"
+                    android:contentDescription="Return to app" />
+
+            </LinearLayout>
+
+            <!-- Scrollable event content -->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingBottom="12dp">
+
+                    <!-- Search bar -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="46dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="14dp"
+                        android:layout_marginBottom="4dp"
+                        app:cardCornerRadius="23dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center_vertical"
+                            android:paddingHorizontal="16dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="🔍"
+                                android:textSize="14sp"
+                                android:layout_marginEnd="8dp" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Search events near you..."
+                                android:textSize="14sp"
+                                android:textColor="#AAAAAA" />
+
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Featured section label -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🌟  Featured"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#2D2D2D"
+                        android:paddingHorizontal="16dp"
+                        android:paddingTop="14dp"
+                        android:paddingBottom="10dp" />
+
+                    <!-- Featured events — horizontal scroll -->
+                    <HorizontalScrollView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:scrollbars="none"
+                        android:paddingStart="16dp"
+                        android:clipToPadding="false">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <!-- Featured 1 -->
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="190dp"
+                                android:layout_height="138dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="18dp"
+                                app:cardElevation="4dp"
+                                app:cardBackgroundColor="#C96B8E">
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="14dp"
+                                    android:gravity="bottom">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="🎵"
+                                        android:textSize="28sp"
+                                        android:layout_marginBottom="6dp" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Spring Music Fest"
+                                        android:textSize="14sp"
+                                        android:textStyle="bold"
+                                        android:textColor="#FFFFFF" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Apr 19  ·  Jilani Park"
+                                        android:textSize="11sp"
+                                        android:textColor="#F5D0E4"
+                                        android:layout_marginTop="2dp" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="From Rs. 1,500"
+                                        android:textSize="11sp"
+                                        android:textColor="#FFFFFF"
+                                        android:textStyle="bold"
+                                        android:layout_marginTop="4dp" />
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+
+                            <!-- Featured 2 -->
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="190dp"
+                                android:layout_height="138dp"
+                                android:layout_marginEnd="12dp"
+                                app:cardCornerRadius="18dp"
+                                app:cardElevation="4dp"
+                                app:cardBackgroundColor="#8B6BAE">
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="14dp"
+                                    android:gravity="bottom">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="🍜"
+                                        android:textSize="28sp"
+                                        android:layout_marginBottom="6dp" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Food &amp; Culture Fair"
+                                        android:textSize="14sp"
+                                        android:textStyle="bold"
+                                        android:textColor="#FFFFFF" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Apr 22  ·  Expo Centre"
+                                        android:textSize="11sp"
+                                        android:textColor="#DDD0F0"
+                                        android:layout_marginTop="2dp" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Free Entry"
+                                        android:textSize="11sp"
+                                        android:textColor="#FFFFFF"
+                                        android:textStyle="bold"
+                                        android:layout_marginTop="4dp" />
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+
+                            <!-- Featured 3 -->
+                            <androidx.cardview.widget.CardView
+                                android:layout_width="190dp"
+                                android:layout_height="138dp"
+                                android:layout_marginEnd="16dp"
+                                app:cardCornerRadius="18dp"
+                                app:cardElevation="4dp"
+                                app:cardBackgroundColor="#C4516E">
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:orientation="vertical"
+                                    android:padding="14dp"
+                                    android:gravity="bottom">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="🎭"
+                                        android:textSize="28sp"
+                                        android:layout_marginBottom="6dp" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Comedy Night Out"
+                                        android:textSize="14sp"
+                                        android:textStyle="bold"
+                                        android:textColor="#FFFFFF" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Apr 26  ·  Packages Mall"
+                                        android:textSize="11sp"
+                                        android:textColor="#F5C5D0"
+                                        android:layout_marginTop="2dp" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="From Rs. 800"
+                                        android:textSize="11sp"
+                                        android:textColor="#FFFFFF"
+                                        android:textStyle="bold"
+                                        android:layout_marginTop="4dp" />
+                                </LinearLayout>
+                            </androidx.cardview.widget.CardView>
+
+                        </LinearLayout>
+                    </HorizontalScrollView>
+
+                    <!-- For You section label -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="For You"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#2D2D2D"
+                        android:paddingHorizontal="16dp"
+                        android:paddingTop="18dp"
+                        android:paddingBottom="10dp" />
+
+                    <!-- For You card 1 -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginBottom="12dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="8dp">
+                                <TextView
+                                    android:layout_width="42dp"
+                                    android:layout_height="42dp"
+                                    android:text="🎵"
+                                    android:textSize="20sp"
+                                    android:gravity="center"
+                                    android:background="#F5E6F0"
+                                    android:layout_marginEnd="12dp" />
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Live at Lahore Fort"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold"
+                                        android:textColor="#2D2D2D" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Music"
+                                        android:textSize="11sp"
+                                        android:textColor="#C96B8E"
+                                        android:background="#F5E6F0"
+                                        android:paddingHorizontal="8dp"
+                                        android:paddingVertical="2dp"
+                                        android:layout_marginTop="3dp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="📅 Apr 14   📍 Lahore Fort"
+                                android:textSize="12sp"
+                                android:textColor="#888888"
+                                android:layout_marginBottom="6dp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="An enchanting evening of Sufi and classical music performed under the stars in the historic grounds of Lahore Fort."
+                                android:textSize="12sp"
+                                android:textColor="#AAAAAA"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:layout_marginBottom="10dp" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="🎟  Rs. 1,500"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#C96B8E" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Interested"
+                                    android:textSize="12sp"
+                                    android:textColor="#FFFFFF"
+                                    android:background="#C96B8E"
+                                    android:paddingHorizontal="14dp"
+                                    android:paddingVertical="6dp"
+                                    android:clickable="false"
+                                    android:focusable="false" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- For You card 2 -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginBottom="12dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="8dp">
+                                <TextView
+                                    android:layout_width="42dp"
+                                    android:layout_height="42dp"
+                                    android:text="📚"
+                                    android:textSize="20sp"
+                                    android:gravity="center"
+                                    android:background="#EDE7F6"
+                                    android:layout_marginEnd="12dp" />
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Lahore Literary Festival"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold"
+                                        android:textColor="#2D2D2D" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Literature"
+                                        android:textSize="11sp"
+                                        android:textColor="#8B6BAE"
+                                        android:background="#EDE7F6"
+                                        android:paddingHorizontal="8dp"
+                                        android:paddingVertical="2dp"
+                                        android:layout_marginTop="3dp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="📅 Apr 19   📍 Alhamra Arts Council"
+                                android:textSize="12sp"
+                                android:textColor="#888888"
+                                android:layout_marginBottom="6dp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Celebrate literature with authors, poets, and thinkers from across Pakistan. Panel discussions, book launches, and readings."
+                                android:textSize="12sp"
+                                android:textColor="#AAAAAA"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:layout_marginBottom="10dp" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="🎟  Free Entry"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#8B6BAE" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Interested"
+                                    android:textSize="12sp"
+                                    android:textColor="#FFFFFF"
+                                    android:background="#8B6BAE"
+                                    android:paddingHorizontal="14dp"
+                                    android:paddingVertical="6dp"
+                                    android:clickable="false"
+                                    android:focusable="false" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- For You card 3 -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginBottom="12dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="8dp">
+                                <TextView
+                                    android:layout_width="42dp"
+                                    android:layout_height="42dp"
+                                    android:text="🎷"
+                                    android:textSize="20sp"
+                                    android:gravity="center"
+                                    android:background="#F5E6F0"
+                                    android:layout_marginEnd="12dp" />
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Jazz Under the Stars"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold"
+                                        android:textColor="#2D2D2D" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Music"
+                                        android:textSize="11sp"
+                                        android:textColor="#C96B8E"
+                                        android:background="#F5E6F0"
+                                        android:paddingHorizontal="8dp"
+                                        android:paddingVertical="2dp"
+                                        android:layout_marginTop="3dp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="📅 Apr 21   📍 Packages Mall Rooftop"
+                                android:textSize="12sp"
+                                android:textColor="#888888"
+                                android:layout_marginBottom="6dp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="A sophisticated evening of jazz performed by Pakistan's finest musicians with a stunning city backdrop."
+                                android:textSize="12sp"
+                                android:textColor="#AAAAAA"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:layout_marginBottom="10dp" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="🎟  Rs. 2,500"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#C96B8E" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Interested"
+                                    android:textSize="12sp"
+                                    android:textColor="#FFFFFF"
+                                    android:background="#C96B8E"
+                                    android:paddingHorizontal="14dp"
+                                    android:paddingVertical="6dp"
+                                    android:clickable="false"
+                                    android:focusable="false" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- For You card 4 -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginBottom="12dp"
+                        app:cardCornerRadius="16dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                android:layout_marginBottom="8dp">
+                                <TextView
+                                    android:layout_width="42dp"
+                                    android:layout_height="42dp"
+                                    android:text="🍢"
+                                    android:textSize="20sp"
+                                    android:gravity="center"
+                                    android:background="#EDE7F6"
+                                    android:layout_marginEnd="12dp" />
+                                <LinearLayout
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical">
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Street Food Bazaar"
+                                        android:textSize="15sp"
+                                        android:textStyle="bold"
+                                        android:textColor="#2D2D2D" />
+                                    <TextView
+                                        android:layout_width="wrap_content"
+                                        android:layout_height="wrap_content"
+                                        android:text="Food"
+                                        android:textSize="11sp"
+                                        android:textColor="#8B6BAE"
+                                        android:background="#EDE7F6"
+                                        android:paddingHorizontal="8dp"
+                                        android:paddingVertical="2dp"
+                                        android:layout_marginTop="3dp" />
+                                </LinearLayout>
+                            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="📅 Apr 23   📍 Liberty Market"
+                                android:textSize="12sp"
+                                android:textColor="#888888"
+                                android:layout_marginBottom="6dp" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Over 80 food stalls serving the best street food from across Pakistan. Bring your appetite!"
+                                android:textSize="12sp"
+                                android:textColor="#AAAAAA"
+                                android:maxLines="2"
+                                android:ellipsize="end"
+                                android:layout_marginBottom="10dp" />
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="🎟  Free Entry"
+                                    android:textSize="13sp"
+                                    android:textStyle="bold"
+                                    android:textColor="#8B6BAE" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Interested"
+                                    android:textSize="12sp"
+                                    android:textColor="#FFFFFF"
+                                    android:background="#8B6BAE"
+                                    android:paddingHorizontal="14dp"
+                                    android:paddingVertical="6dp"
+                                    android:clickable="false"
+                                    android:focusable="false" />
+                            </LinearLayout>
+                        </LinearLayout>
+                    </androidx.cardview.widget.CardView>
+
+                </LinearLayout>
+            </ScrollView>
+
+            <!-- Fake bottom navigation -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:background="#FFFFFF"
+                android:elevation="4dp"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="false">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="🏠" android:textSize="18sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Home" android:textSize="10sp" android:textColor="#C96B8E" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="false">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="🔍" android:textSize="18sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Explore" android:textSize="10sp" android:textColor="#AAAAAA" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="false">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="🎫" android:textSize="18sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Tickets" android:textSize="10sp" android:textColor="#AAAAAA" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clickable="false">
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="👤" android:textSize="18sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
+                        android:text="Profile" android:textSize="10sp" android:textColor="#AAAAAA" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </FrameLayout>
+</LinearLayout>

@@ -92,14 +92,12 @@ public class RegisterActivity extends AppCompatActivity {
 
         MaterialButton buttonRegister = findViewById(R.id.buttonRegister);
         TextView linkLogin            = findViewById(R.id.linkLogin);
-        View backArrow                = findViewById(R.id.backArrow);
 
         buttonRegister.setOnClickListener(v -> attemptRegistration());
         linkLogin.setOnClickListener(v -> {
             startActivity(new Intent(this, LoginActivity.class));
             finish();
         });
-        backArrow.setOnClickListener(v -> finish());
     }
 
     /**
@@ -115,20 +113,22 @@ public class RegisterActivity extends AppCompatActivity {
      * @param layout   the surrounding TextInputLayout whose start icon is toggled.
      */
     private void addAsteriskHintBehavior(TextInputEditText editText, TextInputLayout layout) {
+        // Hide asterisk immediately on tap; restore only if field is still empty on blur.
+        editText.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                layout.setStartIconDrawable(null);
+            } else if (editText.getText() == null || editText.getText().length() == 0) {
+                layout.setStartIconDrawable(R.drawable.ic_required);
+                layout.setStartIconTintList(ColorStateList.valueOf(REQUIRED_TINT));
+            }
+        });
+        // Clear validation errors once the user starts typing.
         editText.addTextChangedListener(new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() == 0) {
-                    // Field is empty — restore asterisk with correct tint
-                    layout.setStartIconDrawable(R.drawable.ic_required);
-                    layout.setStartIconTintList(ColorStateList.valueOf(REQUIRED_TINT));
-                } else {
-                    // Field has content — fully remove icon slot (no gap)
-                    layout.setStartIconDrawable(null);
-                    // Also clear any stale error so the layout resets visually
+                if (s.length() > 0) {
                     layout.setError(null);
                 }
             }

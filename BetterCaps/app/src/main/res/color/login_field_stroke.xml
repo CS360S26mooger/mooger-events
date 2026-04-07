@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- focused: pastel pink at ~55% opacity -->
+    <item android:state_focused="true" android:color="#8CD4688A" />
+    <!-- default: existing card stroke -->
+    <item android:color="#FFE0E4F0" />
+</selector>

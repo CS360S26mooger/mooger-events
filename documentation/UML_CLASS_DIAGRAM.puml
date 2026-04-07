@@ -1,20 +1,46 @@
 @startuml BetterCAPS_Class_Diagram
 
+' ── Rendering: top-down, narrow ──
+top to bottom direction
 skinparam classAttributeIconSize 0
-skinparam classFontSize 11
-skinparam packageFontSize 13
-skinparam linetype ortho
-skinparam nodesep 60
-skinparam ranksep 50
+skinparam classFontSize 10
+skinparam packageFontSize 12
+skinparam nodesep 30
+skinparam ranksep 40
+skinparam wrapWidth 200
+skinparam packageStyle rectangle
 
-title BetterCAPS — Phase 3 UML Class Diagram\nPackage: com.example.moogerscouncil
+title BetterCAPS — Phase 3 Class Diagram
 
-' ============================================================
-' MODEL LAYER — Firestore-mapped data containers
-' ============================================================
+' ════════════════════════════════════════
+'  CONSTANTS
+' ════════════════════════════════════════
 
-package "Model Layer" <<Rectangle>> #F5F5DC {
+package "Constants" #E8F5E9 {
+  class UserRole <<final>> {
+    + {static} STUDENT : String
+    + {static} COUNSELOR : String
+    + {static} ADMIN : String
+  }
 
+  class SpecializationTags <<final>> {
+    + {static} ANXIETY : String
+    + {static} ACADEMIC_STRESS : String
+    + {static} GRIEF : String
+    + {static} RELATIONSHIPS : String
+    + {static} CAREER_GUIDANCE : String
+    + {static} DEPRESSION : String
+    + {static} TRAUMA : String
+    + {static} FAMILY_ISSUES : String
+    + {static} ALL_TAGS : String[]
+  }
+}
+
+' ════════════════════════════════════════
+'  MODEL LAYER
+' ════════════════════════════════════════
+
+package "Models" #F5F5DC {
   class Student {
     - uid : String
     - name : String
@@ -23,23 +49,6 @@ package "Model Layer" <<Rectangle>> #F5F5DC {
     - pronouns : String
     - role : String
     - createdAt : Timestamp
-    --
-    + Student()
-    + Student(uid, name, email, preferredName, pronouns)
-    + getUid() : String
-    + setUid(uid : String)
-    + getName() : String
-    + setName(name : String)
-    + getEmail() : String
-    + setEmail(email : String)
-    + getPreferredName() : String
-    + setPreferredName(preferredName : String)
-    + getPronouns() : String
-    + setPronouns(pronouns : String)
-    + getRole() : String
-    + setRole(role : String)
-    + getCreatedAt() : Timestamp
-    + setCreatedAt(createdAt : Timestamp)
   }
 
   class Counselor {
@@ -53,28 +62,6 @@ package "Model Layer" <<Rectangle>> #F5F5DC {
     - isOnLeave : Boolean
     - onLeaveMessage : String
     - referralCounselorId : String
-    --
-    + Counselor()
-    + getId() : String
-    + setId(id : String)
-    + getUid() : String
-    + setUid(uid : String)
-    + getName() : String
-    + setName(name : String)
-    + getBio() : String
-    + setBio(bio : String)
-    + getSpecializations() : List<String>
-    + setSpecializations(specializations : List<String>)
-    + getLanguage() : String
-    + setLanguage(language : String)
-    + getGender() : String
-    + setGender(gender : String)
-    + getOnLeave() : Boolean
-    + setOnLeave(onLeave : Boolean)
-    + getOnLeaveMessage() : String
-    + setOnLeaveMessage(msg : String)
-    + getReferralCounselorId() : String
-    + setReferralCounselorId(id : String)
   }
 
   class Appointment {
@@ -85,22 +72,6 @@ package "Model Layer" <<Rectangle>> #F5F5DC {
     - date : String
     - time : String
     - status : String
-    --
-    + Appointment()
-    + getId() : String
-    + setId(id : String)
-    + getStudentId() : String
-    + setStudentId(studentId : String)
-    + getCounselorId() : String
-    + setCounselorId(counselorId : String)
-    + getSlotId() : String
-    + setSlotId(slotId : String)
-    + getDate() : String
-    + setDate(date : String)
-    + getTime() : String
-    + setTime(time : String)
-    + getStatus() : String
-    + setStatus(status : String)
   }
 
   class TimeSlot {
@@ -110,17 +81,6 @@ package "Model Layer" <<Rectangle>> #F5F5DC {
     - time : String
     - available : boolean
     --
-    + TimeSlot()
-    + getId() : String
-    + setId(id : String)
-    + getCounselorId() : String
-    + setCounselorId(counselorId : String)
-    + getDate() : String
-    + setDate(date : String)
-    + getTime() : String
-    + setTime(time : String)
-    + isAvailable() : boolean
-    + setAvailable(available : boolean)
     + book()
   }
 
@@ -130,564 +90,295 @@ package "Model Layer" <<Rectangle>> #F5F5DC {
     - rating : int
     - comment : String
     - submittedAt : Timestamp
-    --
-    + FeedbackService()
-    + FeedbackService(appointmentId, rating, comment)
-    + getId() : String
-    + setId(id : String)
-    + getAppointmentId() : String
-    + setAppointmentId(appointmentId : String)
-    + getRating() : int
-    + setRating(rating : int)
-    + getComment() : String
-    + setComment(comment : String)
-    + getSubmittedAt() : Timestamp
-    + setSubmittedAt(submittedAt : Timestamp)
+    __ anonymity __
+    no studentId field
   }
 
   class AvailabilitySchedule {
     - counselorId : String
     - slotsByDate : Map<String, List<TimeSlot>>
     --
-    + AvailabilitySchedule(counselorId : String)
-    + {static} fromSlots(counselorId, slots) : AvailabilitySchedule
-    + getSlotsForDate(date : String) : List<TimeSlot>
+    + {static} fromSlots() : AvailabilitySchedule
+    + getSlotsForDate(date) : List<TimeSlot>
     + getDatesWithAvailability() : Set<String>
-    + getCounselorId() : String
   }
-
 }
 
-' ============================================================
-' CONSTANTS — Utility/enum-like classes
-' ============================================================
+' ════════════════════════════════════════
+'  REPOSITORY LAYER
+' ════════════════════════════════════════
 
-package "Constants" <<Rectangle>> #E8F5E9 {
-
-  class UserRole <<final>> {
-    + {static} STUDENT : String = "student"
-    + {static} COUNSELOR : String = "counselor"
-    + {static} ADMIN : String = "admin"
-    --
-    - UserRole()
-  }
-
-  class SpecializationTags <<final>> {
-    + {static} ANXIETY : String
-    + {static} ACADEMIC_STRESS : String
-    + {static} GRIEF : String
-    + {static} RELATIONSHIPS : String
-    + {static} CAREER_GUIDANCE : String
-    + {static} DEPRESSION : String
-    + {static} TRAUMA : String
-    + {static} FAMILY_ISSUES : String
-    + {static} ALL_TAGS : String[]
-    --
-    - SpecializationTags()
-  }
-
-}
-
-' ============================================================
-' REPOSITORY LAYER — Firestore data access
-' ============================================================
-
-package "Repository Layer" <<Rectangle>> #E3F2FD {
-
+package "Repositories" #E3F2FD {
   class UserRepository {
-    - usersCollection : CollectionReference
-    - auth : FirebaseAuth
-    --
-    + UserRepository()
-    + createUser(student : Student, cb : OnUserCreatedCallback)
-    + getCurrentUser(cb : OnUserFetchedCallback)
-    + getUserName(uid : String, cb : OnUserNameCallback)
-    + getCurrentUserRole(cb : OnRoleFetchedCallback)
-  }
-
-  interface "UserRepository.\nOnUserCreatedCallback" as OnUserCreatedCb {
-    + onSuccess()
-    + onFailure(e : Exception)
-  }
-
-  interface "UserRepository.\nOnUserFetchedCallback" as OnUserFetchedCb {
-    + onSuccess(student : Student)
-    + onFailure(e : Exception)
-  }
-
-  interface "UserRepository.\nOnRoleFetchedCallback" as OnRoleFetchedCb {
-    + onSuccess(role : String)
-    + onFailure(e : Exception)
-  }
-
-  interface "UserRepository.\nOnUserNameCallback" as OnUserNameCb {
-    + onSuccess(name : String)
+    + createUser(student, cb)
+    + getCurrentUser(cb)
+    + getUserName(uid, cb)
+    + getCurrentUserRole(cb)
   }
 
   class CounselorRepository {
-    - counselorsCollection : CollectionReference
-    --
-    + CounselorRepository()
-    + getAllCounselors(cb : OnCounselorsLoadedCallback)
-    + getCounselor(id : String, cb : OnCounselorFetchedCallback)
-    + updateSpecializations(id : String, tags : List<String>, cb : OnUpdateCallback)
-    + updateCounselorProfile(id : String, counselor : Counselor, cb : OnUpdateCallback)
-    + setOnLeaveStatus(id : String, onLeave : boolean, msg : String, refId : String, cb : OnUpdateCallback)
-  }
-
-  interface "CounselorRepository.\nOnCounselorsLoadedCallback" as OnCounselorsLoadedCb {
-    + onSuccess(counselors : List<Counselor>)
-    + onFailure(e : Exception)
-  }
-
-  interface "CounselorRepository.\nOnCounselorFetchedCallback" as OnCounselorFetchedCb {
-    + onSuccess(counselor : Counselor)
-    + onFailure(e : Exception)
-  }
-
-  interface "CounselorRepository.\nOnUpdateCallback" as OnCounselorUpdateCb {
-    + onSuccess()
-    + onFailure(e : Exception)
+    + getAllCounselors(cb)
+    + getCounselor(id, cb)
+    + updateSpecializations(id, tags, cb)
+    + updateCounselorProfile(id, counselor, cb)
+    + setOnLeaveStatus(id, onLeave, msg, refId, cb)
   }
 
   class AppointmentRepository {
-    - db : FirebaseFirestore
-    - appointmentsCollection : CollectionReference
-    --
-    + AppointmentRepository()
-    + bookAppointment(studentId, counselorId, slot : TimeSlot, cb : OnBookingCallback)
-    + updateAppointmentStatus(apptId : String, status : String, cb : OnStatusUpdateCallback)
-    + cancelAppointment(apptId : String, slotId : String, cb : OnStatusUpdateCallback)
-    + getAppointmentsForCounselor(counselorId : String, cb : OnAppointmentsLoadedCallback)
-    + getAppointmentsForStudent(studentId : String, cb : OnAppointmentsLoadedCallback)
-    + getAppointmentsForStudentOnDate(studentId : String, date : String, cb : OnAppointmentsLoadedCallback)
-    + getCompletedAppointmentsNeedingFeedback(studentId : String, cb : OnAppointmentsLoadedCallback)
-  }
-
-  interface "AppointmentRepository.\nOnBookingCallback" as OnBookingCb {
-    + onSuccess()
-    + onSlotTaken()
-    + onFailure(e : Exception)
-  }
-
-  interface "AppointmentRepository.\nOnAppointmentsLoadedCallback" as OnApptsLoadedCb {
-    + onSuccess(appointments : List<Appointment>)
-    + onFailure(e : Exception)
-  }
-
-  interface "AppointmentRepository.\nOnStatusUpdateCallback" as OnStatusUpdateCb {
-    + onSuccess()
-    + onFailure(e : Exception)
+    + bookAppointment(studentId, counselorId, slot, cb)
+    + cancelAppointment(apptId, slotId, cb)
+    + updateAppointmentStatus(apptId, status, cb)
+    + getAppointmentsForCounselor(id, cb)
+    + getAppointmentsForStudent(id, cb)
+    + getAppointmentsForStudentOnDate(id, date, cb)
+    + getCompletedAppointmentsNeedingFeedback(id, cb)
   }
 
   class AvailabilityRepository {
-    - slotsCollection : CollectionReference
-    --
-    + AvailabilityRepository()
-    + getSlotsForCounselor(counselorId : String, cb : OnSlotsLoadedCallback)
-    + getAvailableSlotsForCounselor(counselorId : String, cb : OnSlotsLoadedCallback)
-    + addSlot(counselorId : String, date : String, time : String, cb : OnSlotActionCallback)
-    + removeSlot(slotId : String, cb : OnSlotActionCallback)
-  }
-
-  interface "AvailabilityRepository.\nOnSlotsLoadedCallback" as OnSlotsLoadedCb {
-    + onSuccess(slots : List<TimeSlot>)
-    + onFailure(e : Exception)
-  }
-
-  interface "AvailabilityRepository.\nOnSlotActionCallback" as OnSlotActionCb {
-    + onSuccess()
-    + onFailure(e : Exception)
+    + getSlotsForCounselor(id, cb)
+    + getAvailableSlotsForCounselor(id, cb)
+    + addSlot(counselorId, date, time, cb)
+    + removeSlot(slotId, cb)
   }
 
   class FeedbackRepository {
-    - feedbackCollection : CollectionReference
-    --
-    + FeedbackRepository()
-    + submitFeedback(feedback : FeedbackService, cb : OnFeedbackSubmittedCallback)
-    + hasFeedbackForAppointment(apptId : String, cb : OnFeedbackCheckCallback)
+    + submitFeedback(feedback, cb)
+    + hasFeedbackForAppointment(apptId, cb)
   }
-
-  interface "FeedbackRepository.\nOnFeedbackSubmittedCallback" as OnFeedbackSubmittedCb {
-    + onSuccess()
-    + onFailure(e : Exception)
-  }
-
-  interface "FeedbackRepository.\nOnFeedbackCheckCallback" as OnFeedbackCheckCb {
-    + onResult(feedbackExists : boolean)
-  }
-
 }
 
-' ============================================================
-' ADAPTER LAYER — RecyclerView adapters
-' ============================================================
+' ════════════════════════════════════════
+'  ADAPTER LAYER
+' ════════════════════════════════════════
 
-package "Adapter Layer" <<Rectangle>> #FFF3E0 {
-
+package "Adapters" #FFF3E0 {
   class CounselorAdapter {
-    - counselorList : List<Counselor>
-    - context : Context
-    --
-    + CounselorAdapter(context, counselorList)
-    + setData(newList : List<Counselor>)
-    + onCreateViewHolder(parent, viewType) : ViewHolder
-    + onBindViewHolder(holder, position)
-    + getItemCount() : int
+    + setData(list)
+    + onBindViewHolder()
   }
 
   class AppointmentAdapter {
-    - appointments : List<Appointment>
-    - context : Context
-    - userRepository : UserRepository
-    - appointmentRepository : AppointmentRepository
-    --
-    + AppointmentAdapter(context, appointments)
-    + setData(newList : List<Appointment>)
-    + onCreateViewHolder(parent, viewType) : ViewHolder
-    + onBindViewHolder(holder, position)
-    - applyStatusBadge(holder, status)
-    - markNoShow(apt, holder, position)
-    + getItemCount() : int
+    + setData(list)
+    + onBindViewHolder()
+    - applyStatusBadge()
+    - markNoShow()
   }
 
   class StudentAppointmentAdapter {
-    - appointments : List<Appointment>
-    - counselorRepository : CounselorRepository
-    --
-    + StudentAppointmentAdapter(appointments)
-    + onCreateViewHolder(parent, viewType) : ViewHolder
-    + onBindViewHolder(holder, position)
-    + getItemCount() : int
-    - statusLabel(status) : String
-    - statusColour(status) : int
+    + onBindViewHolder()
+    - statusLabel()
+    - statusColour()
   }
 
   class TimeSlotAdapter {
-    - slots : List<TimeSlot>
-    - listener : OnBookClickListener
-    --
-    + TimeSlotAdapter(slots, listener)
-    + setData(newSlots : List<TimeSlot>)
-    + onCreateViewHolder(parent, viewType) : ViewHolder
-    + onBindViewHolder(holder, position)
-    + getItemCount() : int
+    + setData(list)
+    + onBindViewHolder()
   }
 
-  interface "TimeSlotAdapter.\nOnBookClickListener" as OnBookClickListener {
-    + onBookClick(slot : TimeSlot)
+  interface "TimeSlotAdapter.\nOnBookClickListener" as OnBookClick {
+    + onBookClick(slot)
   }
-
 }
 
-' ============================================================
-' UI LAYER — Activities and Fragments
-' ============================================================
+' ════════════════════════════════════════
+'  UI — AUTH FLOW
+' ════════════════════════════════════════
 
-package "UI Layer — Auth Flow" <<Rectangle>> #FCE4EC {
-
+package "Auth Flow" #FCE4EC {
   class LoginActivity <<Activity>> {
-    - emailField : TextInputEditText
-    - passwordField : TextInputEditText
-    - loginButton : MaterialButton
-    - mAuth : FirebaseAuth
-    - userRepository : UserRepository
-    - selectedRole : String
-    --
-    # onCreate(savedInstanceState)
     - attemptLogin()
     - routeToHome()
-    - routeToHome(expectedRole : String)
-    - selectRole(roleConstant, displayLabel)
+    - selectRole()
   }
 
   class RegisterActivity <<Activity>> {
-    - editTextName : TextInputEditText
-    - editTextEmail : TextInputEditText
-    - editTextPreferredName : TextInputEditText
-    - editTextPronouns : TextInputEditText
-    - editTextPassword : TextInputEditText
-    - editTextConfirmPassword : TextInputEditText
-    - mAuth : FirebaseAuth
-    - userRepository : UserRepository
-    - selectedRole : String
-    --
-    # onCreate(savedInstanceState)
     - attemptRegistration()
-    - validateInputs() : boolean
+    - validateInputs()
   }
 
   class PrivacyPolicyActivity <<Activity>> {
-    + {static} EXTRA_ROLE : String
-    --
-    # onCreate(savedInstanceState)
-    - routeToHome(role : String)
+    - routeToHome(role)
   }
-
 }
 
-package "UI Layer — Student" <<Rectangle>> #E8EAF6 {
+' ════════════════════════════════════════
+'  UI — STUDENT SCREENS
+' ════════════════════════════════════════
 
+package "Student UI" #E8EAF6 {
   class StudentHomeActivity <<Activity>> {
-    - mAuth : FirebaseAuth
-    - userRepository : UserRepository
-    - appointmentRepository : AppointmentRepository
-    - feedbackRepository : FeedbackRepository
-    - upcomingAppointment : Appointment
-    - pendingFeedbackAppointment : Appointment
-    - isMasked : boolean
-    - isOverlayActive : boolean
-    --
-    # onCreate(savedInstanceState)
     - fetchUpcomingSession()
-    - populateSessionCard(appointment : Appointment)
-    - clearSessionCard()
     - handleCancellation()
-    - resetSlider(thumbPx : float)
     - checkForPendingFeedback()
-    - showFeedbackPromptCard(appointment : Appointment)
-    - showFeedbackDialog(appointmentId : String)
+    - showFeedbackDialog()
     - setupPrivacyTimer()
-    - activateDiscreetMode()
-    - resetPrivacyTimer()
-    - maskPII()
-    - unmaskPII()
-    # onPause()
-    # onResume()
+    - maskPII() / unmaskPII()
+  }
+
+  class BookingActivity <<Activity>> {
+    - loadSlots()
+    - showSlotsForDate()
+    + onBookClick(slot)
+  }
+
+  class BookingConfirmationFragment <<BottomSheet>> {
+    + {static} newInstance()
+    + setOnConfirmListener()
   }
 
   class CalendarActivity <<Activity>> {
-    - calendarView : CalendarView
-    - adapter : StudentAppointmentAdapter
-    - appointmentRepository : AppointmentRepository
-    - studentId : String
-    --
-    # onCreate(savedInstanceState)
-    - formatDate(year, month, day) : String
-    - fetchAppointmentsForDate(date : String)
+    - fetchAppointmentsForDate()
   }
 
   class HistoryActivity <<Activity>> {
-    - adapter : StudentAppointmentAdapter
-    - appointmentRepository : AppointmentRepository
-    - studentId : String
-    --
-    # onCreate(savedInstanceState)
     - fetchHistory()
   }
 
   class QuizActivity <<Activity>> {
-    --
-    # onCreate(savedInstanceState)
-    - startMatching(specialization : String)
+    - displayQuestion(step)
+    - advanceStep()
+    - showResult()
   }
 
-  class BookingActivity <<Activity>> {
-    - counselorId : String
-    - counselorName : String
-    - calendarView : CalendarView
-    - slotAdapter : TimeSlotAdapter
-    - schedule : AvailabilitySchedule
-    - availabilityRepository : AvailabilityRepository
-    - appointmentRepository : AppointmentRepository
-    --
-    # onCreate(savedInstanceState)
-    - todayString() : String
-    - loadSlots(initialDate : String)
-    - showSlotsForDate(date : String)
-    + onBookClick(slot : TimeSlot)
+  class EmergencyDialogFragment <<Dialog>> {
+    + {static} newInstance()
+    - dialNumber(phone)
   }
-
-  class BookingConfirmationFragment <<BottomSheet>> {
-    - slot : TimeSlot
-    - listener : OnConfirmListener
-    --
-    + {static} newInstance(counselorName, slot) : BookingConfirmationFragment
-    + setOnConfirmListener(listener : OnConfirmListener)
-    + onCreateView(inflater, container, savedState) : View
-  }
-
-  interface "BookingConfirmation.\nOnConfirmListener" as OnConfirmListener {
-    + onConfirm(slot : TimeSlot)
-  }
-
-  class EmergencyDialogFragment <<DialogFragment>> {
-    --
-    + {static} newInstance() : EmergencyDialogFragment
-    + onCreateDialog(savedState) : Dialog
-    - dialNumber(phoneNumber : String)
-  }
-
 }
 
-package "UI Layer — Counselor" <<Rectangle>> #F3E5F5 {
+' ════════════════════════════════════════
+'  UI — COUNSELOR SCREENS
+' ════════════════════════════════════════
 
+package "Counselor UI" #F3E5F5 {
   class CounselorDashboardActivity <<Activity>> {
-    - mAuth : FirebaseAuth
-    - adapter : AppointmentAdapter
-    - tabLayout : TabLayout
-    - appointmentRepository : AppointmentRepository
-    - availabilityRepository : AvailabilityRepository
-    - counselorRepository : CounselorRepository
-    - masterAppointments : List<Appointment>
-    - counselorId : String
-    --
-    # onCreate(savedInstanceState)
-    # onResume()
     - loadAppointments()
-    - filterByTab(tabIndex : int)
-    - updateStats(today : String, filteredCount : int)
+    - filterByTab(index)
+    - updateStats()
   }
 
   class CounselorListActivity <<Activity>> {
-    - adapter : CounselorAdapter
-    - counselorRepository : CounselorRepository
-    - masterList : List<Counselor>
-    - filterState : FilterState
-    --
-    # onCreate(savedInstanceState)
     - setupSearchBar()
-    - buildSpecializationChips(preSelectedTag : String)
-    - populateFilterDropdowns(counselors : List<Counselor>)
-    - loadCounselors()
+    - buildSpecializationChips()
     - applyFilters()
   }
 
   class CounselorProfileActivity <<Activity>> {
-    - counselorRepository : CounselorRepository
-    - counselorId : String
-    - counselorName : String
-    --
-    # onCreate(savedInstanceState)
     - loadProfile()
-    - populateUI(counselor : Counselor)
+    - populateUI()
   }
 
   class CounselorProfileEditActivity <<Activity>> {
-    - counselorRepository : CounselorRepository
-    - counselorId : String
-    - allCounselors : List<Counselor>
-    - selectedReferralId : String
-    --
-    # onCreate(savedInstanceState)
-    - buildSpecializationChips(existing : List<String>)
     - loadCurrentProfile()
     - loadReferralCounselors()
     - saveProfile()
   }
 
   class AvailabilitySetupActivity <<Activity>> {
-    - availabilityRepository : AvailabilityRepository
-    - counselorId : String
-    - slotList : List<TimeSlot>
-    --
-    # onCreate(savedInstanceState)
     - loadSlots()
     - showDatePicker()
-    - addSlot(date : String, time : String)
+    - addSlot()
     - attachSwipeToDelete()
   }
-
 }
 
-' ============================================================
-' RELATIONSHIPS
-' ============================================================
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Model dependencies
+' ════════════════════════════════════════
 
-' --- Model dependencies ---
-Student ..> UserRole : uses
-AvailabilitySchedule o-- "*" TimeSlot : groups by date
+Student ..> UserRole
+AvailabilitySchedule o-- TimeSlot
 
-' --- Repository → Model ---
-UserRepository ..> Student : creates/reads
-CounselorRepository ..> Counselor : reads/writes
-AppointmentRepository ..> Appointment : reads/writes
-AppointmentRepository ..> TimeSlot : reads (transaction)
-AvailabilityRepository ..> TimeSlot : reads/writes
-FeedbackRepository ..> FeedbackService : writes/reads
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Repository → Model
+' ════════════════════════════════════════
 
-' --- Repository inner interfaces (nesting) ---
-UserRepository +-- OnUserCreatedCb
-UserRepository +-- OnUserFetchedCb
-UserRepository +-- OnRoleFetchedCb
-UserRepository +-- OnUserNameCb
-CounselorRepository +-- OnCounselorsLoadedCb
-CounselorRepository +-- OnCounselorFetchedCb
-CounselorRepository +-- OnCounselorUpdateCb
-AppointmentRepository +-- OnBookingCb
-AppointmentRepository +-- OnApptsLoadedCb
-AppointmentRepository +-- OnStatusUpdateCb
-AvailabilityRepository +-- OnSlotsLoadedCb
-AvailabilityRepository +-- OnSlotActionCb
-FeedbackRepository +-- OnFeedbackSubmittedCb
-FeedbackRepository +-- OnFeedbackCheckCb
+UserRepository ..> Student
+CounselorRepository ..> Counselor
+AppointmentRepository ..> Appointment
+AppointmentRepository ..> TimeSlot
+AvailabilityRepository ..> TimeSlot
+FeedbackRepository ..> FeedbackService
 
-' --- Adapter → Model ---
-CounselorAdapter ..> Counselor : binds
-AppointmentAdapter ..> Appointment : binds
-AppointmentAdapter ..> UserRepository : lookups
-AppointmentAdapter ..> AppointmentRepository : status update
-StudentAppointmentAdapter ..> Appointment : binds
-StudentAppointmentAdapter ..> CounselorRepository : name lookup
-TimeSlotAdapter ..> TimeSlot : binds
-TimeSlotAdapter +-- OnBookClickListener
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Adapter → Model
+' ════════════════════════════════════════
 
-' --- Auth flow ---
-LoginActivity ..> UserRepository : role routing
-LoginActivity ..> StudentHomeActivity : navigates
-LoginActivity ..> CounselorDashboardActivity : navigates
-LoginActivity ..> RegisterActivity : navigates
-RegisterActivity ..> UserRepository : createUser
-RegisterActivity ..> Student : creates
-RegisterActivity ..> PrivacyPolicyActivity : navigates
-PrivacyPolicyActivity ..> StudentHomeActivity : navigates
-PrivacyPolicyActivity ..> CounselorDashboardActivity : navigates
+CounselorAdapter ..> Counselor
+AppointmentAdapter ..> Appointment
+StudentAppointmentAdapter ..> Appointment
+TimeSlotAdapter ..> TimeSlot
+TimeSlotAdapter +-- OnBookClick
 
-' --- Student UI → Repositories ---
-StudentHomeActivity ..> UserRepository : getCurrentUser
-StudentHomeActivity ..> AppointmentRepository : fetch/cancel
-StudentHomeActivity ..> FeedbackRepository : check/submit
-StudentHomeActivity ..> CounselorRepository : counselor name
-StudentHomeActivity ..> EmergencyDialogFragment : shows
-StudentHomeActivity ..> QuizActivity : navigates
-StudentHomeActivity ..> CalendarActivity : navigates
-StudentHomeActivity ..> HistoryActivity : navigates
-StudentHomeActivity ..> CounselorListActivity : navigates
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Auth Flow
+' ════════════════════════════════════════
 
-CalendarActivity ..> AppointmentRepository : fetchByDate
-HistoryActivity ..> AppointmentRepository : fetchAll
-QuizActivity ..> CounselorListActivity : navigates
+LoginActivity ..> UserRepository
+LoginActivity ..> RegisterActivity
+RegisterActivity ..> UserRepository
+RegisterActivity ..> Student
+RegisterActivity ..> PrivacyPolicyActivity
+PrivacyPolicyActivity ..> StudentHomeActivity
+PrivacyPolicyActivity ..> CounselorDashboardActivity
+LoginActivity ..> StudentHomeActivity
+LoginActivity ..> CounselorDashboardActivity
 
-BookingActivity ..> AvailabilityRepository : fetchSlots
-BookingActivity ..> AppointmentRepository : bookAppointment
-BookingActivity ..> AvailabilitySchedule : groups slots
-BookingActivity ..> TimeSlotAdapter : displays slots
-BookingActivity ..> BookingConfirmationFragment : shows
-BookingActivity ..|> OnBookClickListener : implements
-BookingConfirmationFragment +-- OnConfirmListener
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Student UI → Repos
+' ════════════════════════════════════════
 
-' --- Counselor UI → Repositories ---
-CounselorDashboardActivity ..> AppointmentRepository : loadAppointments
-CounselorDashboardActivity ..> AvailabilityRepository : addSlot
-CounselorDashboardActivity ..> CounselorRepository : counselor name
-CounselorDashboardActivity ..> AppointmentAdapter : displays
-CounselorDashboardActivity ..> AvailabilitySetupActivity : navigates
-CounselorDashboardActivity ..> CounselorProfileEditActivity : navigates
+StudentHomeActivity ..> UserRepository
+StudentHomeActivity ..> AppointmentRepository
+StudentHomeActivity ..> FeedbackRepository
+StudentHomeActivity ..> CounselorRepository
+StudentHomeActivity ..> EmergencyDialogFragment
+StudentHomeActivity ..> QuizActivity
+StudentHomeActivity ..> CalendarActivity
+StudentHomeActivity ..> HistoryActivity
+StudentHomeActivity ..> CounselorListActivity
 
-CounselorListActivity ..> CounselorRepository : loadCounselors
-CounselorListActivity ..> CounselorAdapter : displays
-CounselorListActivity ..> SpecializationTags : chip labels
-CounselorListActivity ..> CounselorProfileActivity : navigates
+BookingActivity ..> AvailabilityRepository
+BookingActivity ..> AppointmentRepository
+BookingActivity ..> AvailabilitySchedule
+BookingActivity ..> TimeSlotAdapter
+BookingActivity ..> BookingConfirmationFragment
+BookingActivity ..|> OnBookClick
 
-CounselorProfileActivity ..> CounselorRepository : loadProfile
-CounselorProfileActivity ..> BookingActivity : navigates
+CalendarActivity ..> AppointmentRepository
+HistoryActivity ..> AppointmentRepository
+QuizActivity ..> CounselorListActivity
+QuizActivity ..> CounselorRepository
 
-CounselorProfileEditActivity ..> CounselorRepository : load/save
-CounselorProfileEditActivity ..> SpecializationTags : chip labels
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Counselor UI → Repos
+' ════════════════════════════════════════
 
-AvailabilitySetupActivity ..> AvailabilityRepository : CRUD slots
+CounselorDashboardActivity ..> AppointmentRepository
+CounselorDashboardActivity ..> AvailabilityRepository
+CounselorDashboardActivity ..> CounselorRepository
+CounselorDashboardActivity ..> AppointmentAdapter
+CounselorDashboardActivity ..> AvailabilitySetupActivity
+CounselorDashboardActivity ..> CounselorProfileEditActivity
 
-' --- Counselor self-referral ---
-Counselor ..> Counselor : referralCounselorId
+CounselorListActivity ..> CounselorRepository
+CounselorListActivity ..> CounselorAdapter
+CounselorListActivity ..> SpecializationTags
+
+CounselorProfileActivity ..> CounselorRepository
+CounselorProfileActivity ..> BookingActivity
+
+CounselorProfileEditActivity ..> CounselorRepository
+CounselorProfileEditActivity ..> SpecializationTags
+
+AvailabilitySetupActivity ..> AvailabilityRepository
+
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Adapter → Repository
+' ════════════════════════════════════════
+
+AppointmentAdapter ..> UserRepository
+AppointmentAdapter ..> AppointmentRepository
+StudentAppointmentAdapter ..> CounselorRepository
 
 @enduml

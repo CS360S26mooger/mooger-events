@@ -22,6 +22,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+// CounselorDashboardActivity.java
+// Role: Main screen for counselors. Shows appointment stats, upcoming appointments,
+//       and entry points for adding availability slots and editing their profile.
+//       Uses CounselorRepository for all counselors-collection reads.
+//
+// Design pattern: Repository pattern (CounselorRepository for counselor reads).
+// Part of the BetterCAPS counseling platform.
+
 /**
  * Dashboard for counselors. Shows upcoming appointments,
  * stats, and allows adding availability slots.
@@ -65,18 +73,30 @@ public class CounselorDashboardActivity extends AppCompatActivity {
         adapter = new AppointmentAdapter(this, appointmentList);
         recyclerView.setAdapter(adapter);
 
-        // Load counselor name from Firestore
-        db.collection("counselors").document(counselorId).get()
-                .addOnSuccessListener(doc -> {
-                    if (doc.exists()) {
-                        String name = doc.getString("name");
+        // Load counselor name via CounselorRepository
+        CounselorRepository counselorRepository = new CounselorRepository();
+        counselorRepository.getCounselor(counselorId,
+                new CounselorRepository.OnCounselorFetchedCallback() {
+                    @Override
+                    public void onSuccess(Counselor counselor) {
+                        String name = counselor.getName();
                         counselorNameText.setText(name != null ? name : "Dr. Counselor");
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        // Name display is non-critical — keep default text
                     }
                 });
 
         // Add slot banner
         CardView addSlotBanner = findViewById(R.id.addSlotBanner);
         addSlotBanner.setOnClickListener(v -> showAddSlotDialog());
+
+        // Edit profile
+        ImageButton editProfileButton = findViewById(R.id.buttonEditProfile);
+        editProfileButton.setOnClickListener(v ->
+                startActivity(new Intent(this, CounselorProfileEditActivity.class)));
 
         // Logout
         ImageButton logoutBtn = findViewById(R.id.logoutBtn);

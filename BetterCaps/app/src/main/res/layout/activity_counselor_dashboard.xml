@@ -41,6 +41,16 @@
         </LinearLayout>
 
         <ImageButton
+            android:id="@+id/buttonEditProfile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@android:drawable/ic_menu_edit"
+            android:contentDescription="@string/edit_profile"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:tint="#8A8A9A"
+            android:layout_marginEnd="4dp" />
+
+        <ImageButton
             android:id="@+id/logoutBtn"
             android:layout_width="40dp"
             android:layout_height="40dp"

@@ -1,3 +1,12 @@
+/*
+ * CounselorAdapter.java
+ * Role: RecyclerView adapter for displaying counselor cards in the directory.
+ *       Each card shows name, specializations, language, and an on-leave badge
+ *       if applicable. Tapping a card navigates to CounselorProfileActivity.
+ *
+ * Design pattern: Adapter pattern (RecyclerView).
+ * Part of the BetterCAPS counseling platform.
+ */
 package com.example.moogerscouncil;
 
 import android.content.Context;
@@ -7,23 +16,43 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.example.moogerscouncil.Counselor;
+
 import java.util.List;
 
 /**
- * RecyclerView adapter for displaying the list of counselors.
- * Each item shows name, specializations, and a View Slots button.
+ * RecyclerView adapter for the counselor directory list.
+ * Displays name, specializations, language, and an on-leave badge per card.
+ * Card taps route to {@link CounselorProfileActivity}; on-leave counselors
+ * have the "View Profile" button disabled.
  */
 public class CounselorAdapter extends RecyclerView.Adapter<CounselorAdapter.ViewHolder> {
 
     private List<Counselor> counselorList;
-    private Context context;
+    private final Context context;
 
+    /**
+     * Creates a new adapter.
+     *
+     * @param context      The Activity context used for inflation and Intent creation.
+     * @param counselorList The initial list of counselors to display.
+     */
     public CounselorAdapter(Context context, List<Counselor> counselorList) {
         this.context = context;
         this.counselorList = counselorList;
+    }
+
+    /**
+     * Replaces the current counselor list and refreshes the RecyclerView.
+     * Used by the filter logic in {@link CounselorListActivity}.
+     *
+     * @param newList The filtered list of counselors to display.
+     */
+    public void setData(List<Counselor> newList) {
+        this.counselorList = newList;
+        notifyDataSetChanged();
     }
 
     @NonNull
@@ -40,22 +69,45 @@ public class CounselorAdapter extends RecyclerView.Adapter<CounselorAdapter.View
 
         holder.nameText.setText(counselor.getName());
 
-        // Join specializations into one string
+        // Specializations — join as readable string
         if (counselor.getSpecializations() != null && !counselor.getSpecializations().isEmpty()) {
             holder.specializationText.setText(
-                    android.text.TextUtils.join(" & ", counselor.getSpecializations())
-            );
+                    android.text.TextUtils.join(" · ", counselor.getSpecializations()));
+        } else {
+            holder.specializationText.setText("");
         }
 
-        holder.nextSlotText.setText("Next: Available");
-        holder.ratingText.setText("★ 4.9");
+        // Language
+        if (counselor.getLanguage() != null && !counselor.getLanguage().isEmpty()) {
+            holder.languageText.setVisibility(View.VISIBLE);
+            holder.languageText.setText(counselor.getLanguage());
+        } else {
+            holder.languageText.setVisibility(View.GONE);
+        }
 
-        holder.viewSlotsButton.setOnClickListener(v -> {
-            Intent intent = new Intent(context, BookingActivity.class);
-            intent.putExtra("counselorId", counselor.getId());
-            intent.putExtra("counselorName", counselor.getName());
+        // On-leave badge
+        boolean isOnLeave = Boolean.TRUE.equals(counselor.getOnLeave());
+        if (isOnLeave) {
+            holder.badgeOnLeave.setVisibility(View.VISIBLE);
+            holder.viewProfileButton.setEnabled(false);
+            holder.viewProfileButton.setText(R.string.currently_unavailable);
+        } else {
+            holder.badgeOnLeave.setVisibility(View.GONE);
+            holder.viewProfileButton.setEnabled(true);
+            holder.viewProfileButton.setText(R.string.view_profile);
+        }
+
+        // Card tap → CounselorProfileActivity
+        View.OnClickListener profileClickListener = v -> {
+            if (isOnLeave) return;
+            Intent intent = new Intent(context, CounselorProfileActivity.class);
+            intent.putExtra("COUNSELOR_ID", counselor.getId());
+            intent.putExtra("COUNSELOR_NAME", counselor.getName());
             context.startActivity(intent);
-        });
+        };
+
+        holder.itemView.setOnClickListener(profileClickListener);
+        holder.viewProfileButton.setOnClickListener(profileClickListener);
     }
 
     @Override
@@ -63,17 +115,28 @@ public class CounselorAdapter extends RecyclerView.Adapter<CounselorAdapter.View
         return counselorList.size();
     }
 
+    /**
+     * ViewHolder for a single counselor card.
+     */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView nameText, specializationText, nextSlotText, ratingText;
-        Button viewSlotsButton;
+        TextView nameText;
+        TextView specializationText;
+        TextView languageText;
+        TextView badgeOnLeave;
+        Button viewProfileButton;
 
+        /**
+         * Binds view references from {@code item_counselor.xml}.
+         *
+         * @param itemView The inflated card view.
+         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nameText = itemView.findViewById(R.id.counselorName);
             specializationText = itemView.findViewById(R.id.counselorSpecializations);
-            nextSlotText = itemView.findViewById(R.id.counselorNextSlot);
-            ratingText = itemView.findViewById(R.id.counselorRating);
-            viewSlotsButton = itemView.findViewById(R.id.viewSlotsButton);
+            languageText = itemView.findViewById(R.id.counselorLanguage);
+            badgeOnLeave = itemView.findViewById(R.id.badgeOnLeave);
+            viewProfileButton = itemView.findViewById(R.id.viewSlotsButton);
         }
     }
 }

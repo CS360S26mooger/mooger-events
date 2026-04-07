@@ -30,6 +30,7 @@ public class StudentHomeActivity extends AppCompatActivity {
     private String originalName, originalRole;
     private boolean isMasked = false;
     private boolean isOverlayActive = false;
+    private boolean hasSession = false; // true only when real counselor PII is displayed
     private View privacyOverlay;
     private UserRepository userRepository;
 
@@ -112,8 +113,19 @@ public class StudentHomeActivity extends AppCompatActivity {
 
         // Slide-to-cancel SeekBar
         SeekBar slideToCancelSlider = findViewById(R.id.slideToCancelSlider);
+        View slideFill = findViewById(R.id.slideFill);
+        float thumbPx = 42 * getResources().getDisplayMetrics().density;
         slideToCancelSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {}
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                // Fill width tracks thumb right edge exactly: fillWidth = thumbLeft + thumbDiameter
+                int containerWidth = seekBar.getWidth();
+                float thumbLeft = (progress / 100f) * (containerWidth - thumbPx);
+                int fillWidth = Math.round(thumbLeft + thumbPx);
+                android.view.ViewGroup.LayoutParams lp = slideFill.getLayoutParams();
+                lp.width = fillWidth;
+                slideFill.setLayoutParams(lp);
+            }
             @Override public void onStartTrackingTouch(SeekBar seekBar) { resetPrivacyTimer(); }
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
@@ -121,8 +133,17 @@ public class StudentHomeActivity extends AppCompatActivity {
                     handleCancellation();
                 } else {
                     seekBar.setProgress(0);
+                    android.view.ViewGroup.LayoutParams lp = slideFill.getLayoutParams();
+                    lp.width = Math.round(thumbPx);
+                    slideFill.setLayoutParams(lp);
                 }
             }
+        });
+        // Set initial fill width = thumb diameter so circle appears solid at rest
+        slideToCancelSlider.post(() -> {
+            android.view.ViewGroup.LayoutParams lp = slideFill.getLayoutParams();
+            lp.width = Math.round(thumbPx);
+            slideFill.setLayoutParams(lp);
         });
 
         // Post-session feedback
@@ -138,7 +159,7 @@ public class StudentHomeActivity extends AppCompatActivity {
         findViewById(R.id.navHistory).setOnClickListener(v ->
                 startActivity(new Intent(this, HistoryActivity.class)));
 
-        ImageButton navLogout = findViewById(R.id.navLogout);
+        View navLogout = findViewById(R.id.navLogout);
         navLogout.setOnClickListener(v -> {
             mAuth.signOut();
             Intent intent = new Intent(this, LoginActivity.class);
@@ -180,10 +201,11 @@ public class StudentHomeActivity extends AppCompatActivity {
                 .setMessage("Are you sure you want to release this slot?")
                 .setPositiveButton("Yes, Cancel", (dialog, which) -> {
                     Toast.makeText(this, "Appointment Cancelled", Toast.LENGTH_SHORT).show();
-                    findViewById(R.id.slideToCancelSlider).setVisibility(View.GONE);
+                    findViewById(R.id.sliderContainer).setVisibility(View.GONE);
                     counselorNameText.setText("No upcoming session");
                     counselorRoleText.setText("Book an appointment below");
                     findViewById(R.id.sessionTimeRow).setVisibility(View.GONE);
+                    hasSession = false;
                 })
                 .setNegativeButton("No", (dialog, which) ->
                         ((SeekBar) findViewById(R.id.slideToCancelSlider)).setProgress(0))
@@ -207,13 +229,12 @@ public class StudentHomeActivity extends AppCompatActivity {
     }
 
     private void maskPII() {
-        if (isMasked) return;
+        if (isMasked || !hasSession) return;
         originalName = counselorNameText.getText().toString();
         originalRole = counselorRoleText.getText().toString();
         counselorNameText.setText("••••••••••••");
         counselorRoleText.setText("••••••••••••");
         isMasked = true;
-        activateDiscreetMode();
     }
 
     private void unmaskPII() {

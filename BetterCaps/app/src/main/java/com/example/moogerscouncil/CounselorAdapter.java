@@ -97,10 +97,16 @@ public class CounselorAdapter extends RecyclerView.Adapter<CounselorAdapter.View
         holder.viewProfileButton.setEnabled(true);
         holder.viewProfileButton.setText(R.string.view_profile);
 
+        // Hardcoded to the single counselor's Firestore document ID.
+        // TODO: replace with dynamic lookup when multiple counselors are supported.
+        // Dr. Muhammad Shahbaz Aziz Khan
+        String slotCounselorId = "HWhCN1a4hhlOkjtJhIhP";
+
         // Card tap → CounselorProfileActivity (on-leave counselors can still be viewed)
         View.OnClickListener profileClickListener = v -> {
             Intent intent = new Intent(context, CounselorProfileActivity.class);
-            intent.putExtra("COUNSELOR_ID", counselor.getId());
+            intent.putExtra("COUNSELOR_ID", counselor.getId());       // profile lookup uses Firestore doc ID
+            intent.putExtra("SLOT_COUNSELOR_ID", slotCounselorId);    // slot lookup uses Auth UID
             intent.putExtra("COUNSELOR_NAME", counselor.getName());
             context.startActivity(intent);
         };

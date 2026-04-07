@@ -106,7 +106,6 @@ public class CounselorRepository {
         counselorsCollection.get()
                 .addOnSuccessListener(querySnapshot -> {
                     List<Counselor> counselors = querySnapshot.toObjects(Counselor.class);
-                    // Attach document IDs (not set by toObjects)
                     for (int i = 0; i < querySnapshot.size(); i++) {
                         counselors.get(i).setId(querySnapshot.getDocuments().get(i).getId());
                     }

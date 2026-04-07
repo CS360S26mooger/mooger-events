@@ -1,0 +1,384 @@
+@startuml BetterCAPS_Class_Diagram
+
+' ── Rendering: top-down, narrow ──
+top to bottom direction
+skinparam classAttributeIconSize 0
+skinparam classFontSize 10
+skinparam packageFontSize 12
+skinparam nodesep 30
+skinparam ranksep 40
+skinparam wrapWidth 200
+skinparam packageStyle rectangle
+
+title BetterCAPS — Phase 3 Class Diagram
+
+' ════════════════════════════════════════
+'  CONSTANTS
+' ════════════════════════════════════════
+
+package "Constants" #E8F5E9 {
+  class UserRole <<final>> {
+    + {static} STUDENT : String
+    + {static} COUNSELOR : String
+    + {static} ADMIN : String
+  }
+
+  class SpecializationTags <<final>> {
+    + {static} ANXIETY : String
+    + {static} ACADEMIC_STRESS : String
+    + {static} GRIEF : String
+    + {static} RELATIONSHIPS : String
+    + {static} CAREER_GUIDANCE : String
+    + {static} DEPRESSION : String
+    + {static} TRAUMA : String
+    + {static} FAMILY_ISSUES : String
+    + {static} ALL_TAGS : String[]
+  }
+}
+
+' ════════════════════════════════════════
+'  MODEL LAYER
+' ════════════════════════════════════════
+
+package "Models" #F5F5DC {
+  class Student {
+    - uid : String
+    - name : String
+    - email : String
+    - preferredName : String
+    - pronouns : String
+    - role : String
+    - createdAt : Timestamp
+  }
+
+  class Counselor {
+    - id : String
+    - uid : String
+    - name : String
+    - bio : String
+    - specializations : List<String>
+    - language : String
+    - gender : String
+    - isOnLeave : Boolean
+    - onLeaveMessage : String
+    - referralCounselorId : String
+  }
+
+  class Appointment {
+    - id : String
+    - studentId : String
+    - counselorId : String
+    - slotId : String
+    - date : String
+    - time : String
+    - status : String
+  }
+
+  class TimeSlot {
+    - id : String
+    - counselorId : String
+    - date : String
+    - time : String
+    - available : boolean
+    --
+    + book()
+  }
+
+  class FeedbackService {
+    - id : String
+    - appointmentId : String
+    - rating : int
+    - comment : String
+    - submittedAt : Timestamp
+    __ anonymity __
+    no studentId field
+  }
+
+  class AvailabilitySchedule {
+    - counselorId : String
+    - slotsByDate : Map<String, List<TimeSlot>>
+    --
+    + {static} fromSlots() : AvailabilitySchedule
+    + getSlotsForDate(date) : List<TimeSlot>
+    + getDatesWithAvailability() : Set<String>
+  }
+}
+
+' ════════════════════════════════════════
+'  REPOSITORY LAYER
+' ════════════════════════════════════════
+
+package "Repositories" #E3F2FD {
+  class UserRepository {
+    + createUser(student, cb)
+    + getCurrentUser(cb)
+    + getUserName(uid, cb)
+    + getCurrentUserRole(cb)
+  }
+
+  class CounselorRepository {
+    + getAllCounselors(cb)
+    + getCounselor(id, cb)
+    + updateSpecializations(id, tags, cb)
+    + updateCounselorProfile(id, counselor, cb)
+    + setOnLeaveStatus(id, onLeave, msg, refId, cb)
+  }
+
+  class AppointmentRepository {
+    + bookAppointment(studentId, counselorId, slot, cb)
+    + cancelAppointment(apptId, slotId, cb)
+    + updateAppointmentStatus(apptId, status, cb)
+    + getAppointmentsForCounselor(id, cb)
+    + getAppointmentsForStudent(id, cb)
+    + getAppointmentsForStudentOnDate(id, date, cb)
+    + getCompletedAppointmentsNeedingFeedback(id, cb)
+  }
+
+  class AvailabilityRepository {
+    + getSlotsForCounselor(id, cb)
+    + getAvailableSlotsForCounselor(id, cb)
+    + addSlot(counselorId, date, time, cb)
+    + removeSlot(slotId, cb)
+  }
+
+  class FeedbackRepository {
+    + submitFeedback(feedback, cb)
+    + hasFeedbackForAppointment(apptId, cb)
+  }
+}
+
+' ════════════════════════════════════════
+'  ADAPTER LAYER
+' ════════════════════════════════════════
+
+package "Adapters" #FFF3E0 {
+  class CounselorAdapter {
+    + setData(list)
+    + onBindViewHolder()
+  }
+
+  class AppointmentAdapter {
+    + setData(list)
+    + onBindViewHolder()
+    - applyStatusBadge()
+    - markNoShow()
+  }
+
+  class StudentAppointmentAdapter {
+    + onBindViewHolder()
+    - statusLabel()
+    - statusColour()
+  }
+
+  class TimeSlotAdapter {
+    + setData(list)
+    + onBindViewHolder()
+  }
+
+  interface "TimeSlotAdapter.\nOnBookClickListener" as OnBookClick {
+    + onBookClick(slot)
+  }
+}
+
+' ════════════════════════════════════════
+'  UI — AUTH FLOW
+' ════════════════════════════════════════
+
+package "Auth Flow" #FCE4EC {
+  class LoginActivity <<Activity>> {
+    - attemptLogin()
+    - routeToHome()
+    - selectRole()
+  }
+
+  class RegisterActivity <<Activity>> {
+    - attemptRegistration()
+    - validateInputs()
+  }
+
+  class PrivacyPolicyActivity <<Activity>> {
+    - routeToHome(role)
+  }
+}
+
+' ════════════════════════════════════════
+'  UI — STUDENT SCREENS
+' ════════════════════════════════════════
+
+package "Student UI" #E8EAF6 {
+  class StudentHomeActivity <<Activity>> {
+    - fetchUpcomingSession()
+    - handleCancellation()
+    - checkForPendingFeedback()
+    - showFeedbackDialog()
+    - setupPrivacyTimer()
+    - maskPII() / unmaskPII()
+  }
+
+  class BookingActivity <<Activity>> {
+    - loadSlots()
+    - showSlotsForDate()
+    + onBookClick(slot)
+  }
+
+  class BookingConfirmationFragment <<BottomSheet>> {
+    + {static} newInstance()
+    + setOnConfirmListener()
+  }
+
+  class CalendarActivity <<Activity>> {
+    - fetchAppointmentsForDate()
+  }
+
+  class HistoryActivity <<Activity>> {
+    - fetchHistory()
+  }
+
+  class QuizActivity <<Activity>> {
+    - displayQuestion(step)
+    - advanceStep()
+    - showResult()
+  }
+
+  class EmergencyDialogFragment <<Dialog>> {
+    + {static} newInstance()
+    - dialNumber(phone)
+  }
+}
+
+' ════════════════════════════════════════
+'  UI — COUNSELOR SCREENS
+' ════════════════════════════════════════
+
+package "Counselor UI" #F3E5F5 {
+  class CounselorDashboardActivity <<Activity>> {
+    - loadAppointments()
+    - filterByTab(index)
+    - updateStats()
+  }
+
+  class CounselorListActivity <<Activity>> {
+    - setupSearchBar()
+    - buildSpecializationChips()
+    - applyFilters()
+  }
+
+  class CounselorProfileActivity <<Activity>> {
+    - loadProfile()
+    - populateUI()
+  }
+
+  class CounselorProfileEditActivity <<Activity>> {
+    - loadCurrentProfile()
+    - loadReferralCounselors()
+    - saveProfile()
+  }
+
+  class AvailabilitySetupActivity <<Activity>> {
+    - loadSlots()
+    - showDatePicker()
+    - addSlot()
+    - attachSwipeToDelete()
+  }
+}
+
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Model dependencies
+' ════════════════════════════════════════
+
+Student ..> UserRole
+AvailabilitySchedule o-- TimeSlot
+
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Repository → Model
+' ════════════════════════════════════════
+
+UserRepository ..> Student
+CounselorRepository ..> Counselor
+AppointmentRepository ..> Appointment
+AppointmentRepository ..> TimeSlot
+AvailabilityRepository ..> TimeSlot
+FeedbackRepository ..> FeedbackService
+
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Adapter → Model
+' ════════════════════════════════════════
+
+CounselorAdapter ..> Counselor
+AppointmentAdapter ..> Appointment
+StudentAppointmentAdapter ..> Appointment
+TimeSlotAdapter ..> TimeSlot
+TimeSlotAdapter +-- OnBookClick
+
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Auth Flow
+' ════════════════════════════════════════
+
+LoginActivity ..> UserRepository
+LoginActivity ..> RegisterActivity
+RegisterActivity ..> UserRepository
+RegisterActivity ..> Student
+RegisterActivity ..> PrivacyPolicyActivity
+PrivacyPolicyActivity ..> StudentHomeActivity
+PrivacyPolicyActivity ..> CounselorDashboardActivity
+LoginActivity ..> StudentHomeActivity
+LoginActivity ..> CounselorDashboardActivity
+
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Student UI → Repos
+' ════════════════════════════════════════
+
+StudentHomeActivity ..> UserRepository
+StudentHomeActivity ..> AppointmentRepository
+StudentHomeActivity ..> FeedbackRepository
+StudentHomeActivity ..> CounselorRepository
+StudentHomeActivity ..> EmergencyDialogFragment
+StudentHomeActivity ..> QuizActivity
+StudentHomeActivity ..> CalendarActivity
+StudentHomeActivity ..> HistoryActivity
+StudentHomeActivity ..> CounselorListActivity
+
+BookingActivity ..> AvailabilityRepository
+BookingActivity ..> AppointmentRepository
+BookingActivity ..> AvailabilitySchedule
+BookingActivity ..> TimeSlotAdapter
+BookingActivity ..> BookingConfirmationFragment
+BookingActivity ..|> OnBookClick
+
+CalendarActivity ..> AppointmentRepository
+HistoryActivity ..> AppointmentRepository
+QuizActivity ..> CounselorListActivity
+QuizActivity ..> CounselorRepository
+
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Counselor UI → Repos
+' ════════════════════════════════════════
+
+CounselorDashboardActivity ..> AppointmentRepository
+CounselorDashboardActivity ..> AvailabilityRepository
+CounselorDashboardActivity ..> CounselorRepository
+CounselorDashboardActivity ..> AppointmentAdapter
+CounselorDashboardActivity ..> AvailabilitySetupActivity
+CounselorDashboardActivity ..> CounselorProfileEditActivity
+
+CounselorListActivity ..> CounselorRepository
+CounselorListActivity ..> CounselorAdapter
+CounselorListActivity ..> SpecializationTags
+
+CounselorProfileActivity ..> CounselorRepository
+CounselorProfileActivity ..> BookingActivity
+
+CounselorProfileEditActivity ..> CounselorRepository
+CounselorProfileEditActivity ..> SpecializationTags
+
+AvailabilitySetupActivity ..> AvailabilityRepository
+
+' ════════════════════════════════════════
+'  RELATIONSHIPS — Adapter → Repository
+' ════════════════════════════════════════
+
+AppointmentAdapter ..> UserRepository
+AppointmentAdapter ..> AppointmentRepository
+StudentAppointmentAdapter ..> CounselorRepository
+
+@enduml

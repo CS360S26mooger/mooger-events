@@ -114,16 +114,27 @@ public class BookingActivity extends AppCompatActivity
                     @Override
                     public void onSuccess(List<TimeSlot> slots) {
                         progressBar.setVisibility(View.GONE);
+                        // DEBUG — remove once slots are confirmed working
+                        android.util.Log.d("BOOKING", "counselorId=" + counselorId
+                                + " slots found=" + slots.size());
+                        if (!slots.isEmpty()) {
+                            android.util.Log.d("BOOKING", "first slot date=" + slots.get(0).getDate()
+                                    + " time=" + slots.get(0).getTime()
+                                    + " available=" + slots.get(0).isAvailable());
+                        }
+                        Toast.makeText(BookingActivity.this,
+                                "Querying ID: " + counselorId + "\nSlots found: " + slots.size(),
+                                Toast.LENGTH_LONG).show();
                         schedule = AvailabilitySchedule.fromSlots(counselorId, slots);
-                        // Auto-display slots for the initial date so the UI is not blank
                         showSlotsForDate(initialDate);
                     }
 
                     @Override
                     public void onFailure(Exception e) {
                         progressBar.setVisibility(View.GONE);
+                        android.util.Log.e("BOOKING", "slot load failed: " + e.getMessage());
                         Toast.makeText(BookingActivity.this,
-                                getString(R.string.error_loading_slots),
+                                "Slot load FAILED: " + e.getMessage(),
                                 Toast.LENGTH_LONG).show();
                     }
                 });

@@ -195,29 +195,31 @@ public class UserRepository {
         }
         String uid = firebaseUser.getUid();
 
-        // Step 1: check users collection (students / admins)
-        usersCollection.document(uid)
+        // Step 1: check counselors collection first — a counselor may also have a student
+        // entry in users (e.g. from registering on the student tab), so counselors must
+        // be identified before falling through to the users collection.
+        FirebaseFirestore.getInstance().collection("counselors")
+                .document(uid)
                 .get()
-                .addOnSuccessListener(userDoc -> {
-                    if (userDoc.exists()) {
-                        String role = userDoc.getString("role");
-                        if (role != null && !role.isEmpty()) {
-                            callback.onSuccess(role);
-                        } else {
-                            callback.onFailure(new IllegalArgumentException(
-                                    "Account has no role assigned. "
-                                            + "Please contact your administrator."));
-                        }
+                .addOnSuccessListener(counselorDoc -> {
+                    if (counselorDoc.exists()) {
+                        callback.onSuccess(UserRole.COUNSELOR);
                         return;
                     }
 
-                    // Step 2: not in users — check counselors collection
-                    FirebaseFirestore.getInstance().collection("counselors")
-                            .document(uid)
+                    // Step 2: not a counselor — check users collection (students / admins)
+                    usersCollection.document(uid)
                             .get()
-                            .addOnSuccessListener(counselorDoc -> {
-                                if (counselorDoc.exists()) {
-                                    callback.onSuccess(UserRole.COUNSELOR);
+                            .addOnSuccessListener(userDoc -> {
+                                if (userDoc.exists()) {
+                                    String role = userDoc.getString("role");
+                                    if (role != null && !role.isEmpty()) {
+                                        callback.onSuccess(role);
+                                    } else {
+                                        callback.onFailure(new IllegalArgumentException(
+                                                "Account has no role assigned. "
+                                                        + "Please contact your administrator."));
+                                    }
                                 } else {
                                     callback.onFailure(new IllegalArgumentException(
                                             "Account not found. Please contact your administrator."));

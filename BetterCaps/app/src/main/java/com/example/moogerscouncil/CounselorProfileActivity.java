@@ -46,6 +46,7 @@ public class CounselorProfileActivity extends AppCompatActivity {
 
     private CounselorRepository counselorRepository;
     private String counselorId;
+    private String slotCounselorId; // Auth UID used for slot queries (may differ from Firestore doc ID)
     private String counselorName;
 
     @Override
@@ -54,6 +55,8 @@ public class CounselorProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_counselor_profile);
 
         counselorId = getIntent().getStringExtra("COUNSELOR_ID");
+        slotCounselorId = getIntent().getStringExtra("SLOT_COUNSELOR_ID");
+        if (slotCounselorId == null) slotCounselorId = counselorId; // fallback
         counselorName = getIntent().getStringExtra("COUNSELOR_NAME");
 
         if (counselorId == null) {
@@ -173,7 +176,7 @@ public class CounselorProfileActivity extends AppCompatActivity {
             buttonBookAppointment.setOnClickListener(v -> {
                 Intent intent = new Intent(CounselorProfileActivity.this,
                         BookingActivity.class);
-                intent.putExtra("counselorId", counselorId);
+                intent.putExtra("counselorId", slotCounselorId); // Auth UID — matches slot documents
                 intent.putExtra("counselorName", counselor.getName());
                 startActivity(intent);
             });

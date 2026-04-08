@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Pink circle base -->
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="#C96B8E" />
+            <size android:width="42dp" android:height="42dp" />
+        </shape>
+    </item>
+
+    <!-- White chevron arrow, centered -->
+    <item
+        android:width="18dp"
+        android:height="18dp"
+        android:gravity="center">
+        <vector
+            android:width="18dp"
+            android:height="18dp"
+            android:viewportWidth="24"
+            android:viewportHeight="24">
+            <path
+                android:fillColor="#FFFFFF"
+                android:pathData="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z" />
+        </vector>
+    </item>
+
+</layer-list>

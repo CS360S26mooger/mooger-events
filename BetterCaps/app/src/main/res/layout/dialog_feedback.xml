@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="24dp"
+    android:background="@android:color/white">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Session Feedback"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:textColor="#1A1A2E"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="How was your counseling session today?"
+        android:textSize="14sp"
+        android:textColor="#8A8A9A"
+        android:gravity="center"
+        android:layout_marginBottom="24dp" />
+
+    <RatingBar
+        android:id="@+id/feedbackRating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:numStars="5"
+        android:stepSize="1.0"
+        android:theme="@style/Widget.AppCompat.RatingBar"
+        android:layout_gravity="center"
+        android:layout_marginBottom="24dp"
+        android:progressTint="#FFD700"
+        android:progressBackgroundTint="#E1E4E8" />
+
+    <EditText
+        android:id="@+id/feedbackComment"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:background="@drawable/edittext_bg"
+        android:gravity="top|start"
+        android:hint="Tell us more about your experience (optional)..."
+        android:padding="16dp"
+        android:textSize="14sp"
+        android:textColor="#1A1A2E"
+        android:textColorHint="#8A8A9A"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btnSubmitFeedback"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="@drawable/button_bg"
+        android:text="Submit Feedback"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:backgroundTint="@null"
+        xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+</LinearLayout>

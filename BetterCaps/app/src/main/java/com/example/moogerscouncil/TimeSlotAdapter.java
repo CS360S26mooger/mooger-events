@@ -3,11 +3,15 @@ package com.example.moogerscouncil;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import com.google.android.material.button.MaterialButton;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.ViewHolder> {
 
@@ -40,16 +44,27 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         TimeSlot slot = slots.get(position);
-        holder.dateText.setText(slot.getDate());
+        holder.dateText.setText(formatDate(slot.getDate()));
         holder.timeText.setText(slot.getTime());
 
         if (slot.isAvailable()) {
             holder.bookButton.setEnabled(true);
             holder.bookButton.setText("Book");
+            holder.bookButton.setAlpha(1f);
             holder.bookButton.setOnClickListener(v -> listener.onBookClick(slot));
         } else {
             holder.bookButton.setEnabled(false);
             holder.bookButton.setText("Booked");
+            holder.bookButton.setAlpha(0.5f);
+        }
+    }
+
+    private static String formatDate(String raw) {
+        try {
+            Date d = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).parse(raw);
+            return new SimpleDateFormat("EEE, MMM d", Locale.getDefault()).format(d);
+        } catch (ParseException e) {
+            return raw;
         }
     }
 
@@ -60,7 +75,7 @@ public class TimeSlotAdapter extends RecyclerView.Adapter<TimeSlotAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView dateText, timeText;
-        Button bookButton;
+        MaterialButton bookButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

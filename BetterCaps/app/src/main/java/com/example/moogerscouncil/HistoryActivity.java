@@ -57,29 +57,48 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     /**
-     * Fetches the student's full appointment history via {@link AppointmentRepository}.
-     * Results are sorted client-side by date ascending.
+     * Shows the student's appointment history. Uses the session cache first
+     * (populated by StudentHomeActivity on login) for instant rendering,
+     * then refreshes from Firestore in the background.
      */
     private void fetchHistory() {
+        // Instant render from cache
+        List<Appointment> cached = SessionCache.getInstance().getStudentAppointments(studentId);
+        if (cached != null) {
+            populateList(cached);
+        }
+
+        // Background refresh
         appointmentRepository.getAppointmentsForStudent(studentId,
                 new AppointmentRepository.OnAppointmentsLoadedCallback() {
                     @Override
                     public void onSuccess(List<Appointment> appointments) {
-                        appointmentList.clear();
-                        appointmentList.addAll(appointments);
-                        adapter.notifyDataSetChanged();
-
-                        textEmptyHistory.setVisibility(
-                                appointments.isEmpty() ? View.VISIBLE : View.GONE);
+                        SessionCache.getInstance().putStudentAppointments(studentId, appointments);
+                        populateList(appointments);
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(HistoryActivity.this,
-                                getString(R.string.error_loading_appointments),
-                                Toast.LENGTH_SHORT).show();
-                        textEmptyHistory.setVisibility(View.VISIBLE);
+                        if (cached == null) {
+                            Toast.makeText(HistoryActivity.this,
+                                    getString(R.string.error_loading_appointments),
+                                    Toast.LENGTH_SHORT).show();
+                            textEmptyHistory.setVisibility(View.VISIBLE);
+                        }
                     }
                 });
+    }
+
+    /** Filters to CONFIRMED/COMPLETED and updates the adapter. */
+    private void populateList(List<Appointment> appointments) {
+        appointmentList.clear();
+        for (Appointment a : appointments) {
+            String s = a.getStatus();
+            if ("CONFIRMED".equals(s) || "COMPLETED".equals(s)) {
+                appointmentList.add(a);
+            }
+        }
+        adapter.notifyDataSetChanged();
+        textEmptyHistory.setVisibility(appointmentList.isEmpty() ? View.VISIBLE : View.GONE);
     }
 }

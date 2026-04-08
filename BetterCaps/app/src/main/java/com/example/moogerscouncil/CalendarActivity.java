@@ -71,24 +71,44 @@ public class CalendarActivity extends AppCompatActivity {
     }
 
     /**
-     * Fetches appointments for a student on a specific date via {@link AppointmentRepository}.
+     * Shows appointments for the given date. Checks the session cache first
+     * (populated by StudentHomeActivity on login) for instant rendering,
+     * then falls back to a Firestore fetch if cache is empty.
      *
      * @param date Date in "yyyy-MM-dd" format.
      */
     private void fetchAppointmentsForDate(String date) {
+        // Try cache first — the full appointment list is pre-loaded by StudentHomeActivity
+        List<Appointment> cached = SessionCache.getInstance().getStudentAppointments(studentId);
+        if (cached != null) {
+            filterByDate(cached, date);
+        }
+
+        // Always fetch fresh in background to catch any changes
         appointmentRepository.getAppointmentsForStudentOnDate(studentId, date,
                 new AppointmentRepository.OnAppointmentsLoadedCallback() {
                     @Override
                     public void onSuccess(List<Appointment> appointments) {
-                        appointmentList.clear();
-                        appointmentList.addAll(appointments);
-                        adapter.notifyDataSetChanged();
+                        filterByDate(appointments, date);
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        // Non-critical: empty list remains — no toast needed here
+                        // Non-critical: cached data (if any) already shown
                     }
                 });
+    }
+
+    /** Filters an appointment list to CONFIRMED/COMPLETED for a given date and displays. */
+    private void filterByDate(List<Appointment> all, String date) {
+        appointmentList.clear();
+        for (Appointment a : all) {
+            String s = a.getStatus();
+            if (("CONFIRMED".equals(s) || "COMPLETED".equals(s))
+                    && date.equals(a.getDate())) {
+                appointmentList.add(a);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 }

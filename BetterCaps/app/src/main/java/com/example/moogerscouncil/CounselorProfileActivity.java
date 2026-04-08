@@ -10,9 +10,12 @@
 package com.example.moogerscouncil;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -78,6 +81,8 @@ public class CounselorProfileActivity extends AppCompatActivity {
         chipGroupSpecializations = findViewById(R.id.chipGroupSpecializations);
         buttonBookAppointment = findViewById(R.id.buttonBookAppointment);
 
+        ((ImageButton) findViewById(R.id.buttonBack)).setOnClickListener(v -> finish());
+
         if (counselorName != null) {
             textCounselorName.setText(counselorName);
         }
@@ -86,22 +91,34 @@ public class CounselorProfileActivity extends AppCompatActivity {
     }
 
     /**
-     * Fetches the counselor document from Firestore and populates all UI fields.
+     * Loads the counselor profile. Uses the session cache (warmed by
+     * StudentHomeActivity) for instant rendering, then verifies with
+     * a background Firestore fetch.
      */
     private void loadProfile() {
+        // Instant render from cache
+        Counselor cached = SessionCache.getInstance().getSingleCounselor(counselorId);
+        if (cached != null) {
+            populateUI(cached);
+        }
+
+        // Background refresh to catch any profile changes
         counselorRepository.getCounselor(counselorId,
                 new CounselorRepository.OnCounselorFetchedCallback() {
                     @Override
                     public void onSuccess(Counselor counselor) {
+                        SessionCache.getInstance().putSingleCounselor(counselorId, counselor);
                         populateUI(counselor);
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(CounselorProfileActivity.this,
-                                getString(R.string.error_loading_profile),
-                                Toast.LENGTH_LONG).show();
-                        finish();
+                        if (cached == null) {
+                            Toast.makeText(CounselorProfileActivity.this,
+                                    getString(R.string.error_loading_profile),
+                                    Toast.LENGTH_LONG).show();
+                            finish();
+                        }
                     }
                 });
     }
@@ -142,6 +159,10 @@ public class CounselorProfileActivity extends AppCompatActivity {
                 chip.setText(tag);
                 chip.setCheckable(false);
                 chip.setClickable(false);
+                chip.setChipBackgroundColor(
+                        ColorStateList.valueOf(Color.parseColor("#F8D7E3")));
+                chip.setTextColor(Color.parseColor("#C96B8E"));
+                chip.setChipStrokeWidth(0f);
                 chipGroupSpecializations.addView(chip);
             }
         }

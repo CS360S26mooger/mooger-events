@@ -66,7 +66,11 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
             return;
         }
 
-        counselorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        // Prefer the Firestore doc ID passed from CounselorDashboardActivity.
+        counselorId = getIntent().getStringExtra("COUNSELOR_DOC_ID");
+        if (counselorId == null) {
+            counselorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        }
         counselorRepository = new CounselorRepository();
 
         editTextBio = findViewById(R.id.editTextBio);

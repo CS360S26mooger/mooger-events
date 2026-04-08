@@ -174,6 +174,38 @@ public class UserRepository {
     }
 
     /**
+     * Finds the "real" counselor document (the one with actual profile data like
+     * name, bio, specializations) and writes the Auth UID into its {@code uid} field.
+     * This ensures that student-side code (CounselorAdapter) can read
+     * {@code counselor.getUid()} and pass it to BookingActivity for slot queries.
+     *
+     * <p>Called on every counselor login so the mapping is always current.
+     * Best-effort — failures are logged but do not block login.</p>
+     *
+     * @param counselorsRef Reference to the counselors collection.
+     * @param authUid       The counselor's Firebase Auth UID.
+     */
+    private void stampUidOnRealCounselorDoc(CollectionReference counselorsRef,
+                                             String authUid) {
+        counselorsRef.get()
+                .addOnSuccessListener(snapshot -> {
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
+                        // Skip the ghost doc (the one whose ID == Auth UID with no real data)
+                        if (doc.getId().equals(authUid)) continue;
+                        // Found the real counselor doc — stamp the Auth UID onto it
+                        String existingUid = doc.getString("uid");
+                        if (!authUid.equals(existingUid)) {
+                            doc.getReference().update("uid", authUid)
+                                    .addOnFailureListener(e ->
+                                            android.util.Log.w("UserRepository",
+                                                    "uid stamp failed: " + e.getMessage()));
+                        }
+                        break; // only one real counselor doc expected
+                    }
+                });
+    }
+
+    /**
      * Resolves the role of the currently authenticated user by checking both
      * Firestore collections:
      * <ol>
@@ -195,37 +227,66 @@ public class UserRepository {
         }
         String uid = firebaseUser.getUid();
 
-        // Step 1: check counselors collection first — a counselor may also have a student
-        // entry in users (e.g. from registering on the student tab), so counselors must
-        // be identified before falling through to the users collection.
-        FirebaseFirestore.getInstance().collection("counselors")
-                .document(uid)
-                .get()
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference counselorsRef = db.collection("counselors");
+
+        // Step 1: check counselors collection first — a counselor may also have a
+        // ghost document at counselors/{authUID} (created by a previous login) OR
+        // a real document whose Auth UID differs from the Firestore doc ID.
+        // We check both: direct doc lookup AND a query on the uid field.
+        counselorsRef.document(uid).get()
                 .addOnSuccessListener(counselorDoc -> {
                     if (counselorDoc.exists()) {
+                        // Found via direct doc ID lookup (ghost doc or matching doc).
+                        // Stamp uid onto the real counselor doc so student-side
+                        // slot queries always have the Auth UID available.
+                        stampUidOnRealCounselorDoc(counselorsRef, uid);
                         callback.onSuccess(UserRole.COUNSELOR);
                         return;
                     }
 
-                    // Step 2: not a counselor — check users collection (students / admins)
-                    usersCollection.document(uid)
-                            .get()
-                            .addOnSuccessListener(userDoc -> {
-                                if (userDoc.exists()) {
-                                    String role = userDoc.getString("role");
-                                    if (role != null && !role.isEmpty()) {
-                                        callback.onSuccess(role);
-                                    } else {
-                                        callback.onFailure(new IllegalArgumentException(
-                                                "Account has no role assigned. "
-                                                        + "Please contact your administrator."));
-                                    }
-                                } else {
-                                    callback.onFailure(new IllegalArgumentException(
-                                            "Account not found. Please contact your administrator."));
+                    // Step 2: no doc at counselors/{authUID} — scan for a doc
+                    // that already has this uid field (in case ghost doc was cleaned up)
+                    counselorsRef.whereEqualTo("uid", uid).limit(1).get()
+                            .addOnSuccessListener(uidQuery -> {
+                                if (!uidQuery.isEmpty()) {
+                                    callback.onSuccess(UserRole.COUNSELOR);
+                                    return;
                                 }
+
+                                // Step 3: not a counselor — check users collection
+                                usersCollection.document(uid).get()
+                                        .addOnSuccessListener(userDoc -> {
+                                            if (userDoc.exists()) {
+                                                String role = userDoc.getString("role");
+                                                if (role != null && !role.isEmpty()) {
+                                                    callback.onSuccess(role);
+                                                } else {
+                                                    callback.onFailure(new IllegalArgumentException(
+                                                            "Account has no role assigned. "
+                                                                    + "Please contact your administrator."));
+                                                }
+                                            } else {
+                                                callback.onFailure(new IllegalArgumentException(
+                                                        "Account not found. Please contact your administrator."));
+                                            }
+                                        })
+                                        .addOnFailureListener(callback::onFailure);
                             })
-                            .addOnFailureListener(callback::onFailure);
+                            .addOnFailureListener(e -> {
+                                // uid query failed — fall through to users check
+                                usersCollection.document(uid).get()
+                                        .addOnSuccessListener(userDoc -> {
+                                            if (userDoc.exists()) {
+                                                String role = userDoc.getString("role");
+                                                callback.onSuccess(role != null ? role : "student");
+                                            } else {
+                                                callback.onFailure(new IllegalArgumentException(
+                                                        "Account not found."));
+                                            }
+                                        })
+                                        .addOnFailureListener(callback::onFailure);
+                            });
                 })
                 .addOnFailureListener(callback::onFailure);
     }

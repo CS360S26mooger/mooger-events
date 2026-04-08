@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="4dp"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="16dp">
+
+        <!-- Avatar -->
+        <ImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/ic_student"
+            android:tint="#C96B8E"
+            android:background="@drawable/circle_bg"
+            android:padding="12dp"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="@string/title_counselor_profile" />
+
+        <!-- Name, specializations, language, on-leave badge -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/counselorName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dr. Name"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E" />
+
+            <TextView
+                android:id="@+id/counselorSpecializations"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Specialization"
+                android:textSize="13sp"
+                android:textColor="#8A8A9A"
+                android:layout_marginTop="2dp" />
+
+            <TextView
+                android:id="@+id/counselorLanguage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="#8A8A9A"
+                android:layout_marginTop="2dp"
+                android:visibility="gone" />
+
+            <!-- On-leave badge — shown when counselor.onLeave == true -->
+            <TextView
+                android:id="@+id/badgeOnLeave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/currently_unavailable"
+                android:textSize="11sp"
+                android:textColor="#FFFFFF"
+                android:background="#E57373"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:layout_marginTop="4dp"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <!-- Right side: View Profile button -->
+        <Button
+            android:id="@+id/viewSlotsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="@string/view_profile"
+            android:textSize="12sp"
+            android:textColor="#3D5AF1"
+            android:backgroundTint="#EEF2FF"
+            app:cornerRadius="18dp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F2F4F8">
+
+    <!-- Progress bar — sits at very top, full width -->
+    <ProgressBar
+        android:id="@+id/progressQuiz"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:max="3"
+        android:progress="0"
+        android:progressTint="#C96B8E"
+        android:progressBackgroundTint="#F0D0DC" />
+
+    <!-- ── QUESTION SCREEN ── -->
+    <ScrollView
+        android:id="@+id/layoutQuestion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:visibility="visible">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="24dp">
+
+            <!-- Back / close row -->
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_arrow_back"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:tint="#1A1A2E"
+                android:contentDescription="Back"
+                android:layout_marginBottom="24dp" />
+
+            <!-- Step label -->
+            <TextView
+                android:id="@+id/textQuestionNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Step 1 of 3"
+                android:textSize="13sp"
+                android:textStyle="bold"
+                android:textColor="#C96B8E"
+                android:layout_marginBottom="10dp" />
+
+            <!-- Question text -->
+            <TextView
+                android:id="@+id/textQuestion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Question"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="32dp" />
+
+            <!-- Option buttons -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOption1"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:textColor="#1A1A2E"
+                android:gravity="start|center_vertical"
+                android:paddingStart="20dp"
+                app:strokeColor="#E0E0E0"
+                app:cornerRadius="12dp"
+                android:backgroundTint="#FFFFFF"
+                android:layout_marginBottom="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOption2"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:textColor="#1A1A2E"
+                android:gravity="start|center_vertical"
+                android:paddingStart="20dp"
+                app:strokeColor="#E0E0E0"
+                app:cornerRadius="12dp"
+                android:backgroundTint="#FFFFFF"
+                android:layout_marginBottom="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOption3"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:textColor="#1A1A2E"
+                android:gravity="start|center_vertical"
+                android:paddingStart="20dp"
+                app:strokeColor="#E0E0E0"
+                app:cornerRadius="12dp"
+                android:backgroundTint="#FFFFFF"
+                android:layout_marginBottom="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnOption4"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:textAllCaps="false"
+                android:textSize="15sp"
+                android:textColor="#1A1A2E"
+                android:gravity="start|center_vertical"
+                android:paddingStart="20dp"
+                app:strokeColor="#E0E0E0"
+                app:cornerRadius="12dp"
+                android:backgroundTint="#FFFFFF" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <!-- ── RESULT SCREEN ── -->
+    <ScrollView
+        android:id="@+id/layoutResult"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="32dp"
+            android:gravity="center_horizontal">
+
+            <!-- Match icon -->
+            <ImageView
+                android:layout_width="88dp"
+                android:layout_height="88dp"
+                android:src="@drawable/ic_student"
+                android:tint="#C96B8E"
+                android:background="@drawable/circle_bg"
+                android:padding="18dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="24dp" />
+
+            <!-- "We found your match!" -->
+            <TextView
+                android:id="@+id/textResultTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="We found your match!"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E"
+                android:gravity="center"
+                android:layout_marginBottom="8dp" />
+
+            <!-- Counselor name -->
+            <TextView
+                android:id="@+id/textResultSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="—"
+                android:textSize="18sp"
+                android:textColor="#C96B8E"
+                android:textStyle="bold"
+                android:gravity="center"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Summary blurb -->
+            <TextView
+                android:id="@+id/textResultSummary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="14sp"
+                android:textColor="#8A8A9A"
+                android:gravity="center"
+                android:lineSpacingExtra="4dp"
+                android:layout_marginBottom="36dp" />
+
+            <!-- View Profile (filled pink) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnViewProfile"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="View Profile"
+                android:textSize="16sp"
+                android:backgroundTint="#C96B8E"
+                app:cornerRadius="14dp"
+                android:layout_marginBottom="12dp" />
+
+            <!-- Browse All (outlined) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnBrowseAll"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:text="Browse All Counselors"
+                android:textSize="15sp"
+                android:textColor="#C96B8E"
+                app:strokeColor="#C96B8E"
+                app:cornerRadius="14dp" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

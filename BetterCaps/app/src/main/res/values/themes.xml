@@ -6,4 +6,15 @@
     </style>
 
     <style name="Theme.BetterCaps" parent="Base.Theme.BetterCaps" />
+
+    <!-- Light bottom sheet dialog theme used by BookingConfirmationFragment -->
+    <style name="BottomSheetDialogTheme" parent="Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:backgroundDimAmount">0.55</item>
+    </style>
+
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/bottom_sheet_rounded_bg</item>
+    </style>
 </resources>

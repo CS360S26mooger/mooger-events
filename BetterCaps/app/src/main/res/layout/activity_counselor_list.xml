@@ -7,7 +7,7 @@
     android:orientation="vertical"
     android:background="#F2F4F8">
 
-    <!-- Header: title, search, chips, dropdowns -->
+    <!-- Header -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -15,7 +15,8 @@
         android:background="#FFFFFF"
         android:paddingHorizontal="16dp"
         android:paddingTop="16dp"
-        android:paddingBottom="12dp">
+        android:paddingBottom="14dp"
+        android:elevation="2dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -26,13 +27,13 @@
             android:textColor="#1A1A2E"
             android:layout_marginBottom="12dp" />
 
-        <!-- Search bar -->
+        <!-- Search bar — pill shaped, same as homepage -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="48dp"
+            android:layout_height="46dp"
             android:layout_marginBottom="12dp"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="2dp"
+            app:cardCornerRadius="23dp"
+            app:cardElevation="1dp"
             app:cardBackgroundColor="#FFFFFF">
 
             <LinearLayout
@@ -40,13 +41,13 @@
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingHorizontal="14dp">
+                android:paddingHorizontal="16dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🔍"
-                    android:textSize="15sp"
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_search"
+                    android:tint="#BDBDBD"
                     android:layout_marginEnd="8dp" />
 
                 <EditText
@@ -55,8 +56,9 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:hint="@string/search_counselors_hint"
-                    android:textSize="14sp"
-                    android:textColorHint="#AAAAAA"
+                    android:textSize="13sp"
+                    android:textColor="#1A1A2E"
+                    android:textColorHint="#BDBDBD"
                     android:background="@null"
                     android:inputType="text" />
 
@@ -64,19 +66,21 @@
 
         </androidx.cardview.widget.CardView>
 
-        <!-- Specialization filter chips — populated programmatically -->
+        <!-- Specialization filter chips — same style as homepage -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:clipToPadding="false">
 
             <com.google.android.material.chip.ChipGroup
                 android:id="@+id/chipGroupSpecializations"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:singleLine="true"
-                app:singleSelection="false" />
+                app:singleSelection="false"
+                app:chipSpacingHorizontal="6dp" />
 
         </HorizontalScrollView>
 
@@ -93,22 +97,22 @@
                 android:layout_weight="1"
                 android:layout_marginEnd="4dp"
                 android:hint="@string/filter_language"
-                app:boxStrokeColor="@color/login_field_stroke"
-                app:boxStrokeWidth="1.5dp"
-                app:boxStrokeWidthFocused="1.5dp"
-                app:boxBackgroundColor="#08D4688A"
-                app:hintTextColor="@color/register_pink"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusBottomEnd="12dp">
+                app:hintTextColor="#888888"
+                app:boxStrokeColor="@color/text_input_stroke"
+                app:boxStrokeWidth="1dp"
+                app:boxBackgroundColor="#FFFFFF"
+                app:boxCornerRadiusTopStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusBottomEnd="10dp">
 
                 <AutoCompleteTextView
                     android:id="@+id/dropdownLanguage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_dark"
+                    android:textSize="13sp"
+                    android:textColor="#1A1A2E"
+                    android:textColorHint="#888888"
                     android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -120,22 +124,22 @@
                 android:layout_weight="1"
                 android:layout_marginStart="4dp"
                 android:hint="@string/filter_gender"
-                app:boxStrokeColor="@color/login_field_stroke"
-                app:boxStrokeWidth="1.5dp"
-                app:boxStrokeWidthFocused="1.5dp"
-                app:boxBackgroundColor="#08D4688A"
-                app:hintTextColor="@color/register_pink"
-                app:boxCornerRadiusTopStart="12dp"
-                app:boxCornerRadiusTopEnd="12dp"
-                app:boxCornerRadiusBottomStart="12dp"
-                app:boxCornerRadiusBottomEnd="12dp">
+                app:hintTextColor="#888888"
+                app:boxStrokeColor="@color/text_input_stroke"
+                app:boxStrokeWidth="1dp"
+                app:boxBackgroundColor="#FFFFFF"
+                app:boxCornerRadiusTopStart="10dp"
+                app:boxCornerRadiusTopEnd="10dp"
+                app:boxCornerRadiusBottomStart="10dp"
+                app:boxCornerRadiusBottomEnd="10dp">
 
                 <AutoCompleteTextView
                     android:id="@+id/dropdownGender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:textColor="@color/text_dark"
+                    android:textSize="13sp"
+                    android:textColor="#1A1A2E"
+                    android:textColorHint="#888888"
                     android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -160,9 +164,10 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:paddingTop="12dp"
+        android:paddingHorizontal="12dp"
         android:clipToPadding="false" />
 
-    <!-- Empty state — shown when no counselors match current filters -->
+    <!-- Empty state -->
     <TextView
         android:id="@+id/textEmptyState"
         android:layout_width="match_parent"

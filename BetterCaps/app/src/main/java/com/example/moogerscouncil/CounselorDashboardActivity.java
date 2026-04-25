@@ -51,7 +51,10 @@ public class CounselorDashboardActivity extends AppCompatActivity {
     private TextView totalCount;
     private TextView weekCount;
 
+    /** Auth UID — used for slot/appointment queries (matches what's stored in documents). */
     private String counselorId;
+    /** Firestore doc ID — used for profile reads/writes (may differ from Auth UID). */
+    private String counselorDocId;
     private AppointmentRepository appointmentRepository;
     private AvailabilityRepository availabilityRepository;
     private CounselorRepository counselorRepository;
@@ -71,7 +74,6 @@ public class CounselorDashboardActivity extends AppCompatActivity {
             return;
         }
 
-        counselorId = mAuth.getCurrentUser().getUid();
         appointmentRepository = new AppointmentRepository();
         availabilityRepository = new AvailabilityRepository();
         counselorRepository = new CounselorRepository();
@@ -88,30 +90,64 @@ public class CounselorDashboardActivity extends AppCompatActivity {
         adapter = new AppointmentAdapter(this, new ArrayList<>());
         recyclerView.setAdapter(adapter);
 
-        // Load counselor name via CounselorRepository
-        counselorRepository.getCounselor(counselorId,
-                new CounselorRepository.OnCounselorFetchedCallback() {
+        // counselorId = Auth UID — used for slot/appointment queries because
+        // AvailabilitySetupActivity and BookingActivity write documents with
+        // FirebaseAuth.getCurrentUser().getUid() as the counselorId field.
+        counselorId = mAuth.getCurrentUser().getUid();
+
+        // Resolve the real Firestore doc ID (may differ from Auth UID if the
+        // counselor doc was created manually in the Firebase console).
+        // The Firestore doc ID is needed for profile reads/writes.
+        counselorRepository.getAllCounselors(
+                new CounselorRepository.OnCounselorsLoadedCallback() {
                     @Override
-                    public void onSuccess(Counselor counselor) {
-                        String name = counselor.getName();
-                        counselorNameText.setText(name != null ? name : "Dr. Counselor");
+                    public void onSuccess(List<Counselor> counselors) {
+                        Counselor matched = null;
+                        for (Counselor c : counselors) {
+                            if (counselorId.equals(c.getUid())) {
+                                matched = c;
+                                break;
+                            }
+                        }
+                        // Fallback: pick the first counselor that has real data
+                        if (matched == null) {
+                            for (Counselor c : counselors) {
+                                if (c.getName() != null && !c.getId().equals(counselorId)) {
+                                    matched = c;
+                                    break;
+                                }
+                            }
+                        }
+                        if (matched != null) {
+                            counselorDocId = matched.getId();
+                            String name = matched.getName();
+                            counselorNameText.setText(name != null ? name : "Dr. Counselor");
+                        } else {
+                            counselorDocId = counselorId; // last resort
+                        }
+                        loadAppointments();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        // Name display is non-critical — keep default text
+                        counselorDocId = counselorId;
+                        loadAppointments();
                     }
                 });
 
         // "Add Availability" banner → AvailabilitySetupActivity
+        // Slots use Auth UID as counselorId, so no doc ID needed here
         CardView addSlotBanner = findViewById(R.id.addSlotBanner);
         addSlotBanner.setOnClickListener(v ->
                 startActivity(new Intent(this, AvailabilitySetupActivity.class)));
 
-        // Edit profile button
+        // Edit profile button — pass the real Firestore doc ID for profile ops
         ImageButton editProfileButton = findViewById(R.id.buttonEditProfile);
-        editProfileButton.setOnClickListener(v ->
-                startActivity(new Intent(this, CounselorProfileEditActivity.class)));
+        editProfileButton.setOnClickListener(v -> {
+            Intent intent = new Intent(this, CounselorProfileEditActivity.class);
+            intent.putExtra("COUNSELOR_DOC_ID", counselorDocId);
+            startActivity(intent);
+        });
 
         // Logout
         ImageButton logoutBtn = findViewById(R.id.logoutBtn);
@@ -130,8 +166,6 @@ public class CounselorDashboardActivity extends AppCompatActivity {
             @Override public void onTabUnselected(TabLayout.Tab tab) {}
             @Override public void onTabReselected(TabLayout.Tab tab) {}
         });
-
-        loadAppointments();
     }
 
     @Override

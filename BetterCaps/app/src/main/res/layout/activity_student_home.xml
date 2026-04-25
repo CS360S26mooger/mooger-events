@@ -23,7 +23,8 @@
         <ImageView
             android:layout_width="34dp"
             android:layout_height="34dp"
-            android:src="@mipmap/ic_launcher_round"
+            android:src="@drawable/ic_counselor"
+            android:tint="#FFFFFF"
             android:layout_marginEnd="10dp" />
 
         <LinearLayout
@@ -367,7 +368,10 @@
                         <ImageView
                             android:layout_width="44dp"
                             android:layout_height="44dp"
-                            android:src="@mipmap/ic_launcher_round"
+                            android:src="@drawable/ic_student"
+                            android:tint="#C96B8E"
+                            android:background="@drawable/circle_bg"
+                            android:padding="10dp"
                             android:layout_marginEnd="12dp" />
 
                         <LinearLayout
@@ -412,7 +416,11 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="📅  —"
+                            android:drawableStart="@drawable/ic_nav_calendar"
+                            android:drawableTint="#8A8A9A"
+                            android:drawablePadding="5dp"
+                            android:gravity="center_vertical"
+                            android:text="—"
                             android:textSize="12sp"
                             android:textColor="#8A8A9A" />
 
@@ -421,7 +429,11 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:text="🕑  —"
+                            android:drawableStart="@drawable/ic_nav_history"
+                            android:drawableTint="#8A8A9A"
+                            android:drawablePadding="5dp"
+                            android:gravity="center_vertical"
+                            android:text="—"
                             android:textSize="12sp"
                             android:textColor="#8A8A9A" />
 
@@ -447,7 +459,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center"
-                            android:text="›  Slide to Cancel"
+                            android:text="Slide to Cancel"
                             android:textSize="12sp"
                             android:textColor="#C96B8E"
                             android:clickable="false"
@@ -519,7 +531,7 @@
 
             </androidx.cardview.widget.CardView>
 
-            <!-- Filter chips -->
+            <!-- Filter chips — populated dynamically from SpecializationTags -->
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -528,270 +540,31 @@
                 android:clipToPadding="false">
 
                 <LinearLayout
+                    android:id="@+id/homeChipContainer"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:gravity="center"
-                        android:text="All"
-                        android:textSize="12sp"
-                        android:textColor="#FFFFFF"
-                        android:background="@drawable/chip_active"
-                        android:paddingHorizontal="14dp"
-                        android:layout_marginEnd="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:gravity="center"
-                        android:text="Academic Stress"
-                        android:textSize="12sp"
-                        android:textColor="#8B6BAE"
-                        android:background="@drawable/chip_inactive"
-                        android:paddingHorizontal="14dp"
-                        android:layout_marginEnd="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:gravity="center"
-                        android:text="Career Anxiety"
-                        android:textSize="12sp"
-                        android:textColor="#8B6BAE"
-                        android:background="@drawable/chip_inactive"
-                        android:paddingHorizontal="14dp"
-                        android:layout_marginEnd="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:gravity="center"
-                        android:text="General Therapy"
-                        android:textSize="12sp"
-                        android:textColor="#8B6BAE"
-                        android:background="@drawable/chip_inactive"
-                        android:paddingHorizontal="14dp"
-                        android:layout_marginEnd="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:gravity="center"
-                        android:text="Relationships"
-                        android:textSize="12sp"
-                        android:textColor="#8B6BAE"
-                        android:background="@drawable/chip_inactive"
-                        android:paddingHorizontal="14dp"
-                        android:layout_marginEnd="8dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="32dp"
-                        android:gravity="center"
-                        android:text="Mindfulness"
-                        android:textSize="12sp"
-                        android:textColor="#8B6BAE"
-                        android:background="@drawable/chip_inactive"
-                        android:paddingHorizontal="14dp" />
-
-                </LinearLayout>
+                    android:orientation="horizontal" />
 
             </HorizontalScrollView>
 
-            <!-- Counselor card 1 — tapping launches CounselorListActivity -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/counselorCard1"
+            <!-- Live counselor list — filtered by specialization chips -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/homeSpecialistRecycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="1dp"
-                app:cardBackgroundColor="#FFFFFF">
+                android:nestedScrollingEnabled="false"
+                android:clipToPadding="false" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="14dp">
-
-                    <ImageView
-                        android:layout_width="46dp"
-                        android:layout_height="46dp"
-                        android:src="@mipmap/ic_launcher_round"
-                        android:layout_marginEnd="12dp" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Dr. Baz"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:textColor="#1A1A2E" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="★ 4.9"
-                                android:textSize="12sp"
-                                android:textColor="#F9A825" />
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Anxiety &amp; Depression"
-                            android:textSize="12sp"
-                            android:textColor="#9E9E9E"
-                            android:layout_marginTop="2dp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="8dp">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Next: Today, 4:00 PM"
-                                android:textSize="11sp"
-                                android:textColor="#9E9E9E" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="View Slots"
-                                android:textSize="11sp"
-                                android:textColor="#8B6BAE"
-                                android:background="@drawable/chip_inactive"
-                                android:paddingHorizontal="10dp"
-                                android:paddingVertical="4dp"
-                                android:clickable="false"
-                                android:focusable="false" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
-
-            <!-- Counselor card 2 — tapping launches CounselorListActivity -->
-            <androidx.cardview.widget.CardView
-                android:id="@+id/counselorCard2"
+            <TextView
+                android:id="@+id/textNoSpecialists"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                app:cardCornerRadius="14dp"
-                app:cardElevation="1dp"
-                app:cardBackgroundColor="#FFFFFF">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:padding="14dp">
-
-                    <ImageView
-                        android:layout_width="46dp"
-                        android:layout_height="46dp"
-                        android:src="@mipmap/ic_launcher_round"
-                        android:layout_marginEnd="12dp" />
-
-                    <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Dr. Musa Gondal"
-                                android:textSize="14sp"
-                                android:textStyle="bold"
-                                android:textColor="#1A1A2E" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="★ 4.8"
-                                android:textSize="12sp"
-                                android:textColor="#F9A825" />
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Career &amp; Academic Stress"
-                            android:textSize="12sp"
-                            android:textColor="#9E9E9E"
-                            android:layout_marginTop="2dp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:gravity="center_vertical"
-                            android:layout_marginTop="8dp">
-
-                            <TextView
-                                android:layout_width="0dp"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:text="Next: Tomorrow, 10:00 AM"
-                                android:textSize="11sp"
-                                android:textColor="#9E9E9E" />
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="View Slots"
-                                android:textSize="11sp"
-                                android:textColor="#8B6BAE"
-                                android:background="@drawable/chip_inactive"
-                                android:paddingHorizontal="10dp"
-                                android:paddingVertical="4dp"
-                                android:clickable="false"
-                                android:focusable="false" />
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </androidx.cardview.widget.CardView>
+                android:text="No counselors match this filter."
+                android:textSize="13sp"
+                android:textColor="#8A8A9A"
+                android:gravity="center"
+                android:paddingVertical="24dp"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -893,24 +666,45 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <!-- Fake app top bar -->
+            <!-- Fake app top bar — mirrors real header, shows actual user name -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="58dp"
                 android:background="#C96B8E"
                 android:gravity="center_vertical"
-                android:paddingStart="18dp"
-                android:paddingEnd="8dp">
+                android:paddingStart="16dp"
+                android:paddingEnd="4dp">
 
-                <TextView
+                <ImageView
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:src="@drawable/ic_counselor"
+                    android:tint="#FFFFFF"
+                    android:layout_marginEnd="10dp" />
+
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Evently"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:textColor="#FFFFFF"
-                    android:letterSpacing="0.04" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Welcome back,"
+                        android:textSize="11sp"
+                        android:textColor="#F5D0E4" />
+
+                    <TextView
+                        android:id="@+id/overlayUserName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Student"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF" />
+
+                </LinearLayout>
 
                 <ImageButton
                     android:id="@+id/overlayExitBtn"
@@ -953,11 +747,11 @@
                             android:gravity="center_vertical"
                             android:paddingHorizontal="16dp">
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="🔍"
-                                android:textSize="14sp"
+                            <ImageView
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/ic_search"
+                                android:tint="#BDBDBD"
                                 android:layout_marginEnd="8dp" />
 
                             <TextView
@@ -974,7 +768,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="🌟  Featured"
+                        android:text="Featured"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:textColor="#2D2D2D"
@@ -1009,11 +803,12 @@
                                     android:orientation="vertical"
                                     android:padding="14dp"
                                     android:gravity="bottom">
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="🎵"
-                                        android:textSize="28sp"
+                                    <ImageView
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:src="@drawable/ic_event_music"
+                                        android:tint="#FFFFFF"
+                                        android:alpha="0.9"
                                         android:layout_marginBottom="6dp" />
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -1054,11 +849,12 @@
                                     android:orientation="vertical"
                                     android:padding="14dp"
                                     android:gravity="bottom">
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="🍜"
-                                        android:textSize="28sp"
+                                    <ImageView
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:src="@drawable/ic_event_food"
+                                        android:tint="#FFFFFF"
+                                        android:alpha="0.9"
                                         android:layout_marginBottom="6dp" />
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -1099,11 +895,12 @@
                                     android:orientation="vertical"
                                     android:padding="14dp"
                                     android:gravity="bottom">
-                                    <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:text="🎭"
-                                        android:textSize="28sp"
+                                    <ImageView
+                                        android:layout_width="28dp"
+                                        android:layout_height="28dp"
+                                        android:src="@drawable/ic_event_arts"
+                                        android:tint="#FFFFFF"
+                                        android:alpha="0.9"
                                         android:layout_marginBottom="6dp" />
                                     <TextView
                                         android:layout_width="wrap_content"
@@ -1165,12 +962,12 @@
                                 android:orientation="horizontal"
                                 android:gravity="center_vertical"
                                 android:layout_marginBottom="8dp">
-                                <TextView
+                                <ImageView
                                     android:layout_width="42dp"
                                     android:layout_height="42dp"
-                                    android:text="🎵"
-                                    android:textSize="20sp"
-                                    android:gravity="center"
+                                    android:src="@drawable/ic_event_music"
+                                    android:tint="#C96B8E"
+                                    android:padding="10dp"
                                     android:background="#F5E6F0"
                                     android:layout_marginEnd="12dp" />
                                 <LinearLayout
@@ -1200,7 +997,11 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="📅 Apr 14   📍 Lahore Fort"
+                                android:text="Apr 14  ·  Lahore Fort"
+                                android:drawableStart="@drawable/ic_nav_calendar"
+                                android:drawableTint="#AAAAAA"
+                                android:drawablePadding="5dp"
+                                android:gravity="center_vertical"
                                 android:textSize="12sp"
                                 android:textColor="#888888"
                                 android:layout_marginBottom="6dp" />
@@ -1222,7 +1023,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="🎟  Rs. 1,500"
+                                    android:text="Rs. 1,500"
                                     android:textSize="13sp"
                                     android:textStyle="bold"
                                     android:textColor="#C96B8E" />
@@ -1232,7 +1033,7 @@
                                     android:text="Interested"
                                     android:textSize="12sp"
                                     android:textColor="#FFFFFF"
-                                    android:background="#C96B8E"
+                                    android:background="@drawable/bg_pill_pink"
                                     android:paddingHorizontal="14dp"
                                     android:paddingVertical="6dp"
                                     android:clickable="false"
@@ -1261,12 +1062,12 @@
                                 android:orientation="horizontal"
                                 android:gravity="center_vertical"
                                 android:layout_marginBottom="8dp">
-                                <TextView
+                                <ImageView
                                     android:layout_width="42dp"
                                     android:layout_height="42dp"
-                                    android:text="📚"
-                                    android:textSize="20sp"
-                                    android:gravity="center"
+                                    android:src="@drawable/ic_event_lit"
+                                    android:tint="#8B6BAE"
+                                    android:padding="10dp"
                                     android:background="#EDE7F6"
                                     android:layout_marginEnd="12dp" />
                                 <LinearLayout
@@ -1296,7 +1097,11 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="📅 Apr 19   📍 Alhamra Arts Council"
+                                android:text="Apr 19  ·  Alhamra Arts Council"
+                                android:drawableStart="@drawable/ic_nav_calendar"
+                                android:drawableTint="#AAAAAA"
+                                android:drawablePadding="5dp"
+                                android:gravity="center_vertical"
                                 android:textSize="12sp"
                                 android:textColor="#888888"
                                 android:layout_marginBottom="6dp" />
@@ -1318,7 +1123,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="🎟  Free Entry"
+                                    android:text="Free Entry"
                                     android:textSize="13sp"
                                     android:textStyle="bold"
                                     android:textColor="#8B6BAE" />
@@ -1328,7 +1133,7 @@
                                     android:text="Interested"
                                     android:textSize="12sp"
                                     android:textColor="#FFFFFF"
-                                    android:background="#8B6BAE"
+                                    android:background="@drawable/bg_pill_purple"
                                     android:paddingHorizontal="14dp"
                                     android:paddingVertical="6dp"
                                     android:clickable="false"
@@ -1357,12 +1162,12 @@
                                 android:orientation="horizontal"
                                 android:gravity="center_vertical"
                                 android:layout_marginBottom="8dp">
-                                <TextView
+                                <ImageView
                                     android:layout_width="42dp"
                                     android:layout_height="42dp"
-                                    android:text="🎷"
-                                    android:textSize="20sp"
-                                    android:gravity="center"
+                                    android:src="@drawable/ic_event_music"
+                                    android:tint="#C96B8E"
+                                    android:padding="10dp"
                                     android:background="#F5E6F0"
                                     android:layout_marginEnd="12dp" />
                                 <LinearLayout
@@ -1392,7 +1197,11 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="📅 Apr 21   📍 Packages Mall Rooftop"
+                                android:text="Apr 21  ·  Packages Mall Rooftop"
+                                android:drawableStart="@drawable/ic_nav_calendar"
+                                android:drawableTint="#AAAAAA"
+                                android:drawablePadding="5dp"
+                                android:gravity="center_vertical"
                                 android:textSize="12sp"
                                 android:textColor="#888888"
                                 android:layout_marginBottom="6dp" />
@@ -1414,7 +1223,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="🎟  Rs. 2,500"
+                                    android:text="Rs. 2,500"
                                     android:textSize="13sp"
                                     android:textStyle="bold"
                                     android:textColor="#C96B8E" />
@@ -1424,7 +1233,7 @@
                                     android:text="Interested"
                                     android:textSize="12sp"
                                     android:textColor="#FFFFFF"
-                                    android:background="#C96B8E"
+                                    android:background="@drawable/bg_pill_pink"
                                     android:paddingHorizontal="14dp"
                                     android:paddingVertical="6dp"
                                     android:clickable="false"
@@ -1453,12 +1262,12 @@
                                 android:orientation="horizontal"
                                 android:gravity="center_vertical"
                                 android:layout_marginBottom="8dp">
-                                <TextView
+                                <ImageView
                                     android:layout_width="42dp"
                                     android:layout_height="42dp"
-                                    android:text="🍢"
-                                    android:textSize="20sp"
-                                    android:gravity="center"
+                                    android:src="@drawable/ic_event_food"
+                                    android:tint="#8B6BAE"
+                                    android:padding="10dp"
                                     android:background="#EDE7F6"
                                     android:layout_marginEnd="12dp" />
                                 <LinearLayout
@@ -1488,7 +1297,11 @@
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="📅 Apr 23   📍 Liberty Market"
+                                android:text="Apr 23  ·  Liberty Market"
+                                android:drawableStart="@drawable/ic_nav_calendar"
+                                android:drawableTint="#AAAAAA"
+                                android:drawablePadding="5dp"
+                                android:gravity="center_vertical"
                                 android:textSize="12sp"
                                 android:textColor="#888888"
                                 android:layout_marginBottom="6dp" />
@@ -1510,7 +1323,7 @@
                                     android:layout_width="0dp"
                                     android:layout_height="wrap_content"
                                     android:layout_weight="1"
-                                    android:text="🎟  Free Entry"
+                                    android:text="Free Entry"
                                     android:textSize="13sp"
                                     android:textStyle="bold"
                                     android:textColor="#8B6BAE" />
@@ -1520,7 +1333,7 @@
                                     android:text="Interested"
                                     android:textSize="12sp"
                                     android:textColor="#FFFFFF"
-                                    android:background="#8B6BAE"
+                                    android:background="@drawable/bg_pill_purple"
                                     android:paddingHorizontal="14dp"
                                     android:paddingVertical="6dp"
                                     android:clickable="false"
@@ -1547,8 +1360,8 @@
                     android:orientation="vertical"
                     android:gravity="center"
                     android:clickable="false">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="🏠" android:textSize="18sp" />
+                    <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                        android:src="@drawable/ic_nav_home" android:tint="#C96B8E" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="Home" android:textSize="10sp" android:textColor="#C96B8E" />
                 </LinearLayout>
@@ -1560,8 +1373,8 @@
                     android:orientation="vertical"
                     android:gravity="center"
                     android:clickable="false">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="🔍" android:textSize="18sp" />
+                    <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                        android:src="@drawable/ic_search" android:tint="#AAAAAA" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="Explore" android:textSize="10sp" android:textColor="#AAAAAA" />
                 </LinearLayout>
@@ -1573,8 +1386,8 @@
                     android:orientation="vertical"
                     android:gravity="center"
                     android:clickable="false">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="🎫" android:textSize="18sp" />
+                    <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                        android:src="@drawable/ic_required" android:tint="#AAAAAA" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="Tickets" android:textSize="10sp" android:textColor="#AAAAAA" />
                 </LinearLayout>
@@ -1586,8 +1399,8 @@
                     android:orientation="vertical"
                     android:gravity="center"
                     android:clickable="false">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="👤" android:textSize="18sp" />
+                    <ImageView android:layout_width="22dp" android:layout_height="22dp"
+                        android:src="@drawable/ic_student" android:tint="#AAAAAA" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
                         android:text="Profile" android:textSize="10sp" android:textColor="#AAAAAA" />
                 </LinearLayout>

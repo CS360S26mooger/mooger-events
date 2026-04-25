@@ -10,6 +10,8 @@
  */
 package com.example.moogerscouncil;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -115,12 +117,18 @@ public class CounselorListActivity extends AppCompatActivity {
     private void buildSpecializationChips(String preSelectedTag) {
         chipGroupSpecializations.removeAllViews();
 
+        int activeColor   = Color.parseColor("#8B6BAE");
+        int inactiveColor = Color.parseColor("#FFFFFF");
+        int strokeColor   = Color.parseColor("#E0D4F0");
+
         for (String tag : SpecializationTags.ALL_TAGS) {
             Chip chip = new Chip(this);
             chip.setText(tag);
             chip.setCheckable(true);
-            chip.setChecked(tag.equalsIgnoreCase(preSelectedTag)
-                    || filterState.selectedSpecializations.contains(tag));
+            boolean checked = tag.equalsIgnoreCase(preSelectedTag)
+                    || filterState.selectedSpecializations.contains(tag);
+            chip.setChecked(checked);
+            applyChipStyle(chip, checked, activeColor, inactiveColor, strokeColor);
             chipGroupSpecializations.addView(chip);
         }
 
@@ -132,8 +140,27 @@ public class CounselorListActivity extends AppCompatActivity {
                     filterState.selectedSpecializations.add(chip.getText().toString());
                 }
             }
+            // Re-style all chips to reflect new checked state
+            for (int i = 0; i < group.getChildCount(); i++) {
+                Chip c = (Chip) group.getChildAt(i);
+                applyChipStyle(c, c.isChecked(), activeColor, inactiveColor, strokeColor);
+            }
             applyFilters();
         });
+    }
+
+    private void applyChipStyle(Chip chip, boolean checked,
+                                int activeColor, int inactiveColor, int strokeColor) {
+        if (checked) {
+            chip.setChipBackgroundColor(ColorStateList.valueOf(activeColor));
+            chip.setTextColor(Color.WHITE);
+            chip.setChipStrokeWidth(0f);
+        } else {
+            chip.setChipBackgroundColor(ColorStateList.valueOf(inactiveColor));
+            chip.setTextColor(activeColor);
+            chip.setChipStrokeColor(ColorStateList.valueOf(strokeColor));
+            chip.setChipStrokeWidth(1f);
+        }
     }
 
     /**

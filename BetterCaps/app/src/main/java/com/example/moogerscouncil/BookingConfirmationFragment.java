@@ -12,10 +12,16 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.button.MaterialButton;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Bottom sheet that shows a booking summary before the student confirms.
@@ -44,6 +50,12 @@ public class BookingConfirmationFragment extends BottomSheetDialogFragment {
 
     private TimeSlot slot;
     private OnConfirmListener listener;
+
+    /** Forces the light pastel bottom sheet theme instead of the app's DayNight theme. */
+    @Override
+    public int getTheme() {
+        return R.style.BottomSheetDialogTheme;
+    }
 
     /**
      * Creates a new instance with the counselor name and slot details pre-filled.
@@ -88,7 +100,7 @@ public class BookingConfirmationFragment extends BottomSheetDialogFragment {
         Bundle args = getArguments();
         if (args != null) {
             textCounselor.setText(args.getString(ARG_COUNSELOR_NAME, "—"));
-            textDate.setText(args.getString(ARG_DATE, "—"));
+            textDate.setText(formatDate(args.getString(ARG_DATE, "—")));
             textTime.setText(args.getString(ARG_TIME, "—"));
         }
 
@@ -102,5 +114,25 @@ public class BookingConfirmationFragment extends BottomSheetDialogFragment {
         buttonCancel.setOnClickListener(v -> dismiss());
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Dim behind the bottom sheet for visual focus
+        if (getDialog() != null && getDialog().getWindow() != null) {
+            Window window = getDialog().getWindow();
+            window.setDimAmount(0.5f);
+        }
+    }
+
+    /** Converts "yyyy-MM-dd" → "EEE, MMM d" (e.g. "Thu, Apr 16"). */
+    private String formatDate(String raw) {
+        try {
+            Date d = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(raw);
+            return new SimpleDateFormat("EEE, MMM d", Locale.US).format(d);
+        } catch (Exception e) {
+            return raw;
+        }
     }
 }

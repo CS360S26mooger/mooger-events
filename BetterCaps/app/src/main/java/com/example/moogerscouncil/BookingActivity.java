@@ -10,7 +10,11 @@
 package com.example.moogerscouncil;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.view.View;
 import android.widget.CalendarView;
 import android.widget.ProgressBar;
@@ -66,8 +70,14 @@ public class BookingActivity extends AppCompatActivity
         appointmentRepository = new AppointmentRepository();
 
         TextView titleText = findViewById(R.id.counselorNameTitle);
-        titleText.setText(getString(R.string.title_booking,
-                counselorName != null ? counselorName : "Counselor"));
+        String name = counselorName != null ? counselorName : "Counselor";
+        String header = "Book with\n";
+        SpannableString spannable = new SpannableString(header + name);
+        spannable.setSpan(
+                new ForegroundColorSpan(Color.argb(160, 26, 26, 46)),
+                header.length(), header.length() + name.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        titleText.setText(spannable);
 
         calendarView = findViewById(R.id.calendarView);
         labelSlots = findViewById(R.id.labelSlots);
@@ -75,8 +85,7 @@ public class BookingActivity extends AppCompatActivity
         progressBar = findViewById(R.id.progressBar);
         recyclerSlots = findViewById(R.id.slotsRecyclerView);
 
-        recyclerSlots.setLayoutManager(
-                new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        recyclerSlots.setLayoutManager(new LinearLayoutManager(this));
         slotAdapter = new TimeSlotAdapter(new ArrayList<>(), this);
         recyclerSlots.setAdapter(slotAdapter);
 
@@ -193,6 +202,7 @@ public class BookingActivity extends AppCompatActivity
                         @Override
                         public void onSuccess() {
                             progressBar.setVisibility(View.GONE);
+                            SessionCache.getInstance().invalidateAppointments();
                             Toast.makeText(BookingActivity.this,
                                     getString(R.string.booking_success),
                                     Toast.LENGTH_SHORT).show();

@@ -195,12 +195,11 @@ public class StudentHomeActivity extends AppCompatActivity {
         if (cachedCounselors != null) {
             allCounselors.clear();
             allCounselors.addAll(cachedCounselors);
-            applyHomeChipFilter(null);
+            refreshSpecialistList();
             warmCounselorCache(cachedCounselors);
         }
         new CounselorRepository().getAllCounselors(new CounselorRepository.OnCounselorsLoadedCallback() {
             @Override public void onSuccess(java.util.List<Counselor> list) {
-                if (list.isEmpty()) return;
                 // Merge: overlay fresh Firestore data onto whatever is currently in
                 // allCounselors (which may include counselors added by populateSessionCard
                 // or from the cache). This prevents a partial Firestore result from
@@ -215,14 +214,22 @@ public class StudentHomeActivity extends AppCompatActivity {
                     if (key != null) merged.put(key, c);
                 }
                 java.util.List<Counselor> mergedList = new java.util.ArrayList<>(merged.values());
-                SessionCache.getInstance().putCounselors(mergedList);
+                if (!mergedList.isEmpty()) {
+                    SessionCache.getInstance().putCounselors(mergedList);
+                }
                 allCounselors.clear();
                 allCounselors.addAll(mergedList);
-                applyHomeChipFilter(null);
-                warmCounselorCache(mergedList);
-                warmSlotCache(mergedList);
+                refreshSpecialistList();
+                if (!mergedList.isEmpty()) {
+                    warmCounselorCache(mergedList);
+                    warmSlotCache(mergedList);
+                }
             }
-            @Override public void onFailure(Exception e) { /* cache still shown if available */ }
+            @Override public void onFailure(Exception e) {
+                // Firestore failed — still refresh the display with whatever is
+                // already in allCounselors (populated from cache or populateSessionCard).
+                refreshSpecialistList();
+            }
         });
 
         // Build specialization chips dynamically from SpecializationTags
@@ -371,11 +378,10 @@ public class StudentHomeActivity extends AppCompatActivity {
                                     }
                                 }
                                 if (!alreadyInList) {
+                                    // Add silently — getAllCounselors() callback owns the display
+                                    // update. Calling applyHomeChipFilter() here would show only
+                                    // this one counselor before the full list has loaded.
                                     allCounselors.add(counselor);
-                                    applyHomeChipFilter(activeChip != null
-                                            ? (activeChip.getText().toString().equals("All")
-                                                ? null : activeChip.getText().toString())
-                                            : null);
                                 }
                             }
                             @Override
@@ -729,6 +735,14 @@ public class StudentHomeActivity extends AppCompatActivity {
             chip.setTextColor(isActive ? 0xFFFFFFFF : 0xFF8B6BAE);
         }
         activeChip = selected;
+    }
+
+    /** Refreshes the specialist RecyclerView using the currently active chip. */
+    private void refreshSpecialistList() {
+        String activeFilter = (activeChip != null
+                && !activeChip.getText().toString().equals("All"))
+                ? activeChip.getText().toString() : null;
+        applyHomeChipFilter(activeFilter);
     }
 
     private void applyHomeChipFilter(String specialization) {

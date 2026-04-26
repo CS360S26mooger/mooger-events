@@ -62,14 +62,16 @@
 
     </LinearLayout>
 
-    <!-- Scrollable content -->
-    <ScrollView
+    <!-- Scrollable content — NestedScrollView required so RecyclerView wrap_content
+         measures all items (plain ScrollView only measures 1 viewport worth). -->
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:scrollbars="none"
         android:clipChildren="false"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -568,7 +570,7 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </androidx.core.widget.NestedScrollView>
 
     <!-- Bottom navigation — minimalist 4-tab bar -->
     <LinearLayout

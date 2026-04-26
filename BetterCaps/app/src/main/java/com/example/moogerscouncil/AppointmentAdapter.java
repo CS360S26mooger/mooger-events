@@ -22,9 +22,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * RecyclerView adapter for the counselor's appointment dashboard cards.
@@ -81,12 +87,6 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Appointment apt = appointments.get(position);
 
-        // Avatar initial from student ID (placeholder until name loads)
-        String initial = apt.getStudentId() != null && !apt.getStudentId().isEmpty()
-                ? String.valueOf(apt.getStudentId().charAt(0)).toUpperCase()
-                : "S";
-        holder.studentInitial.setText(initial);
-
         // Async student name lookup
         holder.studentName.setText("Loading…");
         if (apt.getStudentId() != null) {
@@ -96,8 +96,8 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             holder.studentName.setText("Unknown");
         }
 
-        holder.sessionTime.setText("🕙 " + apt.getTime());
-        holder.sessionDate.setText(apt.getDate());
+        holder.sessionTime.setText(normalizeTime(apt.getTime()));
+        holder.sessionDate.setText(formatDate(apt.getDate()));
 
         // Status badge styling
         applyStatusBadge(holder, apt.getStatus());
@@ -136,32 +136,44 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
         if (status == null) return;
 
+        String label;
+        int textColor;
+        int bgColor;
         switch (status) {
             case "CONFIRMED":
-                holder.sessionTopic.setText(context.getString(R.string.status_confirmed));
-                holder.sessionTopic.setTextColor(Color.parseColor("#4CAF50"));
+                label     = context.getString(R.string.status_confirmed);
+                textColor = Color.parseColor("#3D5AF1");
+                bgColor   = Color.parseColor("#EDE7F6");
                 break;
             case "COMPLETED":
-                holder.sessionTopic.setText(context.getString(R.string.status_completed));
-                holder.sessionTopic.setTextColor(Color.parseColor("#9E9E9E"));
-                holder.itemView.setAlpha(0.6f);
+                label     = context.getString(R.string.status_completed);
+                textColor = Color.parseColor("#388E3C");
+                bgColor   = Color.parseColor("#E8F5E9");
+                holder.itemView.setAlpha(0.75f);
                 break;
             case "CANCELLED":
-                holder.sessionTopic.setText(context.getString(R.string.status_cancelled));
-                holder.sessionTopic.setTextColor(Color.parseColor("#F44336"));
+                label     = context.getString(R.string.status_cancelled);
+                textColor = Color.parseColor("#D32F2F");
+                bgColor   = Color.parseColor("#FFEBEE");
                 holder.studentName.setPaintFlags(
                         holder.studentName.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                 break;
             case "NO_SHOW":
-                holder.sessionTopic.setText(context.getString(R.string.status_no_show));
-                holder.sessionTopic.setTextColor(Color.parseColor("#FF9800"));
-                holder.itemView.setAlpha(0.7f);
+                label     = context.getString(R.string.status_no_show);
+                textColor = Color.parseColor("#E65100");
+                bgColor   = Color.parseColor("#FFF3E0");
+                holder.itemView.setAlpha(0.75f);
                 break;
             default:
-                holder.sessionTopic.setText(status);
-                holder.sessionTopic.setTextColor(Color.parseColor("#8A8A9A"));
+                label     = status;
+                textColor = Color.parseColor("#8A8A9A");
+                bgColor   = Color.parseColor("#F2F4F8");
                 break;
         }
+        holder.sessionTopic.setText(label);
+        holder.sessionTopic.setTextColor(textColor);
+        ViewCompat.setBackgroundTintList(holder.sessionTopic,
+                ColorStateList.valueOf(bgColor));
     }
 
     /**
@@ -191,6 +203,34 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                 });
     }
 
+    private static String formatDate(String raw) {
+        if (raw == null || raw.isEmpty()) return "—";
+        try {
+            SimpleDateFormat in = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            in.setLenient(false);
+            return new SimpleDateFormat("EEE, MMM d", Locale.US).format(in.parse(raw.trim()));
+        } catch (Exception ignored) {}
+        return raw;
+    }
+
+    /** Normalizes any stored time string to HH:mm (24-hour, zero-padded, no AM/PM). */
+    private static String normalizeTime(String raw) {
+        if (raw == null || raw.isEmpty()) return "—";
+        // Already HH:mm or H:mm 24h — just zero-pad the hour
+        if (raw.matches("\\d{1,2}:\\d{2}")) {
+            String[] p = raw.split(":");
+            return String.format(Locale.US, "%02d:%02d",
+                    Integer.parseInt(p[0]), Integer.parseInt(p[1]));
+        }
+        // 12h with AM/PM e.g. "10:00 AM", "2:00 PM"
+        try {
+            SimpleDateFormat in = new SimpleDateFormat("h:mm a", Locale.US);
+            in.setLenient(false);
+            return new SimpleDateFormat("HH:mm", Locale.US).format(in.parse(raw.trim()));
+        } catch (Exception ignored) {}
+        return raw;
+    }
+
     @Override
     public int getItemCount() {
         return appointments.size();
@@ -198,17 +238,11 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     /** ViewHolder for a single appointment card. */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView studentInitial, studentName, sessionTopic, sessionTime, sessionDate;
+        TextView studentName, sessionTopic, sessionTime, sessionDate;
         Button joinButton, noShowButton, crisisButton, profileButton, notesButton;
 
-        /**
-         * Binds view references from {@code item_appointment.xml}.
-         *
-         * @param itemView The inflated card view.
-         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            studentInitial = itemView.findViewById(R.id.studentInitial);
             studentName = itemView.findViewById(R.id.studentName);
             sessionTopic = itemView.findViewById(R.id.sessionTopic);
             sessionTime = itemView.findViewById(R.id.sessionTime);

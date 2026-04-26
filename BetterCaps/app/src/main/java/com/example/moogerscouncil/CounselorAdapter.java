@@ -69,10 +69,10 @@ public class CounselorAdapter extends RecyclerView.Adapter<CounselorAdapter.View
 
         holder.nameText.setText(counselor.getName());
 
-        // Specializations — join as readable string
+        // Specializations — join as readable dot-separated string
         if (counselor.getSpecializations() != null && !counselor.getSpecializations().isEmpty()) {
             holder.specializationText.setText(
-                    android.text.TextUtils.join(" · ", counselor.getSpecializations()));
+                    android.text.TextUtils.join("  •  ", counselor.getSpecializations()));
         } else {
             holder.specializationText.setText("");
         }
@@ -131,11 +131,6 @@ public class CounselorAdapter extends RecyclerView.Adapter<CounselorAdapter.View
         TextView badgeOnLeave;
         Button viewProfileButton;
 
-        /**
-         * Binds view references from {@code item_counselor.xml}.
-         *
-         * @param itemView The inflated card view.
-         */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nameText = itemView.findViewById(R.id.counselorName);

@@ -7,7 +7,7 @@
     android:layout_marginHorizontal="16dp"
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
+    app:cardElevation="4dp"
     app:cardBackgroundColor="#FFFFFF">
 
     <LinearLayout
@@ -16,82 +16,86 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Student info row -->
+        <!-- Top row: pastel pink avatar + counselor/student name -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="12dp">
+            android:layout_marginBottom="14dp">
 
-            <!-- Avatar circle -->
-            <TextView
-                android:id="@+id/studentInitial"
-                android:layout_width="42dp"
-                android:layout_height="42dp"
-                android:text="H"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="#3D5AF1"
-                android:gravity="center"
+            <ImageView
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@drawable/ic_student"
+                android:tint="#C96B8E"
                 android:background="@drawable/circle_bg"
-                android:layout_marginEnd="12dp" />
+                android:backgroundTint="#F5E6F0"
+                android:padding="10dp"
+                android:layout_marginEnd="12dp"
+                android:contentDescription="Profile" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/studentName"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/studentName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Student Name"
-                    android:textSize="15sp"
-                    android:textStyle="bold"
-                    android:textColor="#1A1A2E" />
-
-                <TextView
-                    android:id="@+id/sessionTopic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Academic Stress"
-                    android:textSize="13sp"
-                    android:textColor="#8A8A9A" />
-
-            </LinearLayout>
-
-            <!-- Time -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="end">
-
-                <TextView
-                    android:id="@+id/sessionTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🕙 10:00 AM"
-                    android:textSize="12sp"
-                    android:textColor="#3D5AF1"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/sessionDate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Today"
-                    android:textSize="11sp"
-                    android:textColor="#8A8A9A"
-                    android:layout_gravity="end" />
-
-            </LinearLayout>
+                android:text="Counselor Name"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E" />
 
         </LinearLayout>
 
-        <!-- Action buttons row 1 -->
+        <!-- Bottom chin: date · time · status pill -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="6dp">
+
+            <TextView
+                android:id="@+id/sessionDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Mon, Apr 26"
+                android:textSize="12sp"
+                android:textColor="#8A8A9A"
+                android:drawableStart="@drawable/ic_nav_calendar"
+                android:drawableTint="#AAAAAA"
+                android:drawablePadding="4dp"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/sessionTime"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="10:00"
+                android:textSize="12sp"
+                android:textColor="#8B6BAE"
+                android:drawableStart="@drawable/ic_nav_history"
+                android:drawableTint="#8B6BAE"
+                android:drawablePadding="4dp"
+                android:gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/sessionTopic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Upcoming"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="#5E35B1"
+                android:background="@drawable/bg_tag_pastel"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp" />
+
+        </LinearLayout>
+
+        <!-- Counselor-facing action buttons — hidden for students via StudentAppointmentAdapter -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -131,12 +135,11 @@
                 android:text="Join"
                 android:textSize="12sp"
                 android:textColor="#FFFFFF"
-                android:backgroundTint="#3D5AF1"
+                android:backgroundTint="#8B6BAE"
                 app:cornerRadius="8dp" />
 
         </LinearLayout>
 
-        <!-- Action buttons row 2 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

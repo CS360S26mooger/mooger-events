@@ -54,7 +54,7 @@ public class EmergencyButtonTest {
         try (ActivityScenario<StudentHomeActivity> scenario =
                      ActivityScenario.launch(makeIntent())) {
 
-            onView(withId(R.id.fabEmergency))
+            onView(withId(R.id.crisisBanner))
                     .check(matches(isDisplayed()));
         }
     }
@@ -68,7 +68,7 @@ public class EmergencyButtonTest {
         try (ActivityScenario<StudentHomeActivity> scenario =
                      ActivityScenario.launch(makeIntent())) {
 
-            onView(withId(R.id.fabEmergency)).perform(click());
+            onView(withId(R.id.crisisBanner)).perform(click());
 
             onView(withText(R.string.emergency_title))
                     .check(matches(isDisplayed()));
@@ -83,7 +83,7 @@ public class EmergencyButtonTest {
         try (ActivityScenario<StudentHomeActivity> scenario =
                      ActivityScenario.launch(makeIntent())) {
 
-            onView(withId(R.id.fabEmergency)).perform(click());
+            onView(withId(R.id.crisisBanner)).perform(click());
 
             onView(withText(R.string.call_crisis_line))
                     .check(matches(isDisplayed()));
@@ -98,7 +98,7 @@ public class EmergencyButtonTest {
         try (ActivityScenario<StudentHomeActivity> scenario =
                      ActivityScenario.launch(makeIntent())) {
 
-            onView(withId(R.id.fabEmergency)).perform(click());
+            onView(withId(R.id.crisisBanner)).perform(click());
 
             onView(withText(R.string.call_campus_security))
                     .check(matches(isDisplayed()));
@@ -113,7 +113,7 @@ public class EmergencyButtonTest {
         try (ActivityScenario<StudentHomeActivity> scenario =
                      ActivityScenario.launch(makeIntent())) {
 
-            onView(withId(R.id.fabEmergency)).perform(click());
+            onView(withId(R.id.crisisBanner)).perform(click());
 
             onView(withText(R.string.dismiss))
                     .check(matches(isDisplayed()));

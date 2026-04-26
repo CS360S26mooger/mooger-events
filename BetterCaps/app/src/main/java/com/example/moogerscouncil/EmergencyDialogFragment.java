@@ -1,12 +1,3 @@
-/*
- * EmergencyDialogFragment.java
- * Role: DialogFragment that displays campus crisis line phone numbers and triggers
- *       ACTION_DIAL intents. Has zero network dependencies — works fully offline.
- *       Implements the CrisisIntervention CRC card's dial-only responsibility.
- *
- * Design pattern: Fragment (DialogFragment).
- * Part of the BetterCAPS counseling platform.
- */
 package com.example.moogerscouncil;
 
 import android.app.Dialog;
@@ -15,11 +6,13 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
+
+import com.google.android.material.button.MaterialButton;
 
 /**
  * Emergency contact dialog accessible from the student home screen.
@@ -34,11 +27,6 @@ import androidx.fragment.app.DialogFragment;
  */
 public class EmergencyDialogFragment extends DialogFragment {
 
-    /**
-     * Creates a new instance of the dialog.
-     *
-     * @return A new {@link EmergencyDialogFragment}.
-     */
     public static EmergencyDialogFragment newInstance() {
         return new EmergencyDialogFragment();
     }
@@ -46,38 +34,50 @@ public class EmergencyDialogFragment extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        // Build a vertical list: Crisis Line → Campus Emergency → Dismiss
+        Dialog dialog = new Dialog(requireContext());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         View view = LayoutInflater.from(requireContext())
                 .inflate(R.layout.dialog_emergency, null);
+        dialog.setContentView(view);
 
-        Button btnCrisis  = view.findViewById(R.id.btnCallCrisis);
-        Button btnCampus  = view.findViewById(R.id.btnCallCampus);
-        Button btnDismiss = view.findViewById(R.id.btnDismissEmergency);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        MaterialButton btnCrisis  = view.findViewById(R.id.btnCallCrisis);
+        MaterialButton btnCampus  = view.findViewById(R.id.btnCallCampus);
+        MaterialButton btnDismiss = view.findViewById(R.id.btnDismissEmergency);
 
         btnCrisis.setOnClickListener(v -> {
             dialNumber(getString(R.string.crisis_line_number));
             dismiss();
         });
-
         btnCampus.setOnClickListener(v -> {
             dialNumber(getString(R.string.campus_security_number));
             dismiss();
         });
-
         btnDismiss.setOnClickListener(v -> dismiss());
 
-        return new AlertDialog.Builder(requireContext())
-                .setTitle(R.string.emergency_title)
-                .setView(view)
-                .create();
+        return dialog;
     }
 
-    /**
-     * Opens the phone dialer with the given number pre-filled.
-     * Does not place the call automatically.
-     *
-     * @param phoneNumber The phone number string to dial.
-     */
+    @Override
+    public void onStart() {
+        super.onStart();
+        Dialog dialog = getDialog();
+        if (dialog == null) return;
+        Window window = dialog.getWindow();
+        if (window == null) return;
+        int width = (int) (getResources().getDisplayMetrics().widthPixels * 0.85);
+        window.setLayout(width, WindowManager.LayoutParams.WRAP_CONTENT);
+        window.setGravity(android.view.Gravity.CENTER);
+        window.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+        window.setDimAmount(0.55f);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+    }
+
     private void dialNumber(String phoneNumber) {
         Intent dialIntent = new Intent(Intent.ACTION_DIAL,
                 Uri.parse("tel:" + phoneNumber));

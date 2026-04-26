@@ -21,7 +21,7 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/emergency_title"
+        android:text="Cancel Appointment?"
         android:textSize="18sp"
         android:textStyle="bold"
         android:textColor="#1A1A2E"
@@ -31,39 +31,29 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/emergency_message"
-        android:textSize="13sp"
+        android:text="Are you sure you want to release this slot?"
+        android:textSize="14sp"
         android:textColor="#8A8A9A"
         android:gravity="center"
         android:lineSpacingExtra="3dp"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginBottom="28dp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnCallCrisis"
+        android:id="@+id/btnConfirmCancel"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="@string/call_crisis_line"
+        android:text="Yes, Cancel"
         android:textSize="15sp"
         android:backgroundTint="#C96B8E"
         android:layout_marginBottom="10dp"
         app:cornerRadius="14dp" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnCallCampus"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:text="@string/call_campus_security"
-        android:textSize="15sp"
-        android:backgroundTint="#8B6BAE"
-        android:layout_marginBottom="10dp"
-        app:cornerRadius="14dp" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnDismissEmergency"
+        android:id="@+id/btnKeepAppointment"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:text="@string/dismiss"
+        android:text="No, Keep It"
         android:textSize="15sp"
         android:textColor="#C96B8E"
         app:strokeColor="#C96B8E"

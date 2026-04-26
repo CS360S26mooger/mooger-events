@@ -1,75 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:background="#F2F4F8"
     tools:context=".BookingActivity">
 
-    <!-- Title bar -->
-    <TextView
-        android:id="@+id/counselorNameTitle"
+    <!-- Main content -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Book Appointment"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:textColor="#1A1A2E"
-        android:background="#FFFFFF"
-        android:padding="16dp"
-        android:elevation="2dp" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <!-- Loading indicator -->
-    <ProgressBar
+        <!-- Pink header bar — matching app header language -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:background="#C96B8E"
+            android:gravity="center_vertical"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
+
+            <TextView
+                android:id="@+id/counselorNameTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Book Appointment"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FFFFFF" />
+
+        </LinearLayout>
+
+        <!-- Scrollable calendar + slots -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="none"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <!-- Calendar in card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="2dp"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <com.example.moogerscouncil.CustomCalendarView
+                        android:id="@+id/calendarView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF" />
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- "Available Times" section header -->
+                <TextView
+                    android:id="@+id/labelSlots"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_available_times"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A2E"
+                    android:layout_marginBottom="8dp"
+                    android:visibility="gone" />
+
+                <!-- Slot list -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/slotsRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:clipToPadding="false"
+                    android:visibility="gone" />
+
+                <!-- Empty state for tapped date with no slots -->
+                <TextView
+                    android:id="@+id/textNoSlots"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/no_slots_for_date"
+                    android:textSize="14sp"
+                    android:textColor="#8A8A9A"
+                    android:gravity="center"
+                    android:padding="16dp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <!-- Floating loading overlay -->
+    <FrameLayout
         android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:visibility="gone" />
-
-    <!-- Calendar -->
-    <CalendarView
-        android:id="@+id/calendarView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF" />
+        android:layout_height="match_parent"
+        android:background="#55000000"
+        android:visibility="gone">
 
-    <!-- "Available Times" section header — hidden until a date is tapped -->
-    <TextView
-        android:id="@+id/labelSlots"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/label_available_times"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        android:textColor="#1A1A2E"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="12dp"
-        android:paddingBottom="8dp"
-        android:visibility="gone" />
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/dialog_rounded_bg"
+            android:padding="28dp"
+            android:gravity="center"
+            android:elevation="8dp">
 
-    <!-- Slot list (horizontal) -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/slotsRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingHorizontal="12dp"
-        android:clipToPadding="false"
-        android:visibility="gone" />
+            <ProgressBar
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:indeterminateTint="#8B6BAE"
+                android:layout_marginBottom="16dp" />
 
-    <!-- Empty state for tapped date with no slots -->
-    <TextView
-        android:id="@+id/textNoSlots"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/no_slots_for_date"
-        android:textSize="14sp"
-        android:textColor="#8A8A9A"
-        android:gravity="center"
-        android:padding="16dp"
-        android:visibility="gone" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Please wait"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E" />
 
-</LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Just a moment…"
+                android:textSize="12sp"
+                android:textColor="#8A8A9A"
+                android:layout_marginTop="4dp" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

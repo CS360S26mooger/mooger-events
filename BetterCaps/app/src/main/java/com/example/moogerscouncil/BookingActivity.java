@@ -16,8 +16,8 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.View;
-import android.widget.CalendarView;
-import android.widget.ProgressBar;
+import java.util.HashSet;
+import java.util.Set;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -47,11 +47,11 @@ public class BookingActivity extends AppCompatActivity
     private String counselorDocId;  // Firestore doc ID — fallback for old manually-created counselors
     private String counselorName;
 
-    private CalendarView calendarView;
+    private CustomCalendarView calendarView;
     private TextView labelSlots;
     private TextView textNoSlots;
     private RecyclerView recyclerSlots;
-    private ProgressBar progressBar;
+    private View progressBar;
 
     private TimeSlotAdapter slotAdapter;
     private AvailabilitySchedule schedule;
@@ -91,12 +91,8 @@ public class BookingActivity extends AppCompatActivity
         slotAdapter = new TimeSlotAdapter(new ArrayList<>(), this);
         recyclerSlots.setAdapter(slotAdapter);
 
-        calendarView.setMinDate(System.currentTimeMillis() - 1000);
-        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            String selectedDate = String.format(Locale.US, "%04d-%02d-%02d",
-                    year, month + 1, dayOfMonth);
-            showSlotsForDate(selectedDate);
-        });
+        calendarView.setMinDate(System.currentTimeMillis());
+        calendarView.setOnDateClickListener(this::showSlotsForDate);
 
         loadSlots(todayString());
     }
@@ -111,13 +107,26 @@ public class BookingActivity extends AppCompatActivity
     }
 
     /**
-     * Fetches all available slots for the counselor via {@link AvailabilityRepository},
-     * builds an {@link AvailabilitySchedule}, then immediately shows slots for
-     * {@code initialDate} so the user sees something without tapping the calendar.
+     * Loads available slots for the counselor. Checks the session cache first (pre-warmed
+     * by StudentHomeActivity on login) so the calendar appears instantly without a Firestore
+     * round-trip. On cache miss, falls back to a live fetch with Auth-UID → doc-ID fallback.
      *
      * @param initialDate The date to display on load, typically today.
      */
     private void loadSlots(String initialDate) {
+        // Cache-first: slots were pre-warmed under both uid and doc-ID keys at login.
+        List<TimeSlot> cached = SessionCache.getInstance().getSlots(counselorId);
+        if (cached == null && counselorDocId != null && !counselorDocId.equals(counselorId)) {
+            cached = SessionCache.getInstance().getSlots(counselorDocId);
+        }
+        if (cached != null) {
+            schedule = AvailabilitySchedule.fromSlots(counselorId, cached);
+            calendarView.setHighlightedDates(slotDates(cached));
+            showSlotsForDate(initialDate);
+            return;
+        }
+
+        // Cache miss — live Firestore fetch with Auth-UID → doc-ID fallback
         progressBar.setVisibility(View.VISIBLE);
 
         availabilityRepository.getAvailableSlotsForCounselor(counselorId,
@@ -126,13 +135,13 @@ public class BookingActivity extends AppCompatActivity
                     public void onSuccess(List<TimeSlot> slots) {
                         if (!slots.isEmpty()) {
                             progressBar.setVisibility(View.GONE);
+                            SessionCache.getInstance().putSlots(counselorId, slots);
                             schedule = AvailabilitySchedule.fromSlots(counselorId, slots);
+                            calendarView.setHighlightedDates(slotDates(slots));
                             showSlotsForDate(initialDate);
                             return;
                         }
-                        // Zero slots under the Auth-UID path — try the Firestore doc ID
-                        // as a fallback for manually-provisioned counselors whose uid field
-                        // was not yet stamped when the cache was populated.
+                        // Zero slots on the Auth-UID path — try the Firestore doc ID
                         String fallback = counselorDocId;
                         if (fallback != null && !fallback.equals(counselorId)) {
                             availabilityRepository.getAvailableSlotsForCounselor(fallback,
@@ -140,9 +149,12 @@ public class BookingActivity extends AppCompatActivity
                                         @Override
                                         public void onSuccess(List<TimeSlot> fbSlots) {
                                             progressBar.setVisibility(View.GONE);
-                                            // Use whichever key returned data
                                             String key = fbSlots.isEmpty() ? counselorId : fallback;
+                                            // Cache under both keys so next open is instant
+                                            SessionCache.getInstance().putSlots(counselorId, fbSlots);
+                                            SessionCache.getInstance().putSlots(fallback, fbSlots);
                                             schedule = AvailabilitySchedule.fromSlots(key, fbSlots);
+                                            calendarView.setHighlightedDates(slotDates(fbSlots));
                                             showSlotsForDate(initialDate);
                                         }
                                         @Override
@@ -153,7 +165,9 @@ public class BookingActivity extends AppCompatActivity
                                     });
                         } else {
                             progressBar.setVisibility(View.GONE);
+                            SessionCache.getInstance().putSlots(counselorId, slots);
                             schedule = AvailabilitySchedule.fromSlots(counselorId, slots);
+                            calendarView.setHighlightedDates(slotDates(slots));
                             showSlotsForDate(initialDate);
                         }
                     }
@@ -223,6 +237,7 @@ public class BookingActivity extends AppCompatActivity
                         public void onSuccess() {
                             progressBar.setVisibility(View.GONE);
                             SessionCache.getInstance().invalidateAppointments();
+                            SessionCache.getInstance().invalidateSlots(counselorId, counselorDocId);
                             Toast.makeText(BookingActivity.this,
                                     getString(R.string.booking_success),
                                     Toast.LENGTH_SHORT).show();
@@ -256,5 +271,15 @@ public class BookingActivity extends AppCompatActivity
         });
 
         fragment.show(getSupportFragmentManager(), "booking_confirm");
+    }
+
+    private Set<String> slotDates(List<TimeSlot> slots) {
+        Set<String> dates = new HashSet<>();
+        for (TimeSlot s : slots) {
+            if (s.getDate() != null && !s.getDate().isEmpty()) {
+                dates.add(s.getDate());
+            }
+        }
+        return dates;
     }
 }

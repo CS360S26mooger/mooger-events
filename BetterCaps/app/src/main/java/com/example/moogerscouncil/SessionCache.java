@@ -55,6 +55,10 @@ public final class SessionCache {
     private final java.util.Map<String, Counselor> cachedSingleCounselors = new java.util.HashMap<>();
     private long singleCounselorFetchedAt;
 
+    // Slots per counselor — keyed by both Auth UID and Firestore doc ID so any lookup hits.
+    // Session-scoped; invalidated after a booking so stale availability is never shown.
+    private final java.util.Map<String, List<TimeSlot>> cachedSlots = new java.util.HashMap<>();
+
     private SessionCache() {}
 
     /** Returns the singleton instance. */
@@ -142,6 +146,30 @@ public final class SessionCache {
         singleCounselorFetchedAt = now();
     }
 
+    // ── Slots ──
+
+    /**
+     * Returns the cached available-slot list for the given counselor key (uid or doc ID),
+     * or null if not yet pre-warmed. Session-scoped — invalidated after a booking.
+     */
+    public List<TimeSlot> getSlots(String counselorKey) {
+        if (counselorKey == null) return null;
+        return cachedSlots.get(counselorKey);
+    }
+
+    /** Stores the available-slot list under the given key (uid or doc ID, or both). */
+    public void putSlots(String counselorKey, List<TimeSlot> slots) {
+        if (counselorKey == null) return;
+        cachedSlots.put(counselorKey, slots);
+    }
+
+    /** Removes cached slots for the given counselor keys (call after booking). */
+    public void invalidateSlots(String... counselorKeys) {
+        for (String key : counselorKeys) {
+            if (key != null) cachedSlots.remove(key);
+        }
+    }
+
     // ── Invalidation ──
 
     /** Call after a booking or cancellation to force appointment refresh. */
@@ -153,6 +181,7 @@ public final class SessionCache {
     public void invalidateCounselors() {
         cachedCounselors = null;
         cachedSingleCounselors.clear();
+        cachedSlots.clear();
     }
 
     /** Call on logout to wipe everything. */
@@ -161,6 +190,7 @@ public final class SessionCache {
         cachedCounselors = null;
         cachedStudentAppointments = null;
         cachedSingleCounselors.clear();
+        cachedSlots.clear();
     }
 
     // ── Internal ──

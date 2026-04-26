@@ -19,8 +19,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Displays the student's past and upcoming appointments in date order.
@@ -88,12 +91,26 @@ public class HistoryActivity extends AppCompatActivity {
                 });
     }
 
-    /** Filters to CONFIRMED/COMPLETED and updates the adapter. */
+    /** Filters to CONFIRMED/COMPLETED and updates the adapter.
+     *  CONFIRMED appointments with a strictly past date are auto-marked NO_SHOW. */
     private void populateList(List<Appointment> appointments) {
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
         appointmentList.clear();
         for (Appointment a : appointments) {
             String s = a.getStatus();
-            if ("CONFIRMED".equals(s) || "COMPLETED".equals(s)) {
+            if ("CONFIRMED".equals(s)) {
+                if (a.getDate() != null && a.getDate().compareTo(today) < 0) {
+                    appointmentRepository.updateAppointmentStatus(a.getId(), "NO_SHOW",
+                            new AppointmentRepository.OnStatusUpdateCallback() {
+                                @Override public void onSuccess() {
+                                    SessionCache.getInstance().invalidateAppointments();
+                                }
+                                @Override public void onFailure(Exception e) { /* best effort */ }
+                            });
+                } else {
+                    appointmentList.add(a);
+                }
+            } else if ("COMPLETED".equals(s)) {
                 appointmentList.add(a);
             }
         }

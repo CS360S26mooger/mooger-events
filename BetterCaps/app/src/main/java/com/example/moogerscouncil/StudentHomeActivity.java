@@ -18,7 +18,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -221,6 +220,7 @@ public class StudentHomeActivity extends AppCompatActivity {
                 allCounselors.addAll(mergedList);
                 applyHomeChipFilter(null);
                 warmCounselorCache(mergedList);
+                warmSlotCache(mergedList);
             }
             @Override public void onFailure(Exception e) { /* cache still shown if available */ }
         });
@@ -418,38 +418,61 @@ public class StudentHomeActivity extends AppCompatActivity {
     private void handleCancellation() {
         float thumbPx = 42 * getResources().getDisplayMetrics().density;
 
-        new AlertDialog.Builder(this)
-                .setTitle("Cancel Appointment?")
-                .setMessage("Are you sure you want to release this slot? This cannot be undone.")
-                .setPositiveButton("Yes, Cancel", (dialog, which) -> {
-                    // Reset slider immediately so it never appears stuck
-                    resetSlider(thumbPx);
-                    if (upcomingAppointment == null) {
-                        clearSessionCard();
-                        return;
-                    }
-                    appointmentRepository.cancelAppointment(
-                            upcomingAppointment.getId(),
-                            upcomingAppointment.getCounselorId(),
-                            upcomingAppointment.getSlotId(),
-                            new AppointmentRepository.OnStatusUpdateCallback() {
-                                @Override
-                                public void onSuccess() {
-                                    SessionCache.getInstance().invalidateAppointments();
-                                    Toast.makeText(StudentHomeActivity.this,
-                                            "Appointment cancelled.", Toast.LENGTH_SHORT).show();
-                                    fetchUpcomingSession();
-                                }
-                                @Override
-                                public void onFailure(Exception e) {
-                                    Toast.makeText(StudentHomeActivity.this,
-                                            "Could not cancel. Please try again.",
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                })
-                .setNegativeButton("No", (dialog, which) -> resetSlider(thumbPx))
-                .show();
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_cancel_appointment);
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+            window.setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.85),
+                    WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setGravity(android.view.Gravity.CENTER);
+            window.addFlags(WindowManager.LayoutParams.FLAG_BLUR_BEHIND);
+            window.setDimAmount(0.55f);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+        }
+
+        MaterialButton btnConfirm = dialog.findViewById(R.id.btnConfirmCancel);
+        MaterialButton btnKeep    = dialog.findViewById(R.id.btnKeepAppointment);
+
+        btnConfirm.setOnClickListener(v -> {
+            dialog.dismiss();
+            resetSlider(thumbPx);
+            if (upcomingAppointment == null) {
+                clearSessionCard();
+                return;
+            }
+            appointmentRepository.cancelAppointment(
+                    upcomingAppointment.getId(),
+                    upcomingAppointment.getCounselorId(),
+                    upcomingAppointment.getSlotId(),
+                    new AppointmentRepository.OnStatusUpdateCallback() {
+                        @Override
+                        public void onSuccess() {
+                            SessionCache.getInstance().invalidateAppointments();
+                            Toast.makeText(StudentHomeActivity.this,
+                                    "Appointment cancelled.", Toast.LENGTH_SHORT).show();
+                            fetchUpcomingSession();
+                        }
+                        @Override
+                        public void onFailure(Exception e) {
+                            Toast.makeText(StudentHomeActivity.this,
+                                    "Could not cancel. Please try again.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
+        btnKeep.setOnClickListener(v -> {
+            dialog.dismiss();
+            resetSlider(thumbPx);
+        });
+
+        // Reset slider no matter how the dialog is dismissed (including outside-tap)
+        dialog.setOnDismissListener(d -> resetSlider(thumbPx));
+
+        dialog.show();
     }
 
     private void resetSlider(float thumbPx) {
@@ -567,6 +590,72 @@ public class StudentHomeActivity extends AppCompatActivity {
             if (c.getUid() != null && !c.getUid().equals(c.getId())) {
                 cache.putSingleCounselor(c.getUid(), c);
             }
+        }
+    }
+
+    /**
+     * Pre-fetches available slots for every counselor in the background immediately
+     * after the counselor list is loaded. Slots are stored under both the Auth UID
+     * and the Firestore doc ID so that BookingActivity cache lookups always hit
+     * regardless of which key was used when the slots were originally created.
+     *
+     * <p>Already-cached counselors are skipped. Slot cache is invalidated by
+     * {@link BookingActivity} after a successful booking.</p>
+     */
+    private void warmSlotCache(java.util.List<Counselor> counselors) {
+        AvailabilityRepository repo = new AvailabilityRepository();
+        for (Counselor c : counselors) {
+            String uid   = c.getUid();
+            String docId = c.getId();
+            // Primary key: Auth UID (standard slot path). Fall back to doc ID if uid absent.
+            String primaryKey  = (uid != null && !uid.isEmpty()) ? uid : docId;
+            String fallbackKey = (uid != null && !uid.isEmpty()
+                    && docId != null && !docId.equals(uid)) ? docId : null;
+
+            if (primaryKey == null) continue;
+
+            // Skip counselors whose slots are already cached under the primary key
+            if (SessionCache.getInstance().getSlots(primaryKey) != null) continue;
+
+            // Effectively-final copies for lambdas
+            String pKey = primaryKey;
+            String fKey = fallbackKey;
+
+            repo.getAvailableSlotsForCounselor(pKey,
+                    new AvailabilityRepository.OnSlotsLoadedCallback() {
+                        @Override
+                        public void onSuccess(java.util.List<TimeSlot> slots) {
+                            if (!slots.isEmpty()) {
+                                // Slots found on the primary path — cache under both keys
+                                SessionCache.getInstance().putSlots(pKey, slots);
+                                if (fKey != null) SessionCache.getInstance().putSlots(fKey, slots);
+                            } else if (fKey != null) {
+                                // Primary path empty — try the doc-ID fallback path
+                                repo.getAvailableSlotsForCounselor(fKey,
+                                        new AvailabilityRepository.OnSlotsLoadedCallback() {
+                                            @Override
+                                            public void onSuccess(java.util.List<TimeSlot> fbSlots) {
+                                                // Cache under both keys (even if fbSlots is empty)
+                                                // so we don't repeat the double-fetch next time.
+                                                SessionCache.getInstance().putSlots(pKey, fbSlots);
+                                                SessionCache.getInstance().putSlots(fKey, fbSlots);
+                                            }
+                                            @Override
+                                            public void onFailure(Exception e) { /* silent */ }
+                                        });
+                            } else {
+                                // No fallback and primary returned empty — cache the empty result
+                                // so we don't re-fetch on every home-screen load.
+                                SessionCache.getInstance().putSlots(pKey, slots);
+                            }
+                        }
+                        @Override
+                        public void onFailure(Exception e) {
+                            // Silent — BookingActivity will fall back to a live fetch
+                            android.util.Log.w("SlotWarm",
+                                    "slot pre-fetch failed for " + pKey + ": " + e.getMessage());
+                        }
+                    });
         }
     }
 

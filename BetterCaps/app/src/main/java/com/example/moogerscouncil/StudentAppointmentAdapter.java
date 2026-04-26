@@ -9,15 +9,20 @@
  */
 package com.example.moogerscouncil;
 
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * RecyclerView adapter for the student's appointment history screen.
@@ -50,21 +55,21 @@ public class StudentAppointmentAdapter
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Appointment apt = appointments.get(position);
 
-        holder.timeText.setText(apt.getTime() != null ? apt.getTime() : "—");
-        holder.dateText.setText(apt.getDate() != null ? apt.getDate() : "—");
+        holder.timeText.setText(normalizeTime(apt.getTime()));
+        holder.dateText.setText(formatDate(apt.getDate()));
 
-        // Status with colour badge
+        // Status pill — text, text colour, and pastel background tint
         String status = apt.getStatus() != null ? apt.getStatus() : "UNKNOWN";
         holder.statusText.setText(statusLabel(status));
         holder.statusText.setTextColor(statusColour(status));
+        ViewCompat.setBackgroundTintList(holder.statusText,
+                ColorStateList.valueOf(statusBgColour(status)));
 
         holder.counselorNameText.setText("Loading…");
-        holder.initialText.setText("?");
 
         String counselorId = apt.getCounselorId();
         if (counselorId == null || counselorId.isEmpty()) {
             holder.counselorNameText.setText("Counselor: Not Assigned");
-            holder.initialText.setText("?");
         } else {
             // Tag the ViewHolder so recycled views don't show stale async results
             holder.itemView.setTag(counselorId);
@@ -74,7 +79,6 @@ public class StudentAppointmentAdapter
             if (cached != null) {
                 String name = cached.getName() != null ? cached.getName() : "Your Counselor";
                 holder.counselorNameText.setText(name);
-                holder.initialText.setText(name.isEmpty() ? "?" : String.valueOf(name.charAt(0)));
             } else {
                 counselorRepository.getCounselor(counselorId,
                         new CounselorRepository.OnCounselorFetchedCallback() {
@@ -86,15 +90,12 @@ public class StudentAppointmentAdapter
                                 String name = counselor.getName() != null
                                         ? counselor.getName() : "Your Counselor";
                                 holder.counselorNameText.setText(name);
-                                holder.initialText.setText(
-                                        name.isEmpty() ? "?" : String.valueOf(name.charAt(0)));
                             }
 
                             @Override
                             public void onFailure(Exception e) {
                                 if (!counselorId.equals(holder.itemView.getTag())) return;
                                 holder.counselorNameText.setText("Counselor: Unknown");
-                                holder.initialText.setText("?");
                             }
                         });
             }
@@ -104,6 +105,31 @@ public class StudentAppointmentAdapter
     @Override
     public int getItemCount() {
         return appointments.size();
+    }
+
+    private static String formatDate(String raw) {
+        if (raw == null || raw.isEmpty()) return "—";
+        try {
+            SimpleDateFormat in = new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+            in.setLenient(false);
+            return new SimpleDateFormat("EEE, MMM d", Locale.US).format(in.parse(raw.trim()));
+        } catch (Exception ignored) {}
+        return raw;
+    }
+
+    private static String normalizeTime(String raw) {
+        if (raw == null || raw.isEmpty()) return "—";
+        if (raw.matches("\\d{1,2}:\\d{2}")) {
+            String[] p = raw.split(":");
+            return String.format(Locale.US, "%02d:%02d",
+                    Integer.parseInt(p[0]), Integer.parseInt(p[1]));
+        }
+        try {
+            SimpleDateFormat in = new SimpleDateFormat("h:mm a", Locale.US);
+            in.setLenient(false);
+            return new SimpleDateFormat("HH:mm", Locale.US).format(in.parse(raw.trim()));
+        } catch (Exception ignored) {}
+        return raw;
     }
 
     private String statusLabel(String status) {
@@ -118,11 +144,21 @@ public class StudentAppointmentAdapter
 
     private int statusColour(String status) {
         switch (status) {
-            case "COMPLETED":  return 0xFF388E3C; // green
-            case "CONFIRMED":  return 0xFF3D5AF1; // blue
+            case "COMPLETED":  return 0xFF388E3C;
+            case "CONFIRMED":  return 0xFF3D5AF1;
             case "CANCELLED":
-            case "NO_SHOW":    return 0xFFD32F2F; // red
-            default:           return 0xFF8A8A9A; // grey
+            case "NO_SHOW":    return 0xFFD32F2F;
+            default:           return 0xFF8A8A9A;
+        }
+    }
+
+    private int statusBgColour(String status) {
+        switch (status) {
+            case "COMPLETED":  return Color.parseColor("#E8F5E9");
+            case "CONFIRMED":  return Color.parseColor("#EDE7F6");
+            case "CANCELLED":
+            case "NO_SHOW":    return Color.parseColor("#FFEBEE");
+            default:           return Color.parseColor("#F2F4F8");
         }
     }
 
@@ -131,7 +167,7 @@ public class StudentAppointmentAdapter
      * Hides all counselor-only action buttons on construction.
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView timeText, dateText, counselorNameText, statusText, initialText;
+        TextView timeText, dateText, counselorNameText, statusText;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -139,7 +175,6 @@ public class StudentAppointmentAdapter
             dateText          = itemView.findViewById(R.id.sessionDate);
             counselorNameText = itemView.findViewById(R.id.studentName);
             statusText        = itemView.findViewById(R.id.sessionTopic);
-            initialText       = itemView.findViewById(R.id.studentInitial);
 
             // Hide counselor-only action buttons
             hideIfPresent(itemView, R.id.joinButton);

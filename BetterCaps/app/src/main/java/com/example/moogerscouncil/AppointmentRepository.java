@@ -122,7 +122,10 @@ public class AppointmentRepository {
     public void bookAppointment(String studentId, String counselorId,
                                 TimeSlot slot, OnBookingCallback callback) {
 
-        DocumentReference slotRef = db.collection("slots").document(slot.getId());
+        DocumentReference slotRef = db.collection("Slots")
+                .document(counselorId)
+                .collection("slots")
+                .document(slot.getId());
         DocumentReference appointmentRef = appointmentsCollection.document();
 
         db.runTransaction(transaction -> {
@@ -173,25 +176,28 @@ public class AppointmentRepository {
     }
 
     /**
-     * Cancels an appointment by setting its status to CANCELLED and
-     * restoring the linked slot's availability so another student can book it.
+     * Cancels an appointment by setting its status to CANCELLED and restoring
+     * the linked slot's availability so another student can book it.
      *
      * <p>The slot restore is best-effort — if the slot document does not exist
      * (e.g. demo data) the appointment is still marked CANCELLED and
      * {@link OnStatusUpdateCallback#onSuccess()} is called.</p>
      *
      * @param appointmentId The Firestore document ID of the appointment.
+     * @param counselorId   The counselor's Auth UID (needed to locate the slot path).
      * @param slotId        The Firestore document ID of the linked slot.
      * @param callback      Success/failure callback.
      */
-    public void cancelAppointment(String appointmentId, String slotId,
+    public void cancelAppointment(String appointmentId, String counselorId, String slotId,
                                   OnStatusUpdateCallback callback) {
         appointmentsCollection.document(appointmentId)
                 .update("status", "CANCELLED")
                 .addOnSuccessListener(unused -> {
-                    // Best-effort: restore slot availability
-                    if (slotId != null && !slotId.isEmpty()) {
-                        db.collection("slots").document(slotId)
+                    if (counselorId != null && slotId != null && !slotId.isEmpty()) {
+                        db.collection("Slots")
+                                .document(counselorId)
+                                .collection("slots")
+                                .document(slotId)
                                 .update("available", true)
                                 .addOnCompleteListener(task -> callback.onSuccess());
                     } else {

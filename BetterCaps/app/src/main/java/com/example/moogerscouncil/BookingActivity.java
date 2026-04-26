@@ -43,7 +43,8 @@ import java.util.Locale;
 public class BookingActivity extends AppCompatActivity
         implements TimeSlotAdapter.OnBookClickListener {
 
-    private String counselorId;
+    private String counselorId;     // Auth UID — primary slot path key
+    private String counselorDocId;  // Firestore doc ID — fallback for old manually-created counselors
     private String counselorName;
 
     private CalendarView calendarView;
@@ -63,7 +64,8 @@ public class BookingActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_booking);
 
-        counselorId = getIntent().getStringExtra("counselorId");
+        counselorId   = getIntent().getStringExtra("counselorId");
+        counselorDocId = getIntent().getStringExtra("counselorDocId");
         counselorName = getIntent().getStringExtra("counselorName");
 
         availabilityRepository = new AvailabilityRepository();
@@ -122,20 +124,38 @@ public class BookingActivity extends AppCompatActivity
                 new AvailabilityRepository.OnSlotsLoadedCallback() {
                     @Override
                     public void onSuccess(List<TimeSlot> slots) {
-                        progressBar.setVisibility(View.GONE);
-                        // DEBUG — remove once slots are confirmed working
-                        android.util.Log.d("BOOKING", "counselorId=" + counselorId
-                                + " slots found=" + slots.size());
                         if (!slots.isEmpty()) {
-                            android.util.Log.d("BOOKING", "first slot date=" + slots.get(0).getDate()
-                                    + " time=" + slots.get(0).getTime()
-                                    + " available=" + slots.get(0).isAvailable());
+                            progressBar.setVisibility(View.GONE);
+                            schedule = AvailabilitySchedule.fromSlots(counselorId, slots);
+                            showSlotsForDate(initialDate);
+                            return;
                         }
-                        Toast.makeText(BookingActivity.this,
-                                "Querying ID: " + counselorId + "\nSlots found: " + slots.size(),
-                                Toast.LENGTH_LONG).show();
-                        schedule = AvailabilitySchedule.fromSlots(counselorId, slots);
-                        showSlotsForDate(initialDate);
+                        // Zero slots under the Auth-UID path — try the Firestore doc ID
+                        // as a fallback for manually-provisioned counselors whose uid field
+                        // was not yet stamped when the cache was populated.
+                        String fallback = counselorDocId;
+                        if (fallback != null && !fallback.equals(counselorId)) {
+                            availabilityRepository.getAvailableSlotsForCounselor(fallback,
+                                    new AvailabilityRepository.OnSlotsLoadedCallback() {
+                                        @Override
+                                        public void onSuccess(List<TimeSlot> fbSlots) {
+                                            progressBar.setVisibility(View.GONE);
+                                            // Use whichever key returned data
+                                            String key = fbSlots.isEmpty() ? counselorId : fallback;
+                                            schedule = AvailabilitySchedule.fromSlots(key, fbSlots);
+                                            showSlotsForDate(initialDate);
+                                        }
+                                        @Override
+                                        public void onFailure(Exception e) {
+                                            progressBar.setVisibility(View.GONE);
+                                            showSlotsForDate(initialDate);
+                                        }
+                                    });
+                        } else {
+                            progressBar.setVisibility(View.GONE);
+                            schedule = AvailabilitySchedule.fromSlots(counselorId, slots);
+                            showSlotsForDate(initialDate);
+                        }
                     }
 
                     @Override
@@ -143,7 +163,7 @@ public class BookingActivity extends AppCompatActivity
                         progressBar.setVisibility(View.GONE);
                         android.util.Log.e("BOOKING", "slot load failed: " + e.getMessage());
                         Toast.makeText(BookingActivity.this,
-                                "Slot load FAILED: " + e.getMessage(),
+                                getString(R.string.error_booking_failed),
                                 Toast.LENGTH_LONG).show();
                     }
                 });

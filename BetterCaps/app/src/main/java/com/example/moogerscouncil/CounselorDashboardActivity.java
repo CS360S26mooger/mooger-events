@@ -51,9 +51,9 @@ public class CounselorDashboardActivity extends AppCompatActivity {
     private TextView totalCount;
     private TextView weekCount;
 
-    /** Auth UID — used for slot/appointment queries (matches what's stored in documents). */
+    /** Firebase Auth UID — used for slot/appointment queries (written to slot documents). */
     private String counselorId;
-    /** Firestore doc ID — used for profile reads/writes (may differ from Auth UID). */
+    /** Firestore document ID — used for profile reads/writes (may differ from Auth UID). */
     private String counselorDocId;
     private AppointmentRepository appointmentRepository;
     private AvailabilityRepository availabilityRepository;
@@ -95,35 +95,52 @@ public class CounselorDashboardActivity extends AppCompatActivity {
         // FirebaseAuth.getCurrentUser().getUid() as the counselorId field.
         counselorId = mAuth.getCurrentUser().getUid();
 
-        // Resolve the real Firestore doc ID (may differ from Auth UID if the
-        // counselor doc was created manually in the Firebase console).
-        // The Firestore doc ID is needed for profile reads/writes.
+        // Resolve the Firestore document ID for this counselor.
+        // Counselors are pre-created in the Firebase console, so their document ID may differ
+        // from their Auth UID. We match on the 'uid' field (stamped on first login) or, if
+        // that field is not yet set, on the document ID equalling the Auth UID (old pattern
+        // where the console operator used the Auth UID as the document ID).
         counselorRepository.getAllCounselors(
                 new CounselorRepository.OnCounselorsLoadedCallback() {
                     @Override
                     public void onSuccess(List<Counselor> counselors) {
                         Counselor matched = null;
+
+                        // Primary: find by uid field == Auth UID (set on previous login)
                         for (Counselor c : counselors) {
                             if (counselorId.equals(c.getUid())) {
                                 matched = c;
                                 break;
                             }
                         }
-                        // Fallback: pick the first counselor that has real data
+
+                        // Secondary: find by Firestore doc ID == Auth UID (old console pattern)
                         if (matched == null) {
                             for (Counselor c : counselors) {
-                                if (c.getName() != null && !c.getId().equals(counselorId)) {
+                                if (counselorId.equals(c.getId())) {
                                     matched = c;
                                     break;
                                 }
                             }
                         }
+
                         if (matched != null) {
                             counselorDocId = matched.getId();
                             String name = matched.getName();
                             counselorNameText.setText(name != null ? name : "Dr. Counselor");
+
+                            // Stamp Auth UID onto the Firestore document if not already set,
+                            // so CounselorAdapter can reliably pass the correct slot query ID
+                            // to BookingActivity on the student side.
+                            if (!counselorId.equals(matched.getUid())) {
+                                counselorRepository.stampAuthUid(counselorDocId, counselorId,
+                                        new CounselorRepository.OnUpdateCallback() {
+                                            @Override public void onSuccess() {}
+                                            @Override public void onFailure(Exception e) {}
+                                        });
+                            }
                         } else {
-                            counselorDocId = counselorId; // last resort
+                            counselorDocId = counselorId; // last resort: assume doc ID == Auth UID
                         }
                         loadAppointments();
                     }

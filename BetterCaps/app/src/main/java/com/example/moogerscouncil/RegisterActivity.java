@@ -53,6 +53,7 @@ public class RegisterActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private UserRepository userRepository;
+    private CounselorRepository counselorRepository;
     private String selectedRole;
 
     /** Tint color for the required-field asterisk icon. */
@@ -65,6 +66,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         userRepository = new UserRepository();
+        counselorRepository = new CounselorRepository();
 
         selectedRole = getIntent().getStringExtra("selected_role");
         if (selectedRole == null) {
@@ -162,10 +164,20 @@ public class RegisterActivity extends AppCompatActivity {
                     userRepository.createUser(student, new UserRepository.OnUserCreatedCallback() {
                         @Override
                         public void onSuccess() {
-                            Intent intent = new Intent(RegisterActivity.this, PrivacyPolicyActivity.class);
-                            intent.putExtra(PrivacyPolicyActivity.EXTRA_ROLE, selectedRole);
-                            startActivity(intent);
-                            finish();
+                            // For counselors, also create counselors/{uid} so the Firestore
+                            // doc ID always equals the Auth UID — slot queries depend on this.
+                            if (UserRole.COUNSELOR.equals(selectedRole)) {
+                                counselorRepository.createCounselorProfile(uid, name,
+                                        new CounselorRepository.OnUpdateCallback() {
+                                            @Override public void onSuccess() { navigateNext(); }
+                                            @Override public void onFailure(Exception e) {
+                                                // User account created — proceed anyway.
+                                                navigateNext();
+                                            }
+                                        });
+                            } else {
+                                navigateNext();
+                            }
                         }
 
                         @Override
@@ -173,10 +185,7 @@ public class RegisterActivity extends AppCompatActivity {
                             Toast.makeText(RegisterActivity.this,
                                     getString(R.string.error_firestore_write),
                                     Toast.LENGTH_LONG).show();
-                            Intent intent = new Intent(RegisterActivity.this, PrivacyPolicyActivity.class);
-                            intent.putExtra(PrivacyPolicyActivity.EXTRA_ROLE, selectedRole);
-                            startActivity(intent);
-                            finish();
+                            navigateNext();
                         }
                     });
                 })
@@ -185,6 +194,13 @@ public class RegisterActivity extends AppCompatActivity {
                                 getString(R.string.error_registration_failed) + " " + e.getMessage(),
                                 Toast.LENGTH_LONG).show()
                 );
+    }
+
+    private void navigateNext() {
+        Intent intent = new Intent(RegisterActivity.this, PrivacyPolicyActivity.class);
+        intent.putExtra(PrivacyPolicyActivity.EXTRA_ROLE, selectedRole);
+        startActivity(intent);
+        finish();
     }
 
     /**

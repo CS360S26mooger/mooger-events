@@ -62,13 +62,14 @@ public class HistoryActivity extends AppCompatActivity {
      * then refreshes from Firestore in the background.
      */
     private void fetchHistory() {
-        // Instant render from cache
+        // Session-scoped cache — only fetch from Firestore when null (first open
+        // after login, or after booking/cancellation invalidates the cache).
         List<Appointment> cached = SessionCache.getInstance().getStudentAppointments(studentId);
         if (cached != null) {
             populateList(cached);
+            return;
         }
 
-        // Background refresh
         appointmentRepository.getAppointmentsForStudent(studentId,
                 new AppointmentRepository.OnAppointmentsLoadedCallback() {
                     @Override
@@ -79,12 +80,10 @@ public class HistoryActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Exception e) {
-                        if (cached == null) {
-                            Toast.makeText(HistoryActivity.this,
-                                    getString(R.string.error_loading_appointments),
-                                    Toast.LENGTH_SHORT).show();
-                            textEmptyHistory.setVisibility(View.VISIBLE);
-                        }
+                        Toast.makeText(HistoryActivity.this,
+                                getString(R.string.error_loading_appointments),
+                                Toast.LENGTH_SHORT).show();
+                        textEmptyHistory.setVisibility(View.VISIBLE);
                     }
                 });
     }

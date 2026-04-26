@@ -181,9 +181,16 @@ public class CounselorProfileActivity extends AppCompatActivity {
             if (referralId != null && !referralId.isEmpty()) {
                 buttonSeeReferral.setVisibility(View.VISIBLE);
                 buttonSeeReferral.setOnClickListener(v -> {
+                    // Look up the referral counselor's Auth UID from the session cache so
+                    // BookingActivity receives the correct slot query ID (the uid field,
+                    // not the Firestore document ID).
+                    Counselor referral = SessionCache.getInstance().getSingleCounselor(referralId);
+                    String referralSlotId = (referral != null && referral.getUid() != null)
+                            ? referral.getUid() : referralId;
                     Intent intent = new Intent(CounselorProfileActivity.this,
                             CounselorProfileActivity.class);
                     intent.putExtra("COUNSELOR_ID", referralId);
+                    intent.putExtra("SLOT_COUNSELOR_ID", referralSlotId);
                     startActivity(intent);
                 });
             } else {
@@ -197,7 +204,8 @@ public class CounselorProfileActivity extends AppCompatActivity {
             buttonBookAppointment.setOnClickListener(v -> {
                 Intent intent = new Intent(CounselorProfileActivity.this,
                         BookingActivity.class);
-                intent.putExtra("counselorId", slotCounselorId); // Auth UID — matches slot documents
+                intent.putExtra("counselorId", slotCounselorId); // Auth UID — primary slot path
+                intent.putExtra("counselorDocId", counselorId);  // Firestore doc ID — fallback
                 intent.putExtra("counselorName", counselor.getName());
                 startActivity(intent);
             });

@@ -188,26 +188,42 @@ public class StudentHomeActivity extends AppCompatActivity {
                 new androidx.recyclerview.widget.LinearLayoutManager(this));
         homeSpecialistRecycler.setAdapter(homeSpecialistAdapter);
 
-        // Load counselors — cache-first to avoid delay on re-opens
+        // Show cached counselors instantly (no blank screen), then always
+        // refresh from Firestore in the background during onCreate so that a
+        // counselor added since the last fetch always appears.
+        // onResume does NOT re-fetch — this is the only refresh per Activity creation.
         java.util.List<Counselor> cachedCounselors = SessionCache.getInstance().getCounselors();
         if (cachedCounselors != null) {
             allCounselors.clear();
             allCounselors.addAll(cachedCounselors);
             applyHomeChipFilter(null);
-            // Warm single-counselor cache from the list so session card renders instantly
             warmCounselorCache(cachedCounselors);
-        } else {
-            new CounselorRepository().getAllCounselors(new CounselorRepository.OnCounselorsLoadedCallback() {
-                @Override public void onSuccess(java.util.List<Counselor> list) {
-                    SessionCache.getInstance().putCounselors(list);
-                    allCounselors.clear();
-                    allCounselors.addAll(list);
-                    applyHomeChipFilter(null);
-                    warmCounselorCache(list);
-                }
-                @Override public void onFailure(Exception e) { /* silent */ }
-            });
         }
+        new CounselorRepository().getAllCounselors(new CounselorRepository.OnCounselorsLoadedCallback() {
+            @Override public void onSuccess(java.util.List<Counselor> list) {
+                if (list.isEmpty()) return;
+                // Merge: overlay fresh Firestore data onto whatever is currently in
+                // allCounselors (which may include counselors added by populateSessionCard
+                // or from the cache). This prevents a partial Firestore result from
+                // wiping counselors that are already correctly displayed.
+                java.util.Map<String, Counselor> merged = new java.util.LinkedHashMap<>();
+                for (Counselor c : allCounselors) {
+                    String key = c.getId() != null ? c.getId() : c.getUid();
+                    if (key != null) merged.put(key, c);
+                }
+                for (Counselor c : list) {
+                    String key = c.getId() != null ? c.getId() : c.getUid();
+                    if (key != null) merged.put(key, c);
+                }
+                java.util.List<Counselor> mergedList = new java.util.ArrayList<>(merged.values());
+                SessionCache.getInstance().putCounselors(mergedList);
+                allCounselors.clear();
+                allCounselors.addAll(mergedList);
+                applyHomeChipFilter(null);
+                warmCounselorCache(mergedList);
+            }
+            @Override public void onFailure(Exception e) { /* cache still shown if available */ }
+        });
 
         // Build specialization chips dynamically from SpecializationTags
         android.widget.LinearLayout homeChipContainer = findViewById(R.id.homeChipContainer);
@@ -252,13 +268,15 @@ public class StudentHomeActivity extends AppCompatActivity {
         String studentId = mAuth.getCurrentUser().getUid();
         String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-        // Try cache first for instant display
+        // Session-scoped cache: show instantly if available.
+        // Only fetch from Firestore when cache is null (first open after login,
+        // or after explicit invalidation from booking / cancellation).
         List<Appointment> cached = SessionCache.getInstance().getStudentAppointments(studentId);
         if (cached != null) {
             resolveUpcoming(cached, today);
+            return;
         }
 
-        // Always fetch fresh data in the background — updates the card if anything changed
         appointmentRepository.getAppointmentsForStudent(studentId,
                 new AppointmentRepository.OnAppointmentsLoadedCallback() {
                     @Override
@@ -269,10 +287,7 @@ public class StudentHomeActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Exception e) {
-                        // Only show error if we had no cache to fall back on
-                        if (cached == null) {
-                            clearSessionCard();
-                        }
+                        clearSessionCard();
                     }
                 });
     }
@@ -308,7 +323,10 @@ public class StudentHomeActivity extends AppCompatActivity {
         sessionTimeRow.setVisibility(View.VISIBLE);
         sliderContainer.setVisibility(View.VISIBLE);
 
-        // Counselor name — cache-first to avoid "Loading..." flicker on re-opens
+        // Counselor name — check cache, then the already-loaded list, then Firestore.
+        // cId is the Auth UID stored in the appointment. For old manually-created counselors
+        // the Auth UID differs from the Firestore doc ID, so getCounselor(cId) would fail.
+        // Searching allCounselors by uid covers that case without an extra Firestore read.
         String cId = appointment.getCounselorId();
         Counselor cachedCounselor = SessionCache.getInstance().getSingleCounselor(cId);
         if (cachedCounselor != null) {
@@ -316,23 +334,57 @@ public class StudentHomeActivity extends AppCompatActivity {
             counselorNameText.setText(name);
             counselorRoleText.setText(appointment.getTime() + " · " + prettyDate);
         } else {
-            counselorNameText.setText("Loading…");
-            counselorRoleText.setText("Session on " + prettyDate);
+            // Search the in-memory list first (uid or doc ID match)
+            Counselor fromList = null;
+            for (Counselor c : allCounselors) {
+                if (cId.equals(c.getUid()) || cId.equals(c.getId())) {
+                    fromList = c;
+                    break;
+                }
+            }
+            if (fromList != null) {
+                SessionCache.getInstance().putSingleCounselor(cId, fromList);
+                String name = fromList.getName() != null ? fromList.getName() : "Your Counselor";
+                counselorNameText.setText(name);
+                counselorRoleText.setText(appointment.getTime() + " · " + prettyDate);
+            } else {
+                counselorNameText.setText("Loading…");
+                counselorRoleText.setText("Session on " + prettyDate);
 
-            new CounselorRepository().getCounselor(cId,
-                    new CounselorRepository.OnCounselorFetchedCallback() {
-                        @Override
-                        public void onSuccess(Counselor counselor) {
-                            SessionCache.getInstance().putSingleCounselor(cId, counselor);
-                            String name = counselor.getName() != null ? counselor.getName() : "Your Counselor";
-                            counselorNameText.setText(name);
-                            counselorRoleText.setText(appointment.getTime() + " · " + prettyDate);
-                        }
-                        @Override
-                        public void onFailure(Exception e) {
-                            counselorNameText.setText("Your Counselor");
-                        }
-                    });
+                new CounselorRepository().getCounselor(cId,
+                        new CounselorRepository.OnCounselorFetchedCallback() {
+                            @Override
+                            public void onSuccess(Counselor counselor) {
+                                if (upcomingAppointment == null) return;
+                                SessionCache.getInstance().putSingleCounselor(cId, counselor);
+                                String name = counselor.getName() != null ? counselor.getName() : "Your Counselor";
+                                counselorNameText.setText(name);
+                                counselorRoleText.setText(appointment.getTime() + " · " + prettyDate);
+                                // If this counselor wasn't in the list (the common case when
+                                // getAllCounselors() dropped their document), add them now so
+                                // they appear in the specialist RecyclerView.
+                                boolean alreadyInList = false;
+                                for (Counselor existing : allCounselors) {
+                                    if (cId.equals(existing.getUid()) || cId.equals(existing.getId())) {
+                                        alreadyInList = true;
+                                        break;
+                                    }
+                                }
+                                if (!alreadyInList) {
+                                    allCounselors.add(counselor);
+                                    applyHomeChipFilter(activeChip != null
+                                            ? (activeChip.getText().toString().equals("All")
+                                                ? null : activeChip.getText().toString())
+                                            : null);
+                                }
+                            }
+                            @Override
+                            public void onFailure(Exception e) {
+                                if (upcomingAppointment == null) return;
+                                counselorNameText.setText("Your Counselor");
+                            }
+                        });
+            }
         }
     }
 
@@ -378,6 +430,7 @@ public class StudentHomeActivity extends AppCompatActivity {
                     }
                     appointmentRepository.cancelAppointment(
                             upcomingAppointment.getId(),
+                            upcomingAppointment.getCounselorId(),
                             upcomingAppointment.getSlotId(),
                             new AppointmentRepository.OnStatusUpdateCallback() {
                                 @Override

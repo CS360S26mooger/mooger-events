@@ -170,7 +170,7 @@ public class AvailabilitySetupActivity extends AppCompatActivity {
                             return;
                         }
 
-                        availabilityRepository.removeSlot(slot.getId(),
+                        availabilityRepository.removeSlot(counselorId, slot.getId(),
                                 new AvailabilityRepository.OnSlotActionCallback() {
                                     @Override
                                     public void onSuccess() {

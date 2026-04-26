@@ -50,3 +50,40 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }
+
+tasks.register<Javadoc>("generateJavadoc") {
+    dependsOn("compileDebugJavaWithJavac")
+
+    val mainSrc = fileTree("src/main/java") {
+        include("**/*.java")
+    }
+    source = mainSrc
+
+    exclude("**/test/**")
+    exclude("**/androidTest/**")
+
+    val studioJavadoc = file("/opt/android-studio/jbr/bin/javadoc")
+    if (studioJavadoc.exists()) {
+        executable = studioJavadoc.absolutePath
+    }
+
+    val outputDir = file("$projectDir/javadoc_output")
+    destinationDir = outputDir
+
+    isFailOnError = false
+
+    (options as StandardJavadocDocletOptions).apply {
+        isSplitIndex = true
+        memberLevel = JavadocMemberLevel.PROTECTED
+    }
+
+    doFirst {
+        // Pull classpath from the compile task — it already has boot classpath +
+        // all AAR classes.jar entries extracted by the Android Gradle plugin.
+        val compileTask = tasks.getByName("compileDebugJavaWithJavac") as JavaCompile
+        classpath += compileTask.classpath
+
+        if (outputDir.exists()) outputDir.deleteRecursively()
+        outputDir.mkdirs()
+    }
+}

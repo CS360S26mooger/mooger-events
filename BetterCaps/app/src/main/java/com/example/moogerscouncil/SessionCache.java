@@ -52,8 +52,7 @@ public final class SessionCache {
     private String cachedAppointmentsStudentId;
     private long appointmentsFetchedAt;
 
-    private Counselor cachedSingleCounselor;
-    private String cachedSingleCounselorId;
+    private final java.util.Map<String, Counselor> cachedSingleCounselors = new java.util.HashMap<>();
     private long singleCounselorFetchedAt;
 
     private SessionCache() {}
@@ -88,13 +87,11 @@ public final class SessionCache {
     // ── Counselor list ──
 
     /**
-     * Returns the cached counselor list if still fresh, or null if expired/absent.
+     * Returns the cached counselor list if present, or null if never loaded.
+     * No TTL — the list is session-scoped and cleared on logout via {@link #clearAll()}.
      */
     public List<Counselor> getCounselors() {
-        if (cachedCounselors != null && !isExpired(counselorsFetchedAt, COUNSELORS_TTL_MS)) {
-            return cachedCounselors;
-        }
-        return null;
+        return cachedCounselors;
     }
 
     /** Stores the counselor list in cache. */
@@ -106,13 +103,13 @@ public final class SessionCache {
     // ── Student appointments ──
 
     /**
-     * Returns the cached appointment list if still fresh and for the same student,
-     * or null if expired/absent/wrong student.
+     * Returns the cached appointment list for the given student, or null if not yet loaded.
+     * Session-scoped — invalidated explicitly by booking/cancellation via
+     * {@link #invalidateAppointments()}, not by a TTL.
      */
     public List<Appointment> getStudentAppointments(String studentId) {
         if (cachedStudentAppointments != null
-                && studentId.equals(cachedAppointmentsStudentId)
-                && !isExpired(appointmentsFetchedAt, APPOINTMENTS_TTL_MS)) {
+                && studentId.equals(cachedAppointmentsStudentId)) {
             return cachedStudentAppointments;
         }
         return null;
@@ -128,22 +125,21 @@ public final class SessionCache {
     // ── Single counselor ──
 
     /**
-     * Returns the cached single counselor if still fresh and matching the ID.
+     * Returns the cached counselor for the given ID if still fresh, or null if
+     * expired or not stored. Accepts both Firestore doc IDs and Auth UIDs as keys
+     * since {@link #putSingleCounselor} stores under both.
      */
     public Counselor getSingleCounselor(String counselorId) {
-        if (cachedSingleCounselor != null
-                && counselorId.equals(cachedSingleCounselorId)
-                && !isExpired(singleCounselorFetchedAt, COUNSELORS_TTL_MS)) {
-            return cachedSingleCounselor;
+        if (!isExpired(singleCounselorFetchedAt, COUNSELORS_TTL_MS)) {
+            return cachedSingleCounselors.get(counselorId);
         }
         return null;
     }
 
-    /** Stores a single counselor in cache. */
+    /** Stores a counselor under the given key (doc ID or Auth UID). */
     public void putSingleCounselor(String counselorId, Counselor counselor) {
-        this.cachedSingleCounselor = counselor;
-        this.cachedSingleCounselorId = counselorId;
-        this.singleCounselorFetchedAt = now();
+        cachedSingleCounselors.put(counselorId, counselor);
+        singleCounselorFetchedAt = now();
     }
 
     // ── Invalidation ──
@@ -156,7 +152,7 @@ public final class SessionCache {
     /** Call after profile edit to force counselor list refresh. */
     public void invalidateCounselors() {
         cachedCounselors = null;
-        cachedSingleCounselor = null;
+        cachedSingleCounselors.clear();
     }
 
     /** Call on logout to wipe everything. */
@@ -164,7 +160,7 @@ public final class SessionCache {
         cachedStudent = null;
         cachedCounselors = null;
         cachedStudentAppointments = null;
-        cachedSingleCounselor = null;
+        cachedSingleCounselors.clear();
     }
 
     // ── Internal ──

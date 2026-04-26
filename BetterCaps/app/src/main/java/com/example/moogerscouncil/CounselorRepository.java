@@ -105,9 +105,19 @@ public class CounselorRepository {
     public void getAllCounselors(OnCounselorsLoadedCallback callback) {
         counselorsCollection.get()
                 .addOnSuccessListener(querySnapshot -> {
-                    List<Counselor> counselors = querySnapshot.toObjects(Counselor.class);
-                    for (int i = 0; i < querySnapshot.size(); i++) {
-                        counselors.get(i).setId(querySnapshot.getDocuments().get(i).getId());
+                    List<Counselor> counselors = new java.util.ArrayList<>();
+                    for (com.google.firebase.firestore.DocumentSnapshot doc
+                            : querySnapshot.getDocuments()) {
+                        try {
+                            Counselor c = doc.toObject(Counselor.class);
+                            if (c != null) {
+                                c.setId(doc.getId());
+                                counselors.add(c);
+                            }
+                        } catch (RuntimeException e) {
+                            android.util.Log.e("CounselorRepo",
+                                    "Skipping doc " + doc.getId() + ": " + e.getMessage());
+                        }
                     }
                     callback.onSuccess(counselors);
                 })
@@ -126,13 +136,36 @@ public class CounselorRepository {
                 .addOnSuccessListener(doc -> {
                     if (doc.exists()) {
                         Counselor counselor = doc.toObject(Counselor.class);
-                        if (counselor != null) {
-                            counselor.setId(doc.getId());
+                        if (counselor == null) {
+                            callback.onFailure(new IllegalStateException(
+                                    "Counselor deserialization returned null: " + counselorId));
+                            return;
                         }
+                        counselor.setId(doc.getId());
                         callback.onSuccess(counselor);
                     } else {
-                        callback.onFailure(
-                                new IllegalStateException("Counselor document not found: " + counselorId));
+                        // Direct doc lookup failed — the counselorId is an Auth UID but the
+                        // Firestore document was manually created with a different doc ID.
+                        // Fall back to querying by the uid field.
+                        counselorsCollection.whereEqualTo("uid", counselorId).limit(1).get()
+                                .addOnSuccessListener(query -> {
+                                    if (!query.isEmpty()) {
+                                        com.google.firebase.firestore.DocumentSnapshot match =
+                                                query.getDocuments().get(0);
+                                        Counselor counselor = match.toObject(Counselor.class);
+                                        if (counselor == null) {
+                                            callback.onFailure(new IllegalStateException(
+                                                    "Counselor deserialization returned null (uid query): " + counselorId));
+                                            return;
+                                        }
+                                        counselor.setId(match.getId());
+                                        callback.onSuccess(counselor);
+                                    } else {
+                                        callback.onFailure(new IllegalStateException(
+                                                "Counselor not found: " + counselorId));
+                                    }
+                                })
+                                .addOnFailureListener(callback::onFailure);
                     }
                 })
                 .addOnFailureListener(callback::onFailure);
@@ -159,22 +192,76 @@ public class CounselorRepository {
     }
 
     /**
-     * Overwrites all profile fields for a counselor.
-     * Used by {@code CounselorProfileEditActivity} when saving bio,
-     * language, gender, and specializations together.
+     * Creates a new counselor document at {@code counselors/{authUid}}.
+     * Called by {@link RegisterActivity} when a counselor account is created so that
+     * the Firestore document ID always equals the Firebase Auth UID — no manual
+     * Firebase console provisioning needed.
      *
-     * <p>Uses {@code set()} so this also creates the document if it does
-     * not yet exist (first-time profile setup).</p>
+     * <p>Only writes the immutable fields ({@code uid}, {@code name}). All other
+     * fields (bio, specializations, etc.) are empty and editable via the profile screen.</p>
+     *
+     * @param authUid  Firebase Auth UID — used as both the document ID and the {@code uid} field.
+     * @param name     The counselor's display name from the registration form.
+     * @param callback Success/failure callback.
+     */
+    public void createCounselorProfile(String authUid, String name, OnUpdateCallback callback) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("uid", authUid);
+        data.put("name", name);
+        data.put("bio", "");
+        data.put("language", "");
+        data.put("gender", "");
+        data.put("onLeave", false);
+        data.put("onLeaveMessage", "");
+        data.put("referralCounselorId", "");
+        data.put("specializations", new java.util.ArrayList<>());
+
+        counselorsCollection.document(authUid)
+                .set(data)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
+     * Updates editable profile fields for a counselor without touching other fields
+     * (e.g. {@code name}) that are not exposed in the profile edit screen.
+     * Uses {@code update()} so the document must already exist.
      *
      * @param counselorId The Firestore document ID.
-     * @param counselor   The updated {@link Counselor} object — all fields overwritten.
+     * @param counselor   The updated {@link Counselor} object — only editable fields written.
      * @param callback    Success/failure callback.
      */
     public void updateCounselorProfile(String counselorId,
                                        Counselor counselor,
                                        OnUpdateCallback callback) {
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("uid", counselor.getUid());
+        updates.put("bio", counselor.getBio());
+        updates.put("language", counselor.getLanguage());
+        updates.put("gender", counselor.getGender());
+        updates.put("specializations", counselor.getSpecializations());
+        updates.put("onLeave", counselor.getOnLeave());
+        updates.put("onLeaveMessage", counselor.getOnLeaveMessage());
+        updates.put("referralCounselorId", counselor.getReferralCounselorId());
+
         counselorsCollection.document(counselorId)
-                .set(counselor)
+                .update(updates)
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
+     * Stamps the Firebase Auth UID onto a counselor's Firestore document.
+     * Called by {@link CounselorDashboardActivity} on login so that the student-side
+     * slot query (which uses {@code counselor.getUid()}) always has the correct value.
+     *
+     * @param counselorDocId The Firestore document ID.
+     * @param authUid        The Firebase Auth UID of the logged-in counselor.
+     * @param callback       Success/failure callback.
+     */
+    public void stampAuthUid(String counselorDocId, String authUid, OnUpdateCallback callback) {
+        counselorsCollection.document(counselorDocId)
+                .update("uid", authUid)
                 .addOnSuccessListener(unused -> callback.onSuccess())
                 .addOnFailureListener(callback::onFailure);
     }

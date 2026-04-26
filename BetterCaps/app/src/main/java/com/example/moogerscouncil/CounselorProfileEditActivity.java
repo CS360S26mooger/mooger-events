@@ -243,8 +243,12 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
             }
         }
 
+        // uid must always be the Firebase Auth UID — it is the counselorId stored in slot
+        // documents, so students can query slots correctly. counselorId here is the Firestore
+        // document ID, which may differ from the Auth UID on manually-created accounts.
+        String authUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Counselor updatedCounselor = new Counselor();
-        updatedCounselor.setUid(counselorId);
+        updatedCounselor.setUid(authUid);
         updatedCounselor.setBio(bio);
         updatedCounselor.setLanguage(language);
         updatedCounselor.setGender(gender);

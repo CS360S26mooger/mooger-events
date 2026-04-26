@@ -58,7 +58,6 @@ public class StudentAppointmentAdapter
         holder.statusText.setText(statusLabel(status));
         holder.statusText.setTextColor(statusColour(status));
 
-        // Counselor initial placeholder while name loads
         holder.counselorNameText.setText("Loading…");
         holder.initialText.setText("?");
 
@@ -67,23 +66,38 @@ public class StudentAppointmentAdapter
             holder.counselorNameText.setText("Counselor: Not Assigned");
             holder.initialText.setText("?");
         } else {
-            counselorRepository.getCounselor(counselorId,
-                    new CounselorRepository.OnCounselorFetchedCallback() {
-                        @Override
-                        public void onSuccess(Counselor counselor) {
-                            String name = counselor.getName() != null
-                                    ? counselor.getName() : "Unknown";
-                            holder.counselorNameText.setText(name);
-                            holder.initialText.setText(
-                                    name.isEmpty() ? "?" : String.valueOf(name.charAt(0)));
-                        }
+            // Tag the ViewHolder so recycled views don't show stale async results
+            holder.itemView.setTag(counselorId);
 
-                        @Override
-                        public void onFailure(Exception e) {
-                            holder.counselorNameText.setText("Counselor: Unknown");
-                            holder.initialText.setText("?");
-                        }
-                    });
+            // Check session cache first — avoids a Firestore round-trip for every card
+            Counselor cached = SessionCache.getInstance().getSingleCounselor(counselorId);
+            if (cached != null) {
+                String name = cached.getName() != null ? cached.getName() : "Your Counselor";
+                holder.counselorNameText.setText(name);
+                holder.initialText.setText(name.isEmpty() ? "?" : String.valueOf(name.charAt(0)));
+            } else {
+                counselorRepository.getCounselor(counselorId,
+                        new CounselorRepository.OnCounselorFetchedCallback() {
+                            @Override
+                            public void onSuccess(Counselor counselor) {
+                                // Guard: ViewHolder may have been recycled for a different row
+                                if (!counselorId.equals(holder.itemView.getTag())) return;
+                                SessionCache.getInstance().putSingleCounselor(counselorId, counselor);
+                                String name = counselor.getName() != null
+                                        ? counselor.getName() : "Your Counselor";
+                                holder.counselorNameText.setText(name);
+                                holder.initialText.setText(
+                                        name.isEmpty() ? "?" : String.valueOf(name.charAt(0)));
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                if (!counselorId.equals(holder.itemView.getTag())) return;
+                                holder.counselorNameText.setText("Counselor: Unknown");
+                                holder.initialText.setText("?");
+                            }
+                        });
+            }
         }
     }
 

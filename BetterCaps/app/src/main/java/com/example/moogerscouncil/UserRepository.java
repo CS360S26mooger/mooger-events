@@ -174,38 +174,6 @@ public class UserRepository {
     }
 
     /**
-     * Finds the "real" counselor document (the one with actual profile data like
-     * name, bio, specializations) and writes the Auth UID into its {@code uid} field.
-     * This ensures that student-side code (CounselorAdapter) can read
-     * {@code counselor.getUid()} and pass it to BookingActivity for slot queries.
-     *
-     * <p>Called on every counselor login so the mapping is always current.
-     * Best-effort — failures are logged but do not block login.</p>
-     *
-     * @param counselorsRef Reference to the counselors collection.
-     * @param authUid       The counselor's Firebase Auth UID.
-     */
-    private void stampUidOnRealCounselorDoc(CollectionReference counselorsRef,
-                                             String authUid) {
-        counselorsRef.get()
-                .addOnSuccessListener(snapshot -> {
-                    for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
-                        // Skip the ghost doc (the one whose ID == Auth UID with no real data)
-                        if (doc.getId().equals(authUid)) continue;
-                        // Found the real counselor doc — stamp the Auth UID onto it
-                        String existingUid = doc.getString("uid");
-                        if (!authUid.equals(existingUid)) {
-                            doc.getReference().update("uid", authUid)
-                                    .addOnFailureListener(e ->
-                                            android.util.Log.w("UserRepository",
-                                                    "uid stamp failed: " + e.getMessage()));
-                        }
-                        break; // only one real counselor doc expected
-                    }
-                });
-    }
-
-    /**
      * Resolves the role of the currently authenticated user by checking both
      * Firestore collections:
      * <ol>
@@ -237,10 +205,6 @@ public class UserRepository {
         counselorsRef.document(uid).get()
                 .addOnSuccessListener(counselorDoc -> {
                     if (counselorDoc.exists()) {
-                        // Found via direct doc ID lookup (ghost doc or matching doc).
-                        // Stamp uid onto the real counselor doc so student-side
-                        // slot queries always have the Auth UID available.
-                        stampUidOnRealCounselorDoc(counselorsRef, uid);
                         callback.onSuccess(UserRole.COUNSELOR);
                         return;
                     }

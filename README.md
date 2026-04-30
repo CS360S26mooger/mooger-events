@@ -2,6 +2,7 @@
 
 ## Table of Contents
 - [Team Information](#team-information)
+- [About Project](#about-project)
 - [Meeting Minutes](#meeting-minutes)
   - [Meeting – Feb 20, 2026](#meeting--feb-20-2026)
   - [Meeting – March 2, 2026](#meeting--march-2-2026)
@@ -28,6 +29,21 @@
 | Hannan Mustafa                   | 21700330    | hannanmustafa08 |
 | Muhammad Hasan Musa Gondal       | 27100456    | Musa-Gondal     |
 | Muhammad Ibrahim                 | 27100119    | not-ibrahim     |
+
+---
+
+## About Project
+
+BetterCaps is a specialized mental health and counseling platform designed to provide students with a secure and efficient way to access professional psychological support. The application serves as a bridge, directly connecting university students with professional psychology doctors and campus counselors.
+Core Objectives:
+
+    Accessible Support: Streamlining the appointment booking process through an interactive calendar and directory.
+
+    Intelligent Matching: Using a triage questionnaire to pair students with the best-fit counselor based on their specific concerns, such as academic stress or anxiety.
+
+    Privacy-First Interface: Features like "Discreet Mode" ensure students can use the app in public spaces without compromising their privacy.
+
+    Crisis Readiness: A top-level emergency button provides immediate connection to campus crisis services and mental health emergency lines.
 
 ---
 

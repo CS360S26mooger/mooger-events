@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,12 +53,15 @@ public class BookingActivity extends AppCompatActivity
     private TextView textNoSlots;
     private RecyclerView recyclerSlots;
     private View progressBar;
+    private com.google.android.material.button.MaterialButton buttonJoinWaitlist;
 
     private TimeSlotAdapter slotAdapter;
     private AvailabilitySchedule schedule;
 
     private AvailabilityRepository availabilityRepository;
     private AppointmentRepository appointmentRepository;
+    private WaitlistRepository waitlistRepository;
+    private String assessmentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +71,11 @@ public class BookingActivity extends AppCompatActivity
         counselorId   = getIntent().getStringExtra("counselorId");
         counselorDocId = getIntent().getStringExtra("counselorDocId");
         counselorName = getIntent().getStringExtra("counselorName");
+        assessmentId = getIntent().getStringExtra(QuizActivity.EXTRA_ASSESSMENT_ID);
 
         availabilityRepository = new AvailabilityRepository();
         appointmentRepository = new AppointmentRepository();
+        waitlistRepository = new WaitlistRepository();
 
         TextView titleText = findViewById(R.id.counselorNameTitle);
         String name = counselorName != null ? counselorName : "Counselor";
@@ -86,6 +92,10 @@ public class BookingActivity extends AppCompatActivity
         textNoSlots = findViewById(R.id.textNoSlots);
         progressBar = findViewById(R.id.progressBar);
         recyclerSlots = findViewById(R.id.slotsRecyclerView);
+        buttonJoinWaitlist = findViewById(R.id.buttonJoinWaitlistBooking);
+        buttonJoinWaitlist.setOnClickListener(v ->
+                joinWaitlist(counselorId, assessmentId,
+                        getString(R.string.waitlist_reason_no_slots)));
 
         recyclerSlots.setLayoutManager(new LinearLayoutManager(this));
         slotAdapter = new TimeSlotAdapter(new ArrayList<>(), this);
@@ -192,6 +202,8 @@ public class BookingActivity extends AppCompatActivity
     private void showSlotsForDate(String date) {
         if (schedule == null) {
             textNoSlots.setVisibility(View.VISIBLE);
+            textNoSlots.setText(R.string.no_slots_waitlist_message);
+            buttonJoinWaitlist.setVisibility(View.VISIBLE);
             recyclerSlots.setVisibility(View.GONE);
             labelSlots.setVisibility(View.VISIBLE);
             return;
@@ -203,9 +215,17 @@ public class BookingActivity extends AppCompatActivity
         if (slots.isEmpty()) {
             textNoSlots.setVisibility(View.VISIBLE);
             recyclerSlots.setVisibility(View.GONE);
+            if (schedule.getDatesWithAvailability().isEmpty()) {
+                textNoSlots.setText(R.string.no_slots_waitlist_message);
+                buttonJoinWaitlist.setVisibility(View.VISIBLE);
+            } else {
+                textNoSlots.setText(R.string.no_slots_for_date);
+                buttonJoinWaitlist.setVisibility(View.GONE);
+            }
         } else {
             textNoSlots.setVisibility(View.GONE);
             recyclerSlots.setVisibility(View.VISIBLE);
+            buttonJoinWaitlist.setVisibility(View.GONE);
             slotAdapter.setData(slots);
         }
     }
@@ -281,5 +301,41 @@ public class BookingActivity extends AppCompatActivity
             }
         }
         return dates;
+    }
+
+    private void joinWaitlist(String waitlistCounselorId, String assessmentId, String reason) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, R.string.error_login_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        WaitlistEntry entry = new WaitlistEntry(
+                user.getUid(),
+                waitlistCounselorId,
+                assessmentId,
+                reason);
+        waitlistRepository.joinWaitlist(entry, new WaitlistRepository.OnWaitlistActionCallback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(BookingActivity.this,
+                        R.string.waitlist_joined,
+                        Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAlreadyWaitlisted() {
+                Toast.makeText(BookingActivity.this,
+                        R.string.waitlist_already_joined,
+                        Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(BookingActivity.this,
+                        R.string.waitlist_error,
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

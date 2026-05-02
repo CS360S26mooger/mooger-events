@@ -81,7 +81,8 @@
     <string name="title_booking">Book with %s</string>
     <string name="label_available_times">Available Times</string>
     <string name="no_slots_for_date">No available slots for this date.</string>
-    <string name="no_slots_available">This counselor has no available slots at the moment.</string>
+    <string name="no_slots_available">No slots available right now</string>
+    <string name="no_slots_waitlist_message">No slots available right now. You can join this counselor\'s waitlist and we\'ll offer you the next available slot.</string>
     <string name="booking_success">Appointment booked successfully!</string>
     <string name="error_slot_taken">This slot was just booked by someone else. Please choose another.</string>
     <string name="error_booking_failed">Unable to book appointment. Please try again.</string>
@@ -92,6 +93,29 @@
     <string name="label_time">Time:</string>
     <string name="button_confirm_booking">Confirm Booking</string>
     <string name="button_cancel">Cancel</string>
+
+    <!-- Intake Matching + Waitlist (Sprint 5) -->
+    <string name="quiz_saving_assessment">Saving your assessment...</string>
+    <string name="quiz_matching_counselor">Finding your best match...</string>
+    <string name="quiz_match_title">We found a counselor for you</string>
+    <string name="quiz_match_reason">Matched based on your concerns and preferred support type.</string>
+    <string name="quiz_match_summary">Based on your concern about "%1$s" and your preference for "%2$s", this counselor is a strong fit.</string>
+    <string name="quiz_browse_fallback">You can still browse every counselor and choose someone who feels right.</string>
+    <string name="assessment_error_save">Could not save your assessment. Please try again.</string>
+    <string name="join_waitlist">Join Waitlist</string>
+    <string name="waitlist_joined">You have joined the waitlist.</string>
+    <string name="waitlist_already_joined">You are already on this counselor\'s waitlist.</string>
+    <string name="waitlist_error">Could not join waitlist. Please try again.</string>
+    <string name="waitlist_status_title">Your Waitlist</string>
+    <string name="latest_match_title">Your Latest Match</string>
+    <string name="latest_match_subtitle">Recommended counselor: %1$s</string>
+    <string name="latest_match_empty">Take the quiz to get a counselor recommendation.</string>
+    <string name="waitlist_status_subtitle">You are waiting for %1$d counselor(s).</string>
+    <string name="waitlist_status_empty">You are not on any counselor waitlists.</string>
+    <string name="waitlist_reason_no_slots">No slots available</string>
+    <string name="waitlist_reason_preferred_counselor">Preferred counselor</string>
+    <string name="no_counselors_available">No counselors available</string>
+    <string name="error_login_required">Please log in to continue.</string>
 
     <!-- Counselor Dashboard Tabs (US-05/US-10) -->
     <string name="tab_today">Today</string>

@@ -38,6 +38,11 @@ public class AvailabilityRepository {
         void onFailure(Exception e);
     }
 
+    public interface OnAvailabilityCheckCallback {
+        void onSuccess(boolean hasAvailableSlots);
+        void onFailure(Exception e);
+    }
+
     // -------------------------------------------------------------------------
     // Path helper
     // -------------------------------------------------------------------------
@@ -100,6 +105,26 @@ public class AvailabilityRepository {
                     callback.onSuccess(available);
                 })
                 .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
+     * Checks whether at least one available slot exists for the counselor.
+     *
+     * @param counselorId Firebase Auth UID or legacy slot-path key.
+     * @param callback Receives true when one or more available slots exist.
+     */
+    public void hasAvailableSlots(String counselorId, OnAvailabilityCheckCallback callback) {
+        getAvailableSlotsForCounselor(counselorId, new OnSlotsLoadedCallback() {
+            @Override
+            public void onSuccess(List<TimeSlot> slots) {
+                callback.onSuccess(!slots.isEmpty());
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                callback.onFailure(e);
+            }
+        });
     }
 
     // -------------------------------------------------------------------------

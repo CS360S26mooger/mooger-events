@@ -23,6 +23,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -35,9 +37,14 @@ import java.util.List;
 public class QuizActivity extends AppCompatActivity {
 
     private static final int TOTAL_QUESTIONS = 3;
+    public static final String EXTRA_ASSESSMENT_ID = "ASSESSMENT_ID";
+    public static final String EXTRA_MATCHED_COUNSELOR_ID = "COUNSELOR_ID";
+    public static final String EXTRA_MATCH_REASON = "MATCH_REASON";
 
     private int currentStep = 0;
     private final String[] answers = new String[TOTAL_QUESTIONS];
+    private String savedAssessmentId;
+    private String matchReason;
 
     // Question data: each row = {prompt, option1, option2, option3, option4}
     private final String[][] questions = {
@@ -72,11 +79,15 @@ public class QuizActivity extends AppCompatActivity {
     private TextView textResultSummary;
     private MaterialButton btnViewProfile;
     private MaterialButton btnBrowseAll;
+    private IntakeAssessmentRepository intakeRepository;
+    private CounselorRepository counselorRepository;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
+        intakeRepository = new IntakeAssessmentRepository();
+        counselorRepository = new CounselorRepository();
 
         // Question views
         layoutQuestion = findViewById(R.id.layoutQuestion);
@@ -144,59 +155,91 @@ public class QuizActivity extends AppCompatActivity {
         if (currentStep < TOTAL_QUESTIONS) {
             displayQuestion(currentStep);
         } else {
-            showResult();
+            saveAssessmentAndMatch();
         }
     }
 
-    private void showResult() {
+    private void saveAssessmentAndMatch() {
         layoutQuestion.setVisibility(View.GONE);
         layoutResult.setVisibility(View.VISIBLE);
         progressBar.setProgress(TOTAL_QUESTIONS);
+        btnViewProfile.setEnabled(false);
+        btnBrowseAll.setEnabled(false);
+        textResultTitle.setText(R.string.quiz_saving_assessment);
+        textResultSubtitle.setText("");
+        textResultSummary.setText("");
 
-        textResultTitle.setText("We found your match!");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, R.string.error_login_required, Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
 
-        // Build summary from answers
-        String summary = "Based on your concern about \""
-                + answers[0] + "\" and your preference for \""
-                + answers[2] + "\", we think this counselor is a great fit.";
-        textResultSummary.setText(summary);
+        String urgencyLevel = urgencyFromAnswer(answers[2]);
+        List<String> tags = IntakeMatcher.tagsForAnswers(answers[0], answers[2], urgencyLevel);
+        IntakeAssessment assessment = new IntakeAssessment(
+                user.getUid(),
+                answers[0],
+                answers[1],
+                answers[2],
+                urgencyLevel,
+                tags);
+        matchReason = getString(R.string.quiz_match_reason);
 
-        // Fetch the counselor to show their name and route to profile
-        CounselorRepository repo = new CounselorRepository();
-        repo.getAllCounselors(new CounselorRepository.OnCounselorsLoadedCallback() {
+        intakeRepository.saveAssessment(assessment,
+                new IntakeAssessmentRepository.OnAssessmentSavedCallback() {
+            @Override
+            public void onSuccess(String assessmentId) {
+                savedAssessmentId = assessmentId;
+                assessment.setId(assessmentId);
+                findCounselorMatch(assessment);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                textResultTitle.setText(R.string.assessment_error_save);
+                btnBrowseAll.setEnabled(true);
+                Toast.makeText(QuizActivity.this,
+                        R.string.assessment_error_save,
+                        Toast.LENGTH_LONG).show();
+            }
+        });
+
+        btnBrowseAll.setOnClickListener(v -> {
+            startActivity(new Intent(QuizActivity.this, CounselorListActivity.class));
+            finish();
+        });
+    }
+
+    private void findCounselorMatch(IntakeAssessment assessment) {
+        textResultTitle.setText(R.string.quiz_matching_counselor);
+        counselorRepository.getAllCounselors(new CounselorRepository.OnCounselorsLoadedCallback() {
             @Override
             public void onSuccess(List<Counselor> counselors) {
-                // Find the first real counselor (one with a name)
-                Counselor match = null;
-                for (Counselor c : counselors) {
-                    if (c.getName() != null) {
-                        match = c;
-                        break;
-                    }
-                }
-                if (match == null && !counselors.isEmpty()) {
-                    match = counselors.get(0);
+                Counselor match = IntakeMatcher.findBestCounselor(counselors, assessment);
+                if (match == null) {
+                    showNoMatch();
+                    return;
                 }
 
-                if (match != null) {
-                    textResultSubtitle.setText(match.getName());
-                    final Counselor finalMatch = match;
+                assessment.setMatchedCounselorId(match.getId());
+                assessment.setMatchedCounselorName(match.getName());
+                Counselor finalMatch = match;
+                intakeRepository.updateMatchedCounselor(savedAssessmentId,
+                        finalMatch.getId(),
+                        finalMatch.getName(),
+                        new IntakeAssessmentRepository.OnAssessmentSavedCallback() {
+                            @Override
+                            public void onSuccess(String assessmentId) {
+                                showResult(finalMatch, assessment);
+                            }
 
-                    btnViewProfile.setOnClickListener(v -> {
-                        Intent intent = new Intent(QuizActivity.this,
-                                CounselorProfileActivity.class);
-                        intent.putExtra("COUNSELOR_ID", finalMatch.getId());
-                        String slotId = finalMatch.getUid() != null
-                                ? finalMatch.getUid() : finalMatch.getId();
-                        intent.putExtra("SLOT_COUNSELOR_ID", slotId);
-                        intent.putExtra("COUNSELOR_NAME", finalMatch.getName());
-                        startActivity(intent);
-                        finish();
-                    });
-                } else {
-                    textResultSubtitle.setText("No counselors available");
-                    btnViewProfile.setEnabled(false);
-                }
+                            @Override
+                            public void onFailure(Exception e) {
+                                showResult(finalMatch, assessment);
+                            }
+                        });
             }
 
             @Override
@@ -204,15 +247,54 @@ public class QuizActivity extends AppCompatActivity {
                 Toast.makeText(QuizActivity.this,
                         getString(R.string.error_loading_counselors),
                         Toast.LENGTH_SHORT).show();
-                textResultSubtitle.setText("Unable to load");
+                textResultTitle.setText(R.string.error_loading_counselors);
+                textResultSubtitle.setText("");
                 btnViewProfile.setEnabled(false);
+                btnBrowseAll.setEnabled(true);
             }
         });
+    }
 
-        // "Browse All Counselors" always available
-        btnBrowseAll.setOnClickListener(v -> {
-            startActivity(new Intent(QuizActivity.this, CounselorListActivity.class));
+    private void showResult(Counselor match, IntakeAssessment assessment) {
+        textResultTitle.setText(R.string.quiz_match_title);
+        textResultSubtitle.setText(match.getName());
+        textResultSummary.setText(buildMatchSummary(assessment));
+        btnBrowseAll.setEnabled(true);
+        btnViewProfile.setEnabled(true);
+        btnViewProfile.setOnClickListener(v -> {
+            Intent intent = new Intent(QuizActivity.this, CounselorProfileActivity.class);
+            intent.putExtra(EXTRA_MATCHED_COUNSELOR_ID, match.getId());
+            String slotId = match.getUid() != null ? match.getUid() : match.getId();
+            intent.putExtra("SLOT_COUNSELOR_ID", slotId);
+            intent.putExtra("COUNSELOR_NAME", match.getName());
+            intent.putExtra(EXTRA_ASSESSMENT_ID, savedAssessmentId);
+            intent.putExtra(EXTRA_MATCH_REASON, matchReason);
+            startActivity(intent);
             finish();
         });
+    }
+
+    private void showNoMatch() {
+        textResultTitle.setText(R.string.no_counselors_available);
+        textResultSubtitle.setText("");
+        textResultSummary.setText(R.string.quiz_browse_fallback);
+        btnViewProfile.setEnabled(false);
+        btnBrowseAll.setEnabled(true);
+    }
+
+    private String buildMatchSummary(IntakeAssessment assessment) {
+        return getString(R.string.quiz_match_summary,
+                assessment.getPrimaryConcern(),
+                assessment.getSupportType());
+    }
+
+    private String urgencyFromAnswer(String supportType) {
+        if (supportType != null && supportType.toLowerCase().contains("crisis")) {
+            return IntakeAssessment.URGENCY_CRISIS;
+        }
+        if (supportType != null && supportType.toLowerCase().contains("practical")) {
+            return IntakeAssessment.URGENCY_MEDIUM;
+        }
+        return IntakeAssessment.URGENCY_LOW;
     }
 }

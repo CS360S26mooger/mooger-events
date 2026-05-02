@@ -57,12 +57,18 @@ public class StudentHomeActivity extends AppCompatActivity {
     // Feedback
     private FeedbackRepository feedbackRepository;
     private AppointmentRepository appointmentRepository;
+    private IntakeAssessmentRepository intakeAssessmentRepository;
+    private WaitlistRepository waitlistRepository;
     private CardView cardFeedbackPrompt;
     private TextView textFeedbackPromptSubtitle;
     private MaterialButton buttonGiveFeedback;
     private MaterialButton buttonDismissFeedback;
     private Appointment pendingFeedbackAppointment;
     private boolean feedbackDismissed = false;
+    private CardView cardLatestMatch;
+    private TextView textLatestMatchSubtitle;
+    private CardView cardWaitlistStatus;
+    private TextView textWaitlistStatusSubtitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +79,8 @@ public class StudentHomeActivity extends AppCompatActivity {
         userRepository = new UserRepository();
         feedbackRepository = new FeedbackRepository();
         appointmentRepository = new AppointmentRepository();
+        intakeAssessmentRepository = new IntakeAssessmentRepository();
+        waitlistRepository = new WaitlistRepository();
 
         counselorNameText     = findViewById(R.id.upcomingCounselorName);
         counselorRoleText     = findViewById(R.id.upcomingCounselorRole);
@@ -89,6 +97,10 @@ public class StudentHomeActivity extends AppCompatActivity {
         textFeedbackPromptSubtitle = findViewById(R.id.textFeedbackPromptSubtitle);
         buttonGiveFeedback       = findViewById(R.id.buttonGiveFeedback);
         buttonDismissFeedback    = findViewById(R.id.buttonDismissFeedback);
+        cardLatestMatch          = findViewById(R.id.cardLatestMatch);
+        textLatestMatchSubtitle  = findViewById(R.id.textLatestMatchSubtitle);
+        cardWaitlistStatus       = findViewById(R.id.cardWaitlistStatus);
+        textWaitlistStatusSubtitle = findViewById(R.id.textWaitlistStatusSubtitle);
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
@@ -260,6 +272,7 @@ public class StudentHomeActivity extends AppCompatActivity {
         // Load upcoming session and feedback prompt on first open
         fetchUpcomingSession();
         checkForPendingFeedback();
+        loadIntakeAndWaitlistSummary(uid);
     }
 
     // -------------------------------------------------------------------------
@@ -845,6 +858,89 @@ public class StudentHomeActivity extends AppCompatActivity {
         } else if (mAuth.getCurrentUser() != null) {
             fetchUpcomingSession();
             if (!feedbackDismissed) checkForPendingFeedback();
+            loadIntakeAndWaitlistSummary(mAuth.getCurrentUser().getUid());
         }
+    }
+
+    private void loadIntakeAndWaitlistSummary(String studentId) {
+        intakeAssessmentRepository.getLatestForStudent(studentId,
+                new IntakeAssessmentRepository.OnAssessmentLoadedCallback() {
+                    @Override
+                    public void onSuccess(IntakeAssessment assessment) {
+                        showLatestMatch(assessment);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        textLatestMatchSubtitle.setText(R.string.latest_match_empty);
+                        cardLatestMatch.setOnClickListener(v ->
+                                startActivity(new Intent(StudentHomeActivity.this, QuizActivity.class)));
+                    }
+                });
+
+        waitlistRepository.getActiveWaitlistForStudent(studentId,
+                new WaitlistRepository.OnWaitlistLoadedCallback() {
+                    @Override
+                    public void onSuccess(List<WaitlistEntry> entries) {
+                        if (entries.isEmpty()) {
+                            textWaitlistStatusSubtitle.setText(R.string.waitlist_status_empty);
+                        } else {
+                            textWaitlistStatusSubtitle.setText(
+                                    getString(R.string.waitlist_status_subtitle, entries.size()));
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        textWaitlistStatusSubtitle.setText(R.string.waitlist_status_empty);
+                    }
+                });
+    }
+
+    private void showLatestMatch(IntakeAssessment assessment) {
+        String counselorName = assessment.getMatchedCounselorName();
+        if (counselorName == null || counselorName.isEmpty()) {
+            counselorName = getString(R.string.no_counselors_available);
+        }
+        textLatestMatchSubtitle.setText(getString(R.string.latest_match_subtitle, counselorName));
+        String matchedCounselorId = assessment.getMatchedCounselorId();
+        cardLatestMatch.setOnClickListener(v -> {
+            if (matchedCounselorId == null || matchedCounselorId.isEmpty()) {
+                startActivity(new Intent(StudentHomeActivity.this, CounselorListActivity.class));
+                return;
+            }
+            openMatchedCounselor(matchedCounselorId, assessment.getId());
+        });
+    }
+
+    private void openMatchedCounselor(String matchedCounselorId, String assessmentId) {
+        Counselor cached = SessionCache.getInstance().getSingleCounselor(matchedCounselorId);
+        if (cached != null) {
+            launchCounselorProfile(cached, assessmentId);
+            return;
+        }
+        new CounselorRepository().getCounselor(matchedCounselorId,
+                new CounselorRepository.OnCounselorFetchedCallback() {
+                    @Override
+                    public void onSuccess(Counselor counselor) {
+                        SessionCache.getInstance().putSingleCounselor(matchedCounselorId, counselor);
+                        launchCounselorProfile(counselor, assessmentId);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        startActivity(new Intent(StudentHomeActivity.this, CounselorListActivity.class));
+                    }
+                });
+    }
+
+    private void launchCounselorProfile(Counselor counselor, String assessmentId) {
+        Intent intent = new Intent(StudentHomeActivity.this, CounselorProfileActivity.class);
+        intent.putExtra("COUNSELOR_ID", counselor.getId());
+        String slotId = counselor.getUid() != null ? counselor.getUid() : counselor.getId();
+        intent.putExtra("SLOT_COUNSELOR_ID", slotId);
+        intent.putExtra("COUNSELOR_NAME", counselor.getName());
+        intent.putExtra(QuizActivity.EXTRA_ASSESSMENT_ID, assessmentId);
+        startActivity(intent);
     }
 }

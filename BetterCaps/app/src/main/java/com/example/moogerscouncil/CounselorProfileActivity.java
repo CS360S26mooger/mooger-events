@@ -1,12 +1,3 @@
-/*
- * CounselorProfileActivity.java
- * Role: Displays the full profile of a single counselor — bio, specialization
- *       tags, language, gender, and an on-leave notice if applicable. Entry
- *       point for booking: the "Book Appointment" button routes to BookingActivity.
- *
- * Design pattern: Repository pattern (reads via CounselorRepository).
- * Part of the BetterCAPS counseling platform.
- */
 package com.example.moogerscouncil;
 
 import android.content.Intent;
@@ -24,15 +15,15 @@ import androidx.cardview.widget.CardView;
 
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
 /**
  * Full counselor profile view for students.
- * Receives a {@code COUNSELOR_ID} string extra and fetches the profile
- * from Firestore via {@link CounselorRepository}.
- *
- * <p>Launched by {@link CounselorAdapter} when a student taps a counselor card.</p>
+ * Receives a COUNSELOR_ID extra and fetches the profile through
+ * {@link CounselorRepository}.
  */
 public class CounselorProfileActivity extends AppCompatActivity {
 
@@ -40,17 +31,20 @@ public class CounselorProfileActivity extends AppCompatActivity {
     private TextView textLanguage;
     private TextView textGender;
     private TextView textBio;
-    private TextView textOnLeaveTitle;
     private TextView textOnLeaveMessage;
     private CardView cardOnLeave;
     private com.google.android.material.button.MaterialButton buttonSeeReferral;
     private ChipGroup chipGroupSpecializations;
     private Button buttonBookAppointment;
+    private com.google.android.material.button.MaterialButton buttonJoinWaitlist;
 
     private CounselorRepository counselorRepository;
+    private AvailabilityRepository availabilityRepository;
+    private WaitlistRepository waitlistRepository;
     private String counselorId;
-    private String slotCounselorId; // Auth UID used for slot queries (may differ from Firestore doc ID)
+    private String slotCounselorId;
     private String counselorName;
+    private String assessmentId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,8 +53,9 @@ public class CounselorProfileActivity extends AppCompatActivity {
 
         counselorId = getIntent().getStringExtra("COUNSELOR_ID");
         slotCounselorId = getIntent().getStringExtra("SLOT_COUNSELOR_ID");
-        if (slotCounselorId == null) slotCounselorId = counselorId; // fallback
+        if (slotCounselorId == null) slotCounselorId = counselorId;
         counselorName = getIntent().getStringExtra("COUNSELOR_NAME");
+        assessmentId = getIntent().getStringExtra(QuizActivity.EXTRA_ASSESSMENT_ID);
 
         if (counselorId == null) {
             Toast.makeText(this, getString(R.string.error_loading_profile), Toast.LENGTH_SHORT).show();
@@ -69,17 +64,19 @@ public class CounselorProfileActivity extends AppCompatActivity {
         }
 
         counselorRepository = new CounselorRepository();
+        availabilityRepository = new AvailabilityRepository();
+        waitlistRepository = new WaitlistRepository();
 
         textCounselorName = findViewById(R.id.textCounselorName);
         textLanguage = findViewById(R.id.textLanguage);
         textGender = findViewById(R.id.textGender);
         textBio = findViewById(R.id.textBio);
-        textOnLeaveTitle = findViewById(R.id.textOnLeaveTitle);
         textOnLeaveMessage = findViewById(R.id.textOnLeaveMessage);
         cardOnLeave = findViewById(R.id.cardOnLeave);
         buttonSeeReferral = findViewById(R.id.buttonSeeReferral);
         chipGroupSpecializations = findViewById(R.id.chipGroupSpecializations);
         buttonBookAppointment = findViewById(R.id.buttonBookAppointment);
+        buttonJoinWaitlist = findViewById(R.id.buttonJoinWaitlist);
 
         ((ImageButton) findViewById(R.id.buttonBack)).setOnClickListener(v -> finish());
 
@@ -90,19 +87,12 @@ public class CounselorProfileActivity extends AppCompatActivity {
         loadProfile();
     }
 
-    /**
-     * Loads the counselor profile. Uses the session cache (warmed by
-     * StudentHomeActivity) for instant rendering, then verifies with
-     * a background Firestore fetch.
-     */
     private void loadProfile() {
-        // Instant render from cache
         Counselor cached = SessionCache.getInstance().getSingleCounselor(counselorId);
         if (cached != null) {
             populateUI(cached);
         }
 
-        // Background refresh to catch any profile changes
         counselorRepository.getCounselor(counselorId,
                 new CounselorRepository.OnCounselorFetchedCallback() {
                     @Override
@@ -123,34 +113,24 @@ public class CounselorProfileActivity extends AppCompatActivity {
                 });
     }
 
-    /**
-     * Populates all UI elements from the fetched {@link Counselor} object.
-     *
-     * @param counselor The fetched counselor profile.
-     */
     private void populateUI(Counselor counselor) {
-        // Name
         if (counselor.getName() != null) {
             textCounselorName.setText(counselor.getName());
         }
 
-        // Language
         String lang = counselor.getLanguage();
         textLanguage.setText(lang != null && !lang.isEmpty()
                 ? getString(R.string.label_language) + ": " + lang
-                : getString(R.string.label_language) + ": —");
+                : getString(R.string.label_language) + ": -");
 
-        // Gender
         String gender = counselor.getGender();
         textGender.setText(gender != null && !gender.isEmpty()
                 ? getString(R.string.label_gender) + ": " + gender
-                : getString(R.string.label_gender) + ": —");
+                : getString(R.string.label_gender) + ": -");
 
-        // Bio
         String bio = counselor.getBio();
-        textBio.setText(bio != null && !bio.isEmpty() ? bio : "—");
+        textBio.setText(bio != null && !bio.isEmpty() ? bio : "-");
 
-        // Specialization chips (read-only)
         chipGroupSpecializations.removeAllViews();
         List<String> specs = counselor.getSpecializations();
         if (specs != null && !specs.isEmpty()) {
@@ -159,16 +139,22 @@ public class CounselorProfileActivity extends AppCompatActivity {
                 chip.setText(tag);
                 chip.setCheckable(false);
                 chip.setClickable(false);
-                chip.setChipBackgroundColor(
-                        ColorStateList.valueOf(Color.parseColor("#F8D7E3")));
+                chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#F8D7E3")));
                 chip.setTextColor(Color.parseColor("#C96B8E"));
                 chip.setChipStrokeWidth(0f);
                 chipGroupSpecializations.addView(chip);
             }
         }
 
-        // On-leave notice
         boolean isOnLeave = Boolean.TRUE.equals(counselor.getOnLeave());
+        String waitlistReason = isOnLeave
+                ? getString(R.string.waitlist_reason_preferred_counselor)
+                : getString(R.string.waitlist_reason_no_slots);
+        buttonJoinWaitlist.setVisibility(View.VISIBLE);
+        buttonJoinWaitlist.setEnabled(true);
+        buttonJoinWaitlist.setOnClickListener(v ->
+                joinWaitlist(slotCounselorId, assessmentId, waitlistReason));
+
         if (isOnLeave) {
             cardOnLeave.setVisibility(View.VISIBLE);
             String leaveMsg = counselor.getOnLeaveMessage();
@@ -176,14 +162,10 @@ public class CounselorProfileActivity extends AppCompatActivity {
             buttonBookAppointment.setEnabled(false);
             buttonBookAppointment.setText(R.string.currently_unavailable);
 
-            // Show "See Referred Counselor" button if a referral is set
             String referralId = counselor.getReferralCounselorId();
             if (referralId != null && !referralId.isEmpty()) {
                 buttonSeeReferral.setVisibility(View.VISIBLE);
                 buttonSeeReferral.setOnClickListener(v -> {
-                    // Look up the referral counselor's Auth UID from the session cache so
-                    // BookingActivity receives the correct slot query ID (the uid field,
-                    // not the Firestore document ID).
                     Counselor referral = SessionCache.getInstance().getSingleCounselor(referralId);
                     String referralSlotId = (referral != null && referral.getUid() != null)
                             ? referral.getUid() : referralId;
@@ -191,6 +173,7 @@ public class CounselorProfileActivity extends AppCompatActivity {
                             CounselorProfileActivity.class);
                     intent.putExtra("COUNSELOR_ID", referralId);
                     intent.putExtra("SLOT_COUNSELOR_ID", referralSlotId);
+                    intent.putExtra(QuizActivity.EXTRA_ASSESSMENT_ID, assessmentId);
                     startActivity(intent);
                 });
             } else {
@@ -202,13 +185,103 @@ public class CounselorProfileActivity extends AppCompatActivity {
             buttonBookAppointment.setEnabled(true);
             buttonBookAppointment.setText(R.string.button_book_appointment);
             buttonBookAppointment.setOnClickListener(v -> {
-                Intent intent = new Intent(CounselorProfileActivity.this,
-                        BookingActivity.class);
-                intent.putExtra("counselorId", slotCounselorId); // Auth UID — primary slot path
-                intent.putExtra("counselorDocId", counselorId);  // Firestore doc ID — fallback
+                Intent intent = new Intent(CounselorProfileActivity.this, BookingActivity.class);
+                intent.putExtra("counselorId", slotCounselorId);
+                intent.putExtra("counselorDocId", counselorId);
                 intent.putExtra("counselorName", counselor.getName());
+                intent.putExtra(QuizActivity.EXTRA_ASSESSMENT_ID, assessmentId);
                 startActivity(intent);
             });
+            checkSlotAvailability();
         }
+    }
+
+    private void checkSlotAvailability() {
+        availabilityRepository.hasAvailableSlots(slotCounselorId,
+                new AvailabilityRepository.OnAvailabilityCheckCallback() {
+                    @Override
+                    public void onSuccess(boolean hasAvailableSlots) {
+                        if (hasAvailableSlots) {
+                            buttonBookAppointment.setEnabled(true);
+                            buttonBookAppointment.setText(R.string.button_book_appointment);
+                        } else if (counselorId != null && !counselorId.equals(slotCounselorId)) {
+                            checkFallbackSlotAvailability();
+                        } else {
+                            showNoSlotsState();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        if (counselorId != null && !counselorId.equals(slotCounselorId)) {
+                            checkFallbackSlotAvailability();
+                        } else {
+                            showNoSlotsState();
+                        }
+                    }
+                });
+    }
+
+    private void checkFallbackSlotAvailability() {
+        availabilityRepository.hasAvailableSlots(counselorId,
+                new AvailabilityRepository.OnAvailabilityCheckCallback() {
+                    @Override
+                    public void onSuccess(boolean hasAvailableSlots) {
+                        if (hasAvailableSlots) {
+                            buttonBookAppointment.setEnabled(true);
+                            buttonBookAppointment.setText(R.string.button_book_appointment);
+                        } else {
+                            showNoSlotsState();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        showNoSlotsState();
+                    }
+                });
+    }
+
+    private void showNoSlotsState() {
+        buttonBookAppointment.setEnabled(false);
+        buttonBookAppointment.setText(R.string.no_slots_available);
+        buttonJoinWaitlist.setVisibility(View.VISIBLE);
+        buttonJoinWaitlist.setEnabled(true);
+    }
+
+    private void joinWaitlist(String waitlistCounselorId, String assessmentId, String reason) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            Toast.makeText(this, R.string.error_login_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        WaitlistEntry entry = new WaitlistEntry(
+                user.getUid(),
+                waitlistCounselorId,
+                assessmentId,
+                reason);
+        waitlistRepository.joinWaitlist(entry, new WaitlistRepository.OnWaitlistActionCallback() {
+            @Override
+            public void onSuccess() {
+                Toast.makeText(CounselorProfileActivity.this,
+                        R.string.waitlist_joined,
+                        Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onAlreadyWaitlisted() {
+                Toast.makeText(CounselorProfileActivity.this,
+                        R.string.waitlist_already_joined,
+                        Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(CounselorProfileActivity.this,
+                        R.string.waitlist_error,
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }

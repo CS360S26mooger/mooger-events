@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
   BetterCAPS launcher icon foreground.
+  White "C" letter with a caring hand curl at the bottom,
+  cradling a hot-pink heart. Matches bettercaps_logo.jpeg.
   Viewport 108×108; safe zone 72×72 centred at (54,54).
-
-  White shape: thick C-arc (outer r=30, inner r=17, centre at 50,54,
-  opening ±45° to the right) with rounded caps.
-  Pink heart: centred at (73,54) in the C's opening.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
@@ -13,26 +11,50 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- White C / hand shape -->
+    <!-- White C-shape with hand curl -->
     <path
         android:fillColor="#FFFFFF"
         android:pathData="
-          M 71,33
-          A 30,30,0,1,0,71,75
-          A 6.5,6.5,0,0,0,62,66
-          A 17,17,0,1,1,62,42
-          A 6.5,6.5,0,0,0,71,33
+          M 66,26
+          C 60,22 53,21 47,23
+          C 38,26 31,33 28,42
+          C 25,51 26,61 30,68
+          C 34,75 40,80 48,82
+          C 50,82.5 52,82 54,81
+          C 56,80 58,78 60,76
+          C 62,74 64,73 66,73
+          C 68,73 70,74 71,76
+          C 72,78 72,80 71,82
+          L 71,82
+
+          C 71,86 68,86 66,86
+          L 66,86
+          C 62,86 58,86 55,86
+          L 55,86
+
+          C 43,86 33,80 27,72
+          C 21,64 19,53 21,43
+          C 23,33 29,24 37,19
+          C 45,14 55,14 64,19
+          C 68,21 71,24 73,28
+          L 73,28
+
+          C 75,31 74,34 72,35
+          C 70,36 68,35 67,33
+          C 67,31 66,28 66,26
           Z" />
 
-    <!-- Hot-pink heart in the C's opening -->
+    <!-- Pink heart -->
     <path
         android:fillColor="#F0176A"
         android:pathData="
-          M 64,46
-          A 4.5,4.5,0,0,1,73,46
-          A 4.5,4.5,0,0,1,82,46
-          Q 82,55 73,63
-          Q 64,55 64,46
+          M 60,48
+          C 60,44 63,41 66,41
+          C 69,41 72,44 72,48
+          C 72,44 75,41 78,41
+          C 81,41 84,44 84,48
+          C 84,56 72,64 72,64
+          C 72,64 60,56 60,48
           Z" />
 
 </vector>

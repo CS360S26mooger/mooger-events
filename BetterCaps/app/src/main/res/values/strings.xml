@@ -260,6 +260,12 @@
     <string name="waitlist_no_dates_selected">Please select at least one available date.</string>
     <string name="waitlist_invalid_time_range">End time must be after start time.</string>
     <string name="waitlist_slots_available">A slot already matches your preferences. Please book directly.</string>
+    <string name="dialog_slot_available_title">A slot is available!</string>
+    <string name="dialog_slot_available_body">There\'s an open slot on %1$s at %2$s that fits your preferences.\nWould you like to book it now?</string>
+    <string name="dialog_slot_book_now">Book Now</string>
+    <string name="dialog_slot_join_waitlist_instead">Join Waitlist Instead</string>
+    <string name="dialog_slot_booking_success">Appointment booked successfully!</string>
+    <string name="dialog_slot_taken_fallback">That slot was just taken. Adding you to the waitlist instead.</string>
     <string name="waitlist_join_success">You have been added to the waitlist.</string>
     <string name="waitlist_already_on_list">You are already on this counselor\'s waitlist.</string>
     <string name="waitlist_join_error">Could not join waitlist. Please try again.</string>

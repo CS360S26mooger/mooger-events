@@ -249,6 +249,8 @@ public class CounselorProfileActivity extends AppCompatActivity {
         Intent intent = new Intent(this, WaitlistRequestActivity.class);
         intent.putExtra(WaitlistRequestActivity.EXTRA_COUNSELOR_ID, waitlistCounselorId);
         intent.putExtra(WaitlistRequestActivity.EXTRA_ASSESSMENT_ID, assessmentId);
+        intent.putExtra(WaitlistRequestActivity.EXTRA_COUNSELOR_NAME,
+                textCounselorName.getText().toString());
         startActivity(intent);
     }
 }

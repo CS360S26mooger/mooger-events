@@ -221,13 +221,11 @@ Core Objectives:
 
 | ID | User Story | Priority | Story Points | Risk Level | Status | Sprint |
 |----|------------|----------|--------------|------------|--------|--------|
-| **US-26** | **As a counselor**, I want to register through the app using my university email so that my counselor profile is automatically created in Firestore and I can immediately begin managing my availability without manual Firebase console setup. | High | 3 | Low | Done | Rolling (changes.md) |
+| **US-26** | **As a counselor**, I want to register through the app using my university email so that my profile is automatically created and I can immediately begin managing my availability without manual administrative setup. | High | 3 | Low | Done | Rolling |
 | **US-27** | **As a student**, I want to view my appointments on a calendar interface so that I can see my schedule at a glance and tap a date to view that day's sessions. | Medium | 5 | Low | Done | Merged work |
 | **US-28** | **As a student**, I want to view my full appointment history in a chronological list so that I can track my counseling journey across past and upcoming sessions. | Medium | 3 | Low | Done | Merged work |
-| **US-29** | **As a counselor**, I want to view and edit my full profile (bio, language, gender, specializations) from my dashboard so that students have accurate and complete information when browsing the directory. | High | 5 | Low | Done | Sprint 2 |
-| **US-30** | **As a student**, I want the app to block my waitlist submission if matching available slots already exist for my chosen dates and time window, so that I book directly instead of creating unnecessary waitlist entries. | High | 3 | Low | In Progress | Sprint 8 |
-| **US-31** | **As a student**, I want to view all my waitlist requests (active, resolved, and cancelled) in a single screen so that I can track which requests are pending and which have been fulfilled. | Medium | 5 | Low | In Progress | Sprint 8 |
-| **US-32** | **As a counselor**, I want any slot I create to be automatically checked against the waitlist so that the earliest-requesting student whose preferences match is instantly booked — without me manually resolving entries one by one. | High | 8 | Medium | In Progress | Sprint 8 |
+| **US-29** | **As a student**, I want to view all my waitlist requests (active, resolved, and cancelled) in a single screen so that I can track which requests are pending and which have been fulfilled. | Medium | 5 | Low | In Progress | Sprint 8 |
+| **US-30** | **As a student** filling out a waitlist request who is shown that a matching slot already exists, I want a dialog to appear offering to book that slot immediately, so that I can confirm the booking in one tap without having to navigate back to the calendar and find it manually. | High | 5 | Medium | In Progress | Sprint 8 |
 
 ---
 

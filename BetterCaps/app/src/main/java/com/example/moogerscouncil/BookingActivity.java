@@ -258,8 +258,8 @@ public class BookingActivity extends AppCompatActivity
                             progressBar.setVisibility(View.GONE);
                             SessionCache.getInstance().invalidateAppointments();
                             SessionCache.getInstance().invalidateSlots(counselorId, counselorDocId);
-                            AppToast.show(BookingActivity.this,
-                                    getString(R.string.booking_success),
+                            AppToast.scheduleForNextActivity(
+                                    BookingActivity.this, R.string.booking_success,
                                     AppToast.LENGTH_SHORT);
                             startActivity(new Intent(BookingActivity.this,
                                     StudentHomeActivity.class));
@@ -307,6 +307,7 @@ public class BookingActivity extends AppCompatActivity
         Intent intent = new Intent(this, WaitlistRequestActivity.class);
         intent.putExtra(WaitlistRequestActivity.EXTRA_COUNSELOR_ID, waitlistCounselorId);
         intent.putExtra(WaitlistRequestActivity.EXTRA_ASSESSMENT_ID, assessmentId);
+        intent.putExtra(WaitlistRequestActivity.EXTRA_COUNSELOR_NAME, counselorName);
         startActivity(intent);
     }
 

@@ -9,9 +9,12 @@
  */
 package com.example.moogerscouncil;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -44,6 +47,7 @@ public class WaitlistRequestActivity extends AppCompatActivity {
 
     public static final String EXTRA_COUNSELOR_ID = "counselorId";
     public static final String EXTRA_ASSESSMENT_ID = "assessmentId";
+    public static final String EXTRA_COUNSELOR_NAME = "counselorName";
 
     private CustomCalendarView calendarView;
     private LinearLayout selectorStartTime;
@@ -61,9 +65,11 @@ public class WaitlistRequestActivity extends AppCompatActivity {
 
     private WaitlistRepository waitlistRepository;
     private AvailabilityRepository availabilityRepository;
+    private AppointmentRepository appointmentRepository;
 
     private String counselorId;
     private String assessmentId;
+    private String counselorName;
 
     private static final String[] ALL_TIMES = {
             "08:00", "08:30", "09:00", "09:30", "10:00", "10:30",
@@ -78,9 +84,11 @@ public class WaitlistRequestActivity extends AppCompatActivity {
 
         counselorId = getIntent().getStringExtra(EXTRA_COUNSELOR_ID);
         assessmentId = getIntent().getStringExtra(EXTRA_ASSESSMENT_ID);
+        counselorName = getIntent().getStringExtra(EXTRA_COUNSELOR_NAME);
 
         waitlistRepository = new WaitlistRepository();
         availabilityRepository = new AvailabilityRepository();
+        appointmentRepository = new AppointmentRepository();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -198,12 +206,11 @@ public class WaitlistRequestActivity extends AppCompatActivity {
                 new AvailabilityRepository.OnSlotsLoadedCallback() {
                     @Override
                     public void onSuccess(List<TimeSlot> slots) {
-                        if (WaitlistMatcher.existingSlotsMatchPreferences(
-                                slots, selectedDates, selectedStart, selectedEnd)) {
+                        TimeSlot match = WaitlistMatcher.findFirstMatchingSlot(
+                                slots, selectedDates, selectedStart, selectedEnd);
+                        if (match != null) {
                             buttonSubmit.setEnabled(true);
-                            AppToast.show(WaitlistRequestActivity.this,
-                                    R.string.waitlist_slots_available, AppToast.LENGTH_LONG);
-                            finish();
+                            showSlotAvailableDialog(match);
                             return;
                         }
                         submitWaitlistEntry(selectedStart, selectedEnd);
@@ -235,8 +242,8 @@ public class WaitlistRequestActivity extends AppCompatActivity {
         waitlistRepository.joinWaitlist(entry, new WaitlistRepository.OnWaitlistActionCallback() {
             @Override
             public void onSuccess() {
-                AppToast.show(WaitlistRequestActivity.this,
-                        R.string.waitlist_join_success, AppToast.LENGTH_SHORT);
+                AppToast.scheduleForNextActivity(WaitlistRequestActivity.this,
+                        R.string.waitlist_join_success, AppToast.LENGTH_LONG);
                 Intent home = new Intent(WaitlistRequestActivity.this, StudentHomeActivity.class);
                 home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                 startActivity(home);
@@ -245,9 +252,12 @@ public class WaitlistRequestActivity extends AppCompatActivity {
 
             @Override
             public void onAlreadyWaitlisted() {
-                buttonSubmit.setEnabled(true);
-                AppToast.show(WaitlistRequestActivity.this,
-                        R.string.waitlist_already_on_list, AppToast.LENGTH_SHORT);
+                AppToast.scheduleForNextActivity(WaitlistRequestActivity.this,
+                        R.string.waitlist_already_on_list, AppToast.LENGTH_LONG);
+                Intent home = new Intent(WaitlistRequestActivity.this, StudentHomeActivity.class);
+                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(home);
+                finish();
             }
 
             @Override
@@ -257,5 +267,79 @@ public class WaitlistRequestActivity extends AppCompatActivity {
                         R.string.waitlist_join_error, AppToast.LENGTH_SHORT);
             }
         });
+    }
+
+    private void showSlotAvailableDialog(TimeSlot slot) {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_slot_available);
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+            window.setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.88),
+                    WindowManager.LayoutParams.WRAP_CONTENT);
+            window.setGravity(android.view.Gravity.CENTER);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
+            window.setDimAmount(0.5f);
+        }
+
+        String body = getString(R.string.dialog_slot_available_body, slot.getDate(), slot.getTime());
+        ((TextView) dialog.findViewById(R.id.textSlotDetails)).setText(body);
+
+        dialog.findViewById(R.id.btnBookNow).setOnClickListener(v -> {
+            dialog.dismiss();
+            // Use the exact same BookingConfirmationFragment flow as BookingActivity
+            BookingConfirmationFragment fragment =
+                    BookingConfirmationFragment.newInstance(counselorName, slot);
+            fragment.setOnConfirmListener(confirmedSlot -> {
+                String uid = FirebaseAuth.getInstance().getCurrentUser() != null
+                        ? FirebaseAuth.getInstance().getCurrentUser().getUid() : null;
+                if (uid == null) {
+                    AppToast.show(this, R.string.waitlist_join_error, AppToast.LENGTH_SHORT);
+                    return;
+                }
+                appointmentRepository.bookAppointment(uid, counselorId, confirmedSlot,
+                        new AppointmentRepository.OnBookingCallback() {
+                            @Override
+                            public void onSuccess() {
+                                SessionCache.getInstance().invalidateAppointments();
+                                SessionCache.getInstance().invalidateSlots(counselorId);
+                                AppToast.scheduleForNextActivity(WaitlistRequestActivity.this,
+                                        R.string.dialog_slot_booking_success,
+                                        AppToast.LENGTH_SHORT);
+                                Intent home = new Intent(WaitlistRequestActivity.this,
+                                        StudentHomeActivity.class);
+                                home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                                        | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                                startActivity(home);
+                                finish();
+                            }
+
+                            @Override
+                            public void onSlotTaken() {
+                                AppToast.show(WaitlistRequestActivity.this,
+                                        R.string.dialog_slot_taken_fallback,
+                                        AppToast.LENGTH_LONG);
+                                submitWaitlistEntry(selectedStart, selectedEnd);
+                            }
+
+                            @Override
+                            public void onFailure(Exception e) {
+                                AppToast.show(WaitlistRequestActivity.this,
+                                        R.string.waitlist_join_error, AppToast.LENGTH_SHORT);
+                            }
+                        });
+            });
+            fragment.show(getSupportFragmentManager(), "booking_confirm");
+        });
+
+        dialog.findViewById(R.id.btnJoinWaitlistInstead).setOnClickListener(v -> {
+            dialog.dismiss();
+            submitWaitlistEntry(selectedStart, selectedEnd);
+        });
+
+        dialog.show();
     }
 }

@@ -11,7 +11,6 @@ package com.example.moogerscouncil;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -83,9 +82,9 @@ public class HistoryActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(HistoryActivity.this,
+                        AppToast.show(HistoryActivity.this,
                                 getString(R.string.error_loading_appointments),
-                                Toast.LENGTH_SHORT).show();
+                                AppToast.LENGTH_SHORT);
                         textEmptyHistory.setVisibility(View.VISIBLE);
                     }
                 });

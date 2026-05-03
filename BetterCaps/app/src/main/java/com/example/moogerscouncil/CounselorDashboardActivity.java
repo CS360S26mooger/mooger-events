@@ -17,7 +17,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -159,6 +158,11 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                     }
                 });
 
+        // Waitlist count card → CounselorWaitlistActivity
+        CardView waitlistCountCard = findViewById(R.id.waitlistCountCard);
+        waitlistCountCard.setOnClickListener(v ->
+                startActivity(new Intent(this, CounselorWaitlistActivity.class)));
+
         // "Add Availability" banner → AvailabilitySetupActivity
         // Slots use Auth UID as counselorId, so no doc ID needed here
         CardView addSlotBanner = findViewById(R.id.addSlotBanner);
@@ -225,9 +229,9 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Exception e) {
                         progressBar.setVisibility(View.GONE);
-                        Toast.makeText(CounselorDashboardActivity.this,
+                        AppToast.show(CounselorDashboardActivity.this,
                                 getString(R.string.error_loading_appointments),
-                                Toast.LENGTH_LONG).show();
+                                AppToast.LENGTH_LONG);
                     }
                 });
     }
@@ -323,7 +327,7 @@ public class CounselorDashboardActivity extends AppCompatActivity {
             }
         }
         if (next == null) {
-            Toast.makeText(this, R.string.no_appointments_to_export, Toast.LENGTH_SHORT).show();
+            AppToast.show(this, R.string.no_appointments_to_export, AppToast.LENGTH_SHORT);
             return;
         }
         try {
@@ -331,7 +335,7 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                     ? null : counselorNameText.getText().toString();
             startActivity(CalendarSyncHelper.buildInsertEventIntent(next, counselorName));
         } catch (ActivityNotFoundException e) {
-            Toast.makeText(this, R.string.calendar_export_unavailable, Toast.LENGTH_LONG).show();
+            AppToast.show(this, R.string.calendar_export_unavailable, AppToast.LENGTH_LONG);
         }
     }
 }

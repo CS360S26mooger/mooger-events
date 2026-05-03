@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -16,7 +15,6 @@ import androidx.cardview.widget.CardView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -40,7 +38,6 @@ public class CounselorProfileActivity extends AppCompatActivity {
 
     private CounselorRepository counselorRepository;
     private AvailabilityRepository availabilityRepository;
-    private WaitlistRepository waitlistRepository;
     private String counselorId;
     private String slotCounselorId;
     private String counselorName;
@@ -58,14 +55,13 @@ public class CounselorProfileActivity extends AppCompatActivity {
         assessmentId = getIntent().getStringExtra(QuizActivity.EXTRA_ASSESSMENT_ID);
 
         if (counselorId == null) {
-            Toast.makeText(this, getString(R.string.error_loading_profile), Toast.LENGTH_SHORT).show();
+            AppToast.show(this, getString(R.string.error_loading_profile), AppToast.LENGTH_SHORT);
             finish();
             return;
         }
 
         counselorRepository = new CounselorRepository();
         availabilityRepository = new AvailabilityRepository();
-        waitlistRepository = new WaitlistRepository();
 
         textCounselorName = findViewById(R.id.textCounselorName);
         textLanguage = findViewById(R.id.textLanguage);
@@ -104,9 +100,9 @@ public class CounselorProfileActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Exception e) {
                         if (cached == null) {
-                            Toast.makeText(CounselorProfileActivity.this,
+                            AppToast.show(CounselorProfileActivity.this,
                                     getString(R.string.error_loading_profile),
-                                    Toast.LENGTH_LONG).show();
+                                    AppToast.LENGTH_LONG);
                             finish();
                         }
                     }
@@ -153,7 +149,7 @@ public class CounselorProfileActivity extends AppCompatActivity {
         buttonJoinWaitlist.setVisibility(View.VISIBLE);
         buttonJoinWaitlist.setEnabled(true);
         buttonJoinWaitlist.setOnClickListener(v ->
-                joinWaitlist(slotCounselorId, assessmentId, waitlistReason));
+                openWaitlistRequest(slotCounselorId, assessmentId));
 
         if (isOnLeave) {
             cardOnLeave.setVisibility(View.VISIBLE);
@@ -249,39 +245,10 @@ public class CounselorProfileActivity extends AppCompatActivity {
         buttonJoinWaitlist.setEnabled(true);
     }
 
-    private void joinWaitlist(String waitlistCounselorId, String assessmentId, String reason) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            Toast.makeText(this, R.string.error_login_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        WaitlistEntry entry = new WaitlistEntry(
-                user.getUid(),
-                waitlistCounselorId,
-                assessmentId,
-                reason);
-        waitlistRepository.joinWaitlist(entry, new WaitlistRepository.OnWaitlistActionCallback() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(CounselorProfileActivity.this,
-                        R.string.waitlist_joined,
-                        Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onAlreadyWaitlisted() {
-                Toast.makeText(CounselorProfileActivity.this,
-                        R.string.waitlist_already_joined,
-                        Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(CounselorProfileActivity.this,
-                        R.string.waitlist_error,
-                        Toast.LENGTH_LONG).show();
-            }
-        });
+    private void openWaitlistRequest(String waitlistCounselorId, String assessmentId) {
+        Intent intent = new Intent(this, WaitlistRequestActivity.class);
+        intent.putExtra(WaitlistRequestActivity.EXTRA_COUNSELOR_ID, waitlistCounselorId);
+        intent.putExtra(WaitlistRequestActivity.EXTRA_ASSESSMENT_ID, assessmentId);
+        startActivity(intent);
     }
 }

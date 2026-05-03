@@ -49,6 +49,20 @@ public class AvailabilityRepository {
         void onFailure(Exception e);
     }
 
+    /**
+     * Callback for slot creation operations that need to return the created slot.
+     * Used by {@link AvailabilitySetupActivity} for the waitlist auto-resolution hook.
+     */
+    public interface OnSlotCreatedCallback {
+        /**
+         * Called when the slot document was written successfully.
+         *
+         * @param slot The fully-populated {@link TimeSlot} including its Firestore ID.
+         */
+        void onSuccess(TimeSlot slot);
+        void onFailure(Exception e);
+    }
+
     // -------------------------------------------------------------------------
     // Path helper
     // -------------------------------------------------------------------------
@@ -206,6 +220,37 @@ public class AvailabilityRepository {
 
         slotsFor(counselorId).add(slotData)
                 .addOnSuccessListener(docRef -> callback.onSuccess())
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
+     * Adds a new slot and returns the created {@link TimeSlot} (with its Firestore ID) via
+     * callback. Use this variant when the caller needs the slot object — e.g. the
+     * waitlist auto-resolution hook in {@link AvailabilitySetupActivity}.
+     *
+     * @param counselorId Firebase Auth UID of the counselor.
+     * @param date        Date in "yyyy-MM-dd" format.
+     * @param time        Time in "HH:mm" format.
+     * @param callback    Receives the created slot on success.
+     */
+    public void addSlotAndReturn(String counselorId, String date, String time,
+                                 OnSlotCreatedCallback callback) {
+        Map<String, Object> slotData = new HashMap<>();
+        slotData.put("counselorId", counselorId);
+        slotData.put("date", date);
+        slotData.put("time", time);
+        slotData.put("available", true);
+
+        slotsFor(counselorId).add(slotData)
+                .addOnSuccessListener(docRef -> {
+                    TimeSlot slot = new TimeSlot();
+                    slot.setId(docRef.getId());
+                    slot.setCounselorId(counselorId);
+                    slot.setDate(date);
+                    slot.setTime(time);
+                    slot.setAvailable(true);
+                    callback.onSuccess(slot);
+                })
                 .addOnFailureListener(callback::onFailure);
     }
 

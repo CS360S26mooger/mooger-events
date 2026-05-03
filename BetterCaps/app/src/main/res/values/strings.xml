@@ -249,4 +249,41 @@
     <string name="provider_outlook">Outlook Calendar</string>
     <string name="button_save_settings">Save Settings</string>
     <string name="no_appointments_to_export">No upcoming confirmed appointments to export.</string>
+
+    <!-- Sprint 8: Waitlist Hardening -->
+    <string name="waitlist_request_title">Join Waitlist</string>
+    <string name="waitlist_select_dates_label">Select your available dates</string>
+    <string name="waitlist_start_time_label">Preferred start time</string>
+    <string name="waitlist_end_time_label">Preferred end time</string>
+    <string name="waitlist_note_hint">Optional note to counselor (e.g. topics to discuss)</string>
+    <string name="waitlist_submit_button">Join Waitlist</string>
+    <string name="waitlist_no_dates_selected">Please select at least one available date.</string>
+    <string name="waitlist_invalid_time_range">End time must be after start time.</string>
+    <string name="waitlist_slots_available">A slot already matches your preferences. Please book directly.</string>
+    <string name="waitlist_join_success">You have been added to the waitlist.</string>
+    <string name="waitlist_already_on_list">You are already on this counselor\'s waitlist.</string>
+    <string name="waitlist_join_error">Could not join waitlist. Please try again.</string>
+    <string name="waitlist_load_error">Could not load waitlist. Please try again.</string>
+    <string name="waitlist_checking_slots">Checking slot availability…</string>
+
+    <string name="student_waitlist_title">My Waitlist Requests</string>
+    <string name="student_waitlist_empty">You have no waitlist requests.</string>
+    <string name="waitlist_status_active">Active</string>
+    <string name="waitlist_status_resolved">Resolved</string>
+    <string name="waitlist_status_cancelled">Cancelled</string>
+    <string name="waitlist_dates_label">Preferred dates: %1$s</string>
+    <string name="waitlist_time_window_label">Time window: %1$s – %2$s</string>
+    <string name="waitlist_requested_label">Requested: %1$s</string>
+    <string name="waitlist_cancel_button">Cancel Request</string>
+    <string name="waitlist_cancel_confirm">Are you sure you want to cancel this waitlist request?</string>
+    <string name="waitlist_cancel_success">Waitlist request cancelled.</string>
+    <string name="waitlist_cancel_error">Could not cancel request. Please try again.</string>
+
+    <string name="counselor_waitlist_title">Waitlist Queue</string>
+    <string name="counselor_waitlist_empty">No students are on your waitlist.</string>
+    <string name="counselor_waitlist_create_slot">Create Slot for Student</string>
+    <string name="counselor_waitlist_student_label">Student: %1$s</string>
+
+    <string name="waitlist_auto_resolved">A waitlist request was auto-booked for this slot.</string>
+    <string name="waitlist_auto_resolve_error">Slot created but auto-booking failed. Check waitlist queue.</string>
 </resources>

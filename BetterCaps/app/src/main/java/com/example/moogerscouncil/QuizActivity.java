@@ -18,7 +18,6 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -171,7 +170,7 @@ public class QuizActivity extends AppCompatActivity {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
-            Toast.makeText(this, R.string.error_login_required, Toast.LENGTH_SHORT).show();
+            AppToast.show(this, R.string.error_login_required, AppToast.LENGTH_SHORT);
             finish();
             return;
         }
@@ -200,9 +199,9 @@ public class QuizActivity extends AppCompatActivity {
             public void onFailure(Exception e) {
                 textResultTitle.setText(R.string.assessment_error_save);
                 btnBrowseAll.setEnabled(true);
-                Toast.makeText(QuizActivity.this,
+                AppToast.show(QuizActivity.this,
                         R.string.assessment_error_save,
-                        Toast.LENGTH_LONG).show();
+                        AppToast.LENGTH_LONG);
             }
         });
 
@@ -244,9 +243,9 @@ public class QuizActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Exception e) {
-                Toast.makeText(QuizActivity.this,
+                AppToast.show(QuizActivity.this,
                         getString(R.string.error_loading_counselors),
-                        Toast.LENGTH_SHORT).show();
+                        AppToast.LENGTH_SHORT);
                 textResultTitle.setText(R.string.error_loading_counselors);
                 textResultSubtitle.setText("");
                 btnViewProfile.setEnabled(false);

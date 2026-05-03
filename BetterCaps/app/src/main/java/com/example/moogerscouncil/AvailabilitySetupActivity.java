@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
@@ -41,6 +40,8 @@ public class AvailabilitySetupActivity extends AppCompatActivity {
     private TextView textEmptySlots;
     private AvailabilityRepository availabilityRepository;
     private AvailabilitySettingsRepository settingsRepository;
+    private WaitlistRepository waitlistRepository;
+    private AppointmentRepository appointmentRepository;
     private String counselorId;
 
     /** Flat list of all slots (available + booked) for display. */
@@ -61,6 +62,8 @@ public class AvailabilitySetupActivity extends AppCompatActivity {
         counselorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         availabilityRepository = new AvailabilityRepository();
         settingsRepository = new AvailabilitySettingsRepository();
+        waitlistRepository = new WaitlistRepository();
+        appointmentRepository = new AppointmentRepository();
 
         recyclerSlots = findViewById(R.id.recyclerSlots);
         textEmptySlots = findViewById(R.id.textEmptySlots);
@@ -97,9 +100,9 @@ public class AvailabilitySetupActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(AvailabilitySetupActivity.this,
+                        AppToast.show(AvailabilitySetupActivity.this,
                                 getString(R.string.error_adding_slot),
-                                Toast.LENGTH_SHORT).show();
+                                AppToast.LENGTH_SHORT);
                     }
                 });
     }
@@ -149,37 +152,102 @@ public class AvailabilitySetupActivity extends AppCompatActivity {
                 new AvailabilityRepository.OnBufferCheckCallback() {
                     @Override
                     public void onAvailable() {
-                        availabilityRepository.addSlot(counselorId, date, time,
-                                new AvailabilityRepository.OnSlotActionCallback() {
+                        availabilityRepository.addSlotAndReturn(counselorId, date, time,
+                                new AvailabilityRepository.OnSlotCreatedCallback() {
                                     @Override
-                                    public void onSuccess() {
-                                        Toast.makeText(AvailabilitySetupActivity.this,
+                                    public void onSuccess(TimeSlot slot) {
+                                        AppToast.show(AvailabilitySetupActivity.this,
                                                 getString(R.string.slot_added),
-                                                Toast.LENGTH_SHORT).show();
+                                                AppToast.LENGTH_SHORT);
                                         loadSlots();
+                                        tryAutoResolveWaitlist(slot);
                                     }
 
                                     @Override
                                     public void onFailure(Exception e) {
-                                        Toast.makeText(AvailabilitySetupActivity.this,
+                                        AppToast.show(AvailabilitySetupActivity.this,
                                                 getString(R.string.error_adding_slot),
-                                                Toast.LENGTH_SHORT).show();
+                                                AppToast.LENGTH_SHORT);
                                     }
                                 });
                     }
 
                     @Override
                     public void onConflict(String reason) {
-                        Toast.makeText(AvailabilitySetupActivity.this,
+                        AppToast.show(AvailabilitySetupActivity.this,
                                 R.string.slot_conflicts_buffer,
-                                Toast.LENGTH_LONG).show();
+                                AppToast.LENGTH_LONG);
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(AvailabilitySetupActivity.this,
+                        AppToast.show(AvailabilitySetupActivity.this,
                                 getString(R.string.error_adding_slot),
-                                Toast.LENGTH_SHORT).show();
+                                AppToast.LENGTH_SHORT);
+                    }
+                });
+    }
+
+    /**
+     * After a slot is created, checks the FIFO waitlist queue and auto-books the slot
+     * for the first student whose preferences match the new slot's date and time.
+     *
+     * <p>Failure at any step is handled silently (best-effort) — the slot was already
+     * created successfully and a toast guides the counselor to the waitlist queue.</p>
+     *
+     * @param slot The newly-created slot (with its Firestore ID populated).
+     */
+    private void tryAutoResolveWaitlist(TimeSlot slot) {
+        waitlistRepository.getActiveWaitlistForCounselorOrdered(counselorId,
+                new WaitlistRepository.OnWaitlistLoadedCallback() {
+                    @Override
+                    public void onSuccess(java.util.List<WaitlistEntry> entries) {
+                        WaitlistEntry match = WaitlistMatcher.findFirstMatch(
+                                entries, slot.getDate(), slot.getTime());
+                        if (match == null) return;
+
+                        appointmentRepository.bookAppointmentForWaitlist(
+                                match.getStudentId(), counselorId, slot,
+                                new AppointmentRepository.OnWaitlistBookingCallback() {
+                                    @Override
+                                    public void onSuccess(String appointmentId) {
+                                        waitlistRepository.resolveEntry(
+                                                match.getId(), slot.getId(), appointmentId,
+                                                new WaitlistRepository.OnWaitlistSimpleCallback() {
+                                                    @Override
+                                                    public void onSuccess() {
+                                                        AppToast.show(AvailabilitySetupActivity.this,
+                                                                R.string.waitlist_auto_resolved,
+                                                                AppToast.LENGTH_LONG);
+                                                        loadSlots();
+                                                    }
+
+                                                    @Override
+                                                    public void onFailure(Exception e) {
+                                                        AppToast.show(AvailabilitySetupActivity.this,
+                                                                R.string.waitlist_auto_resolve_error,
+                                                                AppToast.LENGTH_LONG);
+                                                    }
+                                                });
+                                    }
+
+                                    @Override
+                                    public void onSlotTaken() {
+                                        // Slot was already booked between creation and this call.
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                        AppToast.show(AvailabilitySetupActivity.this,
+                                                R.string.waitlist_auto_resolve_error,
+                                                AppToast.LENGTH_LONG);
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        // Best-effort — waitlist check failure does not block slot creation.
                     }
                 });
     }
@@ -207,8 +275,8 @@ public class AvailabilitySetupActivity extends AppCompatActivity {
                         if (!slot.isAvailable()) {
                             // Restore — booked slots cannot be deleted
                             slotSetupAdapter.notifyItemChanged(pos);
-                            Toast.makeText(AvailabilitySetupActivity.this,
-                                    "Cannot remove a booked slot", Toast.LENGTH_SHORT).show();
+                            AppToast.show(AvailabilitySetupActivity.this,
+                                    "Cannot remove a booked slot", AppToast.LENGTH_SHORT);
                             return;
                         }
 
@@ -220,17 +288,17 @@ public class AvailabilitySetupActivity extends AppCompatActivity {
                                         slotSetupAdapter.notifyItemRemoved(pos);
                                         textEmptySlots.setVisibility(
                                                 slotList.isEmpty() ? View.VISIBLE : View.GONE);
-                                        Toast.makeText(AvailabilitySetupActivity.this,
+                                        AppToast.show(AvailabilitySetupActivity.this,
                                                 getString(R.string.slot_removed),
-                                                Toast.LENGTH_SHORT).show();
+                                                AppToast.LENGTH_SHORT);
                                     }
 
                                     @Override
                                     public void onFailure(Exception e) {
                                         slotSetupAdapter.notifyItemChanged(pos);
-                                        Toast.makeText(AvailabilitySetupActivity.this,
+                                        AppToast.show(AvailabilitySetupActivity.this,
                                                 getString(R.string.error_removing_slot),
-                                                Toast.LENGTH_SHORT).show();
+                                                AppToast.LENGTH_SHORT);
                                     }
                                 });
                     }

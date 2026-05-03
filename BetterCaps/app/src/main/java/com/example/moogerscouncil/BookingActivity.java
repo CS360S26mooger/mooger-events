@@ -19,14 +19,12 @@ import android.view.View;
 import java.util.HashSet;
 import java.util.Set;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -60,7 +58,6 @@ public class BookingActivity extends AppCompatActivity
 
     private AvailabilityRepository availabilityRepository;
     private AppointmentRepository appointmentRepository;
-    private WaitlistRepository waitlistRepository;
     private AvailabilitySettingsRepository availabilitySettingsRepository;
     private String assessmentId;
     private int bufferMinutes = 0;
@@ -77,7 +74,6 @@ public class BookingActivity extends AppCompatActivity
 
         availabilityRepository = new AvailabilityRepository();
         appointmentRepository = new AppointmentRepository();
-        waitlistRepository = new WaitlistRepository();
         availabilitySettingsRepository = new AvailabilitySettingsRepository();
 
         TextView titleText = findViewById(R.id.counselorNameTitle);
@@ -97,8 +93,7 @@ public class BookingActivity extends AppCompatActivity
         recyclerSlots = findViewById(R.id.slotsRecyclerView);
         buttonJoinWaitlist = findViewById(R.id.buttonJoinWaitlistBooking);
         buttonJoinWaitlist.setOnClickListener(v ->
-                joinWaitlist(counselorId, assessmentId,
-                        getString(R.string.waitlist_reason_no_slots)));
+                openWaitlistRequest(counselorId, assessmentId));
 
         recyclerSlots.setLayoutManager(new LinearLayoutManager(this));
         slotAdapter = new TimeSlotAdapter(new ArrayList<>(), this);
@@ -191,9 +186,9 @@ public class BookingActivity extends AppCompatActivity
                     public void onFailure(Exception e) {
                         progressBar.setVisibility(View.GONE);
                         android.util.Log.e("BOOKING", "slot load failed: " + e.getMessage());
-                        Toast.makeText(BookingActivity.this,
+                        AppToast.show(BookingActivity.this,
                                 getString(R.string.error_booking_failed),
-                                Toast.LENGTH_LONG).show();
+                                AppToast.LENGTH_LONG);
                     }
                 });
     }
@@ -248,8 +243,8 @@ public class BookingActivity extends AppCompatActivity
 
         fragment.setOnConfirmListener(confirmedSlot -> {
             if (FirebaseAuth.getInstance().getCurrentUser() == null) {
-                Toast.makeText(this, getString(R.string.error_booking_failed),
-                        Toast.LENGTH_SHORT).show();
+                AppToast.show(this, getString(R.string.error_booking_failed),
+                        AppToast.LENGTH_SHORT);
                 return;
             }
 
@@ -263,9 +258,9 @@ public class BookingActivity extends AppCompatActivity
                             progressBar.setVisibility(View.GONE);
                             SessionCache.getInstance().invalidateAppointments();
                             SessionCache.getInstance().invalidateSlots(counselorId, counselorDocId);
-                            Toast.makeText(BookingActivity.this,
+                            AppToast.show(BookingActivity.this,
                                     getString(R.string.booking_success),
-                                    Toast.LENGTH_SHORT).show();
+                                    AppToast.LENGTH_SHORT);
                             startActivity(new Intent(BookingActivity.this,
                                     StudentHomeActivity.class));
                             finish();
@@ -274,9 +269,9 @@ public class BookingActivity extends AppCompatActivity
                         @Override
                         public void onSlotTaken() {
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(BookingActivity.this,
+                            AppToast.show(BookingActivity.this,
                                     getString(R.string.error_slot_taken),
-                                    Toast.LENGTH_LONG).show();
+                                    AppToast.LENGTH_LONG);
                             // Remove taken slot from local schedule and refresh
                             if (schedule != null) {
                                 schedule.getSlotsForDate(confirmedSlot.getDate())
@@ -288,9 +283,9 @@ public class BookingActivity extends AppCompatActivity
                         @Override
                         public void onFailure(Exception e) {
                             progressBar.setVisibility(View.GONE);
-                            Toast.makeText(BookingActivity.this,
+                            AppToast.show(BookingActivity.this,
                                     getString(R.string.error_booking_failed),
-                                    Toast.LENGTH_LONG).show();
+                                    AppToast.LENGTH_LONG);
                         }
                     });
         });
@@ -308,40 +303,11 @@ public class BookingActivity extends AppCompatActivity
         return dates;
     }
 
-    private void joinWaitlist(String waitlistCounselorId, String assessmentId, String reason) {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            Toast.makeText(this, R.string.error_login_required, Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        WaitlistEntry entry = new WaitlistEntry(
-                user.getUid(),
-                waitlistCounselorId,
-                assessmentId,
-                reason);
-        waitlistRepository.joinWaitlist(entry, new WaitlistRepository.OnWaitlistActionCallback() {
-            @Override
-            public void onSuccess() {
-                Toast.makeText(BookingActivity.this,
-                        R.string.waitlist_joined,
-                        Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onAlreadyWaitlisted() {
-                Toast.makeText(BookingActivity.this,
-                        R.string.waitlist_already_joined,
-                        Toast.LENGTH_LONG).show();
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                Toast.makeText(BookingActivity.this,
-                        R.string.waitlist_error,
-                        Toast.LENGTH_LONG).show();
-            }
-        });
+    private void openWaitlistRequest(String waitlistCounselorId, String assessmentId) {
+        Intent intent = new Intent(this, WaitlistRequestActivity.class);
+        intent.putExtra(WaitlistRequestActivity.EXTRA_COUNSELOR_ID, waitlistCounselorId);
+        intent.putExtra(WaitlistRequestActivity.EXTRA_ASSESSMENT_ID, assessmentId);
+        startActivity(intent);
     }
 
     private void loadSettingsThenSlots(String initialDate) {

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_rounded_bg"
+    android:padding="28dp">
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/ic_warning"
+        android:tint="#C96B8E"
+        android:background="@drawable/circle_bg"
+        android:backgroundTint="#F5E6F0"
+        android:padding="14dp"
+        android:layout_marginBottom="18dp"
+        android:contentDescription="Warning" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Cancel Waitlist?"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#1A1A2E"
+        android:gravity="center"
+        android:layout_marginBottom="8dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Are you sure you want to remove yourself from this waitlist?"
+        android:textSize="14sp"
+        android:textColor="#8A8A9A"
+        android:gravity="center"
+        android:lineSpacingExtra="3dp"
+        android:layout_marginBottom="28dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancelConfirm"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Yes, cancel it"
+        android:textSize="15sp"
+        android:backgroundTint="#C96B8E"
+        android:layout_marginBottom="10dp"
+        app:cornerRadius="14dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnCancelDismiss"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:text="Keep it"
+        android:textSize="15sp"
+        android:textColor="#C96B8E"
+        app:strokeColor="#C96B8E"
+        app:cornerRadius="14dp" />
+
+</LinearLayout>

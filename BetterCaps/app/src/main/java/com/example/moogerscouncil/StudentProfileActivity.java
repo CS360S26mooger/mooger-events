@@ -6,7 +6,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,7 +48,7 @@ public class StudentProfileActivity extends AppCompatActivity {
         counselorId = getIntent().getStringExtra(EXTRA_COUNSELOR_ID);
 
         if (studentId == null) {
-            Toast.makeText(this, R.string.error_loading_profile, Toast.LENGTH_SHORT).show();
+            AppToast.show(this, R.string.error_loading_profile, AppToast.LENGTH_SHORT);
             finish();
             return;
         }
@@ -168,7 +167,7 @@ public class StudentProfileActivity extends AppCompatActivity {
     private void saveNote(EditText noteEdit, AlertDialog dialog) {
         String text = noteEdit.getText() == null ? "" : noteEdit.getText().toString().trim();
         if (text.isEmpty()) {
-            Toast.makeText(this, R.string.note_text_required, Toast.LENGTH_SHORT).show();
+            AppToast.show(this, R.string.note_text_required, AppToast.LENGTH_SHORT);
             return;
         }
         SessionNote note = new SessionNote(
@@ -176,16 +175,16 @@ public class StudentProfileActivity extends AppCompatActivity {
         new SessionNoteRepository().saveNote(note, new SessionNoteRepository.OnNoteActionCallback() {
             @Override
             public void onSuccess(String noteId) {
-                Toast.makeText(StudentProfileActivity.this, R.string.note_saved,
-                        Toast.LENGTH_SHORT).show();
+                AppToast.show(StudentProfileActivity.this, R.string.note_saved,
+                        AppToast.LENGTH_SHORT);
                 dialog.dismiss();
                 loadSessionNotes();
             }
 
             @Override
             public void onFailure(Exception e) {
-                Toast.makeText(StudentProfileActivity.this, R.string.note_save_error,
-                        Toast.LENGTH_LONG).show();
+                AppToast.show(StudentProfileActivity.this, R.string.note_save_error,
+                        AppToast.LENGTH_LONG);
             }
         });
     }

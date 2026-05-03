@@ -71,6 +71,15 @@
         <activity
             android:name=".MainActivity"
             android:exported="false" />
+        <activity
+            android:name=".WaitlistRequestActivity"
+            android:exported="false" />
+        <activity
+            android:name=".StudentWaitlistActivity"
+            android:exported="false" />
+        <activity
+            android:name=".CounselorWaitlistActivity"
+            android:exported="false" />
 
     </application>
 

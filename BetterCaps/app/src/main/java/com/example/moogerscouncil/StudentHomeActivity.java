@@ -14,7 +14,6 @@ import android.widget.ImageButton;
 import android.widget.RatingBar;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.cardview.widget.CardView;
 import com.google.android.material.button.MaterialButton;
@@ -147,7 +146,7 @@ public class StudentHomeActivity extends AppCompatActivity {
         // AI Chat placeholder
         CardView aiChatCard = findViewById(R.id.aiChatCard);
         aiChatCard.setOnClickListener(v ->
-            Toast.makeText(this, "AI Chat coming soon!", Toast.LENGTH_SHORT).show());
+            AppToast.show(this, "AI Chat coming soon!", AppToast.LENGTH_SHORT));
 
         // Slide-to-cancel SeekBar
         float thumbPx = 42 * getResources().getDisplayMetrics().density;
@@ -183,8 +182,8 @@ public class StudentHomeActivity extends AppCompatActivity {
             if (pendingFeedbackAppointment != null) {
                 showFeedbackDialog(pendingFeedbackAppointment.getId());
             } else {
-                Toast.makeText(this, getString(R.string.no_pending_feedback),
-                        Toast.LENGTH_SHORT).show();
+                AppToast.show(this, getString(R.string.no_pending_feedback),
+                        AppToast.LENGTH_SHORT);
             }
         });
 
@@ -269,6 +268,9 @@ public class StudentHomeActivity extends AppCompatActivity {
                 showExitDialog();
             }
         });
+
+        cardWaitlistStatus.setOnClickListener(v ->
+                startActivity(new Intent(this, StudentWaitlistActivity.class)));
 
         // Load upcoming session and feedback prompt on first open
         fetchUpcomingSession();
@@ -472,15 +474,15 @@ public class StudentHomeActivity extends AppCompatActivity {
                         @Override
                         public void onSuccess() {
                             SessionCache.getInstance().invalidateAppointments();
-                            Toast.makeText(StudentHomeActivity.this,
-                                    "Appointment cancelled.", Toast.LENGTH_SHORT).show();
+                            AppToast.show(StudentHomeActivity.this,
+                                    "Appointment cancelled.", AppToast.LENGTH_SHORT);
                             fetchUpcomingSession();
                         }
                         @Override
                         public void onFailure(Exception e) {
-                            Toast.makeText(StudentHomeActivity.this,
+                            AppToast.show(StudentHomeActivity.this,
                                     "Could not cancel. Please try again.",
-                                    Toast.LENGTH_SHORT).show();
+                                    AppToast.LENGTH_SHORT);
                         }
                     });
         });
@@ -563,8 +565,8 @@ public class StudentHomeActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(v -> {
             int rating = (int) ratingBar.getRating();
             if (rating == 0) {
-                Toast.makeText(this, getString(R.string.error_rating_required),
-                        Toast.LENGTH_SHORT).show();
+                AppToast.show(this, getString(R.string.error_rating_required),
+                        AppToast.LENGTH_SHORT);
                 return;
             }
             String comment = commentEdit.getText() != null
@@ -574,18 +576,18 @@ public class StudentHomeActivity extends AppCompatActivity {
                     new FeedbackRepository.OnFeedbackSubmittedCallback() {
                         @Override
                         public void onSuccess() {
-                            Toast.makeText(StudentHomeActivity.this,
+                            AppToast.show(StudentHomeActivity.this,
                                     getString(R.string.feedback_submitted),
-                                    Toast.LENGTH_SHORT).show();
+                                    AppToast.LENGTH_SHORT);
                             dialog.dismiss();
                             cardFeedbackPrompt.setVisibility(View.GONE);
                             pendingFeedbackAppointment = null;
                         }
                         @Override
                         public void onFailure(Exception e) {
-                            Toast.makeText(StudentHomeActivity.this,
+                            AppToast.show(StudentHomeActivity.this,
                                     getString(R.string.error_feedback_submission),
-                                    Toast.LENGTH_LONG).show();
+                                    AppToast.LENGTH_LONG);
                         }
                     });
         });

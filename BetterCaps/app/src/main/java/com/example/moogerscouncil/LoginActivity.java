@@ -17,7 +17,6 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -95,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = passwordField.getText().toString().trim();
 
         if (email.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, getString(R.string.error_login_failed), Toast.LENGTH_SHORT).show();
+            AppToast.show(this, getString(R.string.error_login_failed), AppToast.LENGTH_SHORT);
             return;
         }
 
@@ -103,9 +102,9 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnSuccessListener(result -> routeToHome(selectedRole))
                         // Skip Firestore role check for counselors — go directly to dashboard.
                 .addOnFailureListener(e ->
-                        Toast.makeText(this,
+                        AppToast.show(this,
                                 getString(R.string.error_login_failed) + " " + e.getMessage(),
-                                Toast.LENGTH_LONG).show()
+                                AppToast.LENGTH_LONG)
                 );
     }
 
@@ -129,9 +128,9 @@ public class LoginActivity extends AppCompatActivity {
                     mAuth.signOut();
                     String label = UserRole.COUNSELOR.equals(role) ? "Counselor"
                             : UserRole.ADMIN.equals(role) ? "Admin" : "Student";
-                    Toast.makeText(LoginActivity.this,
+                    AppToast.show(LoginActivity.this,
                             "Wrong login type selected. Please choose \"" + label + "\".",
-                            Toast.LENGTH_LONG).show();
+                            AppToast.LENGTH_LONG);
                     return;
                 }
 
@@ -154,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
                 String msg = (e instanceof IllegalArgumentException)
                         ? e.getMessage()
                         : getString(R.string.error_fetching_role);
-                Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
+                AppToast.show(LoginActivity.this, msg, AppToast.LENGTH_LONG);
                 // If the login screen was not inflated yet (auto-redirect path),
                 // inflate it now so the user can try again.
                 if (emailField == null) {

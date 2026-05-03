@@ -18,7 +18,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -182,17 +181,17 @@ public class RegisterActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Exception e) {
-                            Toast.makeText(RegisterActivity.this,
+                            AppToast.show(RegisterActivity.this,
                                     getString(R.string.error_firestore_write),
-                                    Toast.LENGTH_LONG).show();
+                                    AppToast.LENGTH_LONG);
                             navigateNext();
                         }
                     });
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this,
+                        AppToast.show(this,
                                 getString(R.string.error_registration_failed) + " " + e.getMessage(),
-                                Toast.LENGTH_LONG).show()
+                                AppToast.LENGTH_LONG)
                 );
     }
 

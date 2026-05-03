@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/crisis_escalation_title"
+            android:textColor="#1A1A2E"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/crisis_severity_label"
+            android:textStyle="bold"
+            android:textColor="#1A1A2E" />
+
+        <RadioGroup
+            android:id="@+id/radioSeverityGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkedButton="@id/radioSeverityModerate">
+
+            <RadioButton
+                android:id="@+id/radioSeverityModerate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/crisis_severity_moderate" />
+
+            <RadioButton
+                android:id="@+id/radioSeverityHigh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/crisis_severity_high" />
+
+            <RadioButton
+                android:id="@+id/radioSeverityImmediate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/crisis_severity_immediate" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/crisis_action_label"
+            android:textStyle="bold"
+            android:textColor="#1A1A2E"
+            android:layout_marginTop="10dp" />
+
+        <RadioGroup
+            android:id="@+id/radioActionGroup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:checkedButton="@id/radioActionSafety">
+
+            <RadioButton
+                android:id="@+id/radioActionSecurity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/crisis_action_security" />
+
+            <RadioButton
+                android:id="@+id/radioActionCaps"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/crisis_action_caps" />
+
+            <RadioButton
+                android:id="@+id/radioActionSafety"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/crisis_action_safety_plan" />
+
+            <RadioButton
+                android:id="@+id/radioActionOther"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/crisis_action_other" />
+        </RadioGroup>
+
+        <EditText
+            android:id="@+id/editCrisisNotes"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="12dp"
+            android:gravity="top|start"
+            android:inputType="textMultiLine|textCapSentences"
+            android:hint="@string/crisis_notes_hint"
+            android:background="@drawable/edittext_bg"
+            android:padding="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonCallSecurity"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="12dp"
+            android:text="@string/call_campus_security"
+            android:textAllCaps="false"
+            android:backgroundTint="#C0392B" />
+    </LinearLayout>
+</ScrollView>

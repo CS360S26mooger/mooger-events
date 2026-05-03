@@ -30,6 +30,12 @@
             android:name=".StudentHomeActivity"
             android:exported="false" />
         <activity
+            android:name=".StudentProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SessionHistoryActivity"
+            android:exported="false" />
+        <activity
             android:name=".CounselorDashboardActivity"
             android:exported="false" />
         <activity
@@ -55,6 +61,9 @@
             android:exported="false" />
         <activity
             android:name=".AvailabilitySetupActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AvailabilitySettingsActivity"
             android:exported="false" />
         <activity
             android:name=".HomeActivity"

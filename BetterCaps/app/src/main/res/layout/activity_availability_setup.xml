@@ -41,6 +41,17 @@
         app:strokeColor="#3D5AF1"
         app:cornerRadius="8dp" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonAvailabilitySettings"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/availability_settings_title"
+        app:strokeColor="#C96B8E"
+        app:cornerRadius="8dp" />
+
     <!-- Section header -->
     <TextView
         android:layout_width="match_parent"

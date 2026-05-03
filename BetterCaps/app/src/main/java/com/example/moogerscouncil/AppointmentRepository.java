@@ -14,6 +14,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.Timestamp;
 
 import java.util.Collections;
 import java.util.List;
@@ -176,6 +177,23 @@ public class AppointmentRepository {
     }
 
     /**
+     * Marks an appointment as no-show and creates a pending follow-up flag.
+     *
+     * @param appointmentId The Firestore appointment document ID.
+     * @param callback Success/failure callback.
+     */
+    public void markNoShowWithFollowUp(String appointmentId,
+                                       OnStatusUpdateCallback callback) {
+        appointmentsCollection.document(appointmentId)
+                .update("status", "NO_SHOW",
+                        "noShowFollowUpRequired", true,
+                        "noShowFollowUpStatus", "PENDING",
+                        "noShowMarkedAt", Timestamp.now())
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
      * Cancels an appointment by setting its status to CANCELLED and restoring
      * the linked slot's availability so another student can book it.
      *
@@ -199,12 +217,60 @@ public class AppointmentRepository {
                                 .collection("slots")
                                 .document(slotId)
                                 .update("available", true)
-                                .addOnCompleteListener(task -> callback.onSuccess());
+                                .addOnCompleteListener(task ->
+                                        offerSlotToNextWaitlistedStudent(counselorId, slotId, callback));
                     } else {
                         callback.onSuccess();
                     }
                 })
                 .addOnFailureListener(callback::onFailure);
+    }
+
+    private void offerSlotToNextWaitlistedStudent(String counselorId, String slotId,
+                                                  OnStatusUpdateCallback callback) {
+        db.collection("Slots")
+                .document(counselorId)
+                .collection("slots")
+                .document(slotId)
+                .get()
+                .addOnSuccessListener(slotDoc -> {
+                    TimeSlot slot = slotDoc.toObject(TimeSlot.class);
+                    if (slot == null) {
+                        callback.onSuccess();
+                        return;
+                    }
+                    slot.setId(slotDoc.getId());
+                    WaitlistRepository waitlistRepository = new WaitlistRepository();
+                    waitlistRepository.getNextActiveEntry(counselorId,
+                            new WaitlistRepository.OnNextWaitlistCallback() {
+                                @Override
+                                public void onSuccess(WaitlistEntry entry) {
+                                    waitlistRepository.markOffered(entry, slot,
+                                            new WaitlistRepository.OnWaitlistSimpleCallback() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    callback.onSuccess();
+                                                }
+
+                                                @Override
+                                                public void onFailure(Exception e) {
+                                                    callback.onSuccess();
+                                                }
+                                            });
+                                }
+
+                                @Override
+                                public void onEmpty() {
+                                    callback.onSuccess();
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                    callback.onSuccess();
+                                }
+                            });
+                })
+                .addOnFailureListener(e -> callback.onSuccess());
     }
 
     // -------------------------------------------------------------------------
@@ -258,6 +324,27 @@ public class AppointmentRepository {
                     // Sort client-side — avoids requiring a composite Firestore index
                     Collections.sort(appointments, (a, b) ->
                             String.valueOf(a.getDate()).compareTo(String.valueOf(b.getDate())));
+                    callback.onSuccess(appointments);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
+     * Fetches all appointments for a student, newest first, for counselor history view.
+     */
+    public void getAppointmentsForStudentHistory(String studentId,
+                                                 OnAppointmentsLoadedCallback callback) {
+        appointmentsCollection
+                .whereEqualTo("studentId", studentId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Appointment> appointments = querySnapshot.toObjects(Appointment.class);
+                    for (int i = 0; i < appointments.size(); i++) {
+                        appointments.get(i).setId(
+                                querySnapshot.getDocuments().get(i).getId());
+                    }
+                    Collections.sort(appointments, (a, b) ->
+                            String.valueOf(b.getDate()).compareTo(String.valueOf(a.getDate())));
                     callback.onSuccess(appointments);
                 })
                 .addOnFailureListener(callback::onFailure);

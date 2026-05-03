@@ -108,6 +108,7 @@ public class StudentHomeActivity extends AppCompatActivity {
             finish();
             return;
         }
+        redirectCounselorSessionIfNeeded();
 
         // Fetch display name — cache-first to avoid delay on re-opens
         String uid = user.getUid();
@@ -682,6 +683,24 @@ public class StudentHomeActivity extends AppCompatActivity {
         String display = (student.getPreferredName() != null && !student.getPreferredName().isEmpty())
                 ? student.getPreferredName() : student.getName();
         welcomeNameText.setText(display);
+    }
+
+    private void redirectCounselorSessionIfNeeded() {
+        userRepository.getCurrentUserRole(new UserRepository.OnRoleFetchedCallback() {
+            @Override
+            public void onSuccess(String role) {
+                if (UserRole.COUNSELOR.equals(role)) {
+                    startActivity(new Intent(StudentHomeActivity.this,
+                            CounselorDashboardActivity.class));
+                    finish();
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                // Keep the current screen; login routing handles hard failures.
+            }
+        });
     }
 
     private void activateDiscreetMode() {

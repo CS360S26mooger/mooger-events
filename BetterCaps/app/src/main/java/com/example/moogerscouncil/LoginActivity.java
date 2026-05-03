@@ -100,15 +100,8 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         mAuth.signInWithEmailAndPassword(email, password)
-                .addOnSuccessListener(result -> {
-                    if (UserRole.COUNSELOR.equals(selectedRole)) {
+                .addOnSuccessListener(result -> routeToHome(selectedRole))
                         // Skip Firestore role check for counselors — go directly to dashboard.
-                        startActivity(new Intent(this, CounselorDashboardActivity.class));
-                        finish();
-                    } else {
-                        routeToHome(selectedRole);
-                    }
-                })
                 .addOnFailureListener(e ->
                         Toast.makeText(this,
                                 getString(R.string.error_login_failed) + " " + e.getMessage(),

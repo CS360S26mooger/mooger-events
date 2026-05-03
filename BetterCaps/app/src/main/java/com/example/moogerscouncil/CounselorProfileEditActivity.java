@@ -78,6 +78,8 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
         editTextGender = findViewById(R.id.editTextGender);
         chipGroupSpecializations = findViewById(R.id.chipGroupSpecializations);
         buttonSaveProfile = findViewById(R.id.buttonSaveProfile);
+        findViewById(R.id.buttonSchedulingSettings).setOnClickListener(v ->
+                startActivity(new Intent(this, AvailabilitySettingsActivity.class)));
 
         switchOnLeave = findViewById(R.id.switchOnLeave);
         layoutLeaveMessage = findViewById(R.id.layoutLeaveMessage);

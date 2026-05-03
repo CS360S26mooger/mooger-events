@@ -10,6 +10,7 @@
  */
 package com.example.moogerscouncil;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -50,6 +51,7 @@ public class CounselorDashboardActivity extends AppCompatActivity {
     private TextView todayCount;
     private TextView totalCount;
     private TextView weekCount;
+    private TextView waitlistCount;
 
     /** Firebase Auth UID — used for slot/appointment queries (written to slot documents). */
     private String counselorId;
@@ -58,6 +60,7 @@ public class CounselorDashboardActivity extends AppCompatActivity {
     private AppointmentRepository appointmentRepository;
     private AvailabilityRepository availabilityRepository;
     private CounselorRepository counselorRepository;
+    private WaitlistRepository waitlistRepository;
 
     /** Master list of all counselor appointments — never filtered in place. */
     private List<Appointment> masterAppointments = new ArrayList<>();
@@ -77,11 +80,13 @@ public class CounselorDashboardActivity extends AppCompatActivity {
         appointmentRepository = new AppointmentRepository();
         availabilityRepository = new AvailabilityRepository();
         counselorRepository = new CounselorRepository();
+        waitlistRepository = new WaitlistRepository();
 
         counselorNameText = findViewById(R.id.counselorNameText);
         todayCount = findViewById(R.id.todaySessionCount);
         totalCount = findViewById(R.id.totalPatientsCount);
         weekCount = findViewById(R.id.weekSessionCount);
+        waitlistCount = findViewById(R.id.waitlistCount);
         progressBar = findViewById(R.id.progressBar);
         tabLayout = findViewById(R.id.tabLayout);
 
@@ -143,12 +148,14 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                             counselorDocId = counselorId; // last resort: assume doc ID == Auth UID
                         }
                         loadAppointments();
+                        loadWaitlistCount();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
                         counselorDocId = counselorId;
                         loadAppointments();
+                        loadWaitlistCount();
                     }
                 });
 
@@ -157,6 +164,10 @@ public class CounselorDashboardActivity extends AppCompatActivity {
         CardView addSlotBanner = findViewById(R.id.addSlotBanner);
         addSlotBanner.setOnClickListener(v ->
                 startActivity(new Intent(this, AvailabilitySetupActivity.class)));
+        findViewById(R.id.buttonOpenAvailabilitySettings).setOnClickListener(v ->
+                startActivity(new Intent(this, AvailabilitySettingsActivity.class)));
+        findViewById(R.id.buttonExportToCalendar).setOnClickListener(v ->
+                exportNextAppointmentToCalendar());
 
         // Edit profile button — pass the real Firestore doc ID for profile ops
         ImageButton editProfileButton = findViewById(R.id.buttonEditProfile);
@@ -189,6 +200,9 @@ public class CounselorDashboardActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadAppointments(); // Refresh on return from AvailabilitySetupActivity
+        if (counselorId != null) {
+            loadWaitlistCount();
+        }
     }
 
     /**
@@ -279,5 +293,45 @@ public class CounselorDashboardActivity extends AppCompatActivity {
         todayCount.setText(String.valueOf(todaySessionCount));
         totalCount.setText(String.valueOf(masterAppointments.size()));
         weekCount.setText(String.valueOf(filteredCount));
+    }
+
+    private void loadWaitlistCount() {
+        waitlistRepository.getActiveWaitlistCountForCounselor(counselorId,
+                new WaitlistRepository.OnWaitlistCountCallback() {
+                    @Override
+                    public void onSuccess(int count) {
+                        waitlistCount.setText(String.valueOf(count));
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        waitlistCount.setText("0");
+                    }
+                });
+    }
+
+    private void exportNextAppointmentToCalendar() {
+        Appointment next = null;
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
+        for (Appointment appointment : masterAppointments) {
+            if (!"CONFIRMED".equals(appointment.getStatus())) continue;
+            if (appointment.getDate() == null || appointment.getDate().compareTo(today) < 0) {
+                continue;
+            }
+            if (next == null || appointment.getDate().compareTo(next.getDate()) < 0) {
+                next = appointment;
+            }
+        }
+        if (next == null) {
+            Toast.makeText(this, R.string.no_appointments_to_export, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            String counselorName = counselorNameText.getText() == null
+                    ? null : counselorNameText.getText().toString();
+            startActivity(CalendarSyncHelper.buildInsertEventIntent(next, counselorName));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.calendar_export_unavailable, Toast.LENGTH_LONG).show();
+        }
     }
 }

@@ -119,7 +119,8 @@ public class WaitlistAdapter extends RecyclerView.Adapter<WaitlistAdapter.ViewHo
         return entries.size();
     }
 
-    private String statusLabel(String status) {
+    String statusLabel(String status) {
+        if (status == null) return context.getString(R.string.waitlist_status_active);
         if (WaitlistEntry.STATUS_RESOLVED.equals(status)
                 || WaitlistEntry.STATUS_BOOKED.equals(status)
                 || WaitlistEntry.STATUS_OFFERED.equals(status)) {

@@ -186,7 +186,8 @@
                         android:text="@string/button_see_referred_counselor"
                         android:visibility="gone"
                         android:layout_marginTop="8dp"
-                        app:strokeColor="#856404" />
+                        app:strokeColor="#856404"
+                        app:cornerRadius="14dp" />
 
                 </LinearLayout>
 

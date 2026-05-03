@@ -69,10 +69,21 @@ public class CounselorAdapter extends RecyclerView.Adapter<CounselorAdapter.View
 
         holder.nameText.setText(counselor.getName());
 
-        // Specializations — join as readable dot-separated string
+        // Specializations — pink-dot separated
         if (counselor.getSpecializations() != null && !counselor.getSpecializations().isEmpty()) {
-            holder.specializationText.setText(
-                    android.text.TextUtils.join("  •  ", counselor.getSpecializations()));
+            android.text.SpannableStringBuilder sb = new android.text.SpannableStringBuilder();
+            java.util.List<String> specs = counselor.getSpecializations();
+            for (int i = 0; i < specs.size(); i++) {
+                if (i > 0) {
+                    int dotStart = sb.length();
+                    sb.append("  •  ");
+                    sb.setSpan(new android.text.style.ForegroundColorSpan(0xFFC96B8E),
+                            dotStart, sb.length(),
+                            android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                }
+                sb.append(specs.get(i));
+            }
+            holder.specializationText.setText(sb);
         } else {
             holder.specializationText.setText("");
         }

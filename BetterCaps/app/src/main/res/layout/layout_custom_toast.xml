@@ -8,21 +8,13 @@
     android:background="@drawable/bg_custom_toast"
     android:elevation="8dp"
     android:outlineProvider="background"
-    android:paddingStart="16dp"
-    android:paddingEnd="20dp"
+    android:paddingStart="18dp"
+    android:paddingEnd="18dp"
     android:paddingTop="14dp"
     android:paddingBottom="14dp"
     android:minWidth="180dp"
     android:maxWidth="300dp">
 
-    <!-- Pastel pink accent dot -->
-    <View
-        android:layout_width="8dp"
-        android:layout_height="8dp"
-        android:background="@drawable/bg_pill_pink"
-        android:layout_marginEnd="12dp" />
-
-    <!-- Message -->
     <TextView
         android:id="@+id/toastMessage"
         android:layout_width="wrap_content"

@@ -164,7 +164,7 @@ public class WaitlistRequestActivity extends AppCompatActivity {
     /**
      * Builds the list of valid end times: all slots at least 30 minutes after startTime.
      */
-    private List<String> buildEndOptions(String startTime) {
+    List<String> buildEndOptions(String startTime) {
         List<String> opts = new ArrayList<>();
         int startMins = toMinutes(startTime);
         for (String t : ALL_TIMES) {
@@ -175,7 +175,7 @@ public class WaitlistRequestActivity extends AppCompatActivity {
         return opts;
     }
 
-    private static int toMinutes(String hhmm) {
+    static int toMinutes(String hhmm) {
         String[] parts = hhmm.split(":");
         return Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
     }

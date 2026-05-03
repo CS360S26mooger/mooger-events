@@ -130,21 +130,9 @@ public class CounselorProfileActivity extends AppCompatActivity {
         chipGroupSpecializations.removeAllViews();
         List<String> specs = counselor.getSpecializations();
         if (specs != null && !specs.isEmpty()) {
-            for (int i = 0; i < specs.size(); i++) {
-                if (i > 0) {
-                    Chip dot = new Chip(CounselorProfileActivity.this);
-                    dot.setText("•");
-                    dot.setCheckable(false);
-                    dot.setClickable(false);
-                    dot.setChipBackgroundColor(ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
-                    dot.setTextColor(Color.parseColor("#C96B8E"));
-                    dot.setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, 14);
-                    dot.setChipStrokeWidth(0f);
-                    dot.setEnsureMinTouchTargetSize(false);
-                    chipGroupSpecializations.addView(dot);
-                }
+            for (String tag : specs) {
                 Chip chip = new Chip(CounselorProfileActivity.this);
-                chip.setText(specs.get(i));
+                chip.setText(tag);
                 chip.setCheckable(false);
                 chip.setClickable(false);
                 chip.setChipBackgroundColor(ColorStateList.valueOf(Color.parseColor("#F8D7E3")));

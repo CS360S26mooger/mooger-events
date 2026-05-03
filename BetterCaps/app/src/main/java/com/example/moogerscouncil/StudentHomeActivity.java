@@ -315,16 +315,24 @@ public class StudentHomeActivity extends AppCompatActivity {
                 });
     }
 
-    /** Finds the earliest CONFIRMED appointment on or after today and shows it. */
+    /** Finds the earliest CONFIRMED appointment that hasn't passed yet and shows it. */
     private void resolveUpcoming(List<Appointment> appointments, String today) {
+        String nowTime = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.US)
+                .format(new java.util.Date());
         Appointment next = null;
         for (Appointment a : appointments) {
             if (!"CONFIRMED".equals(a.getStatus())) continue;
             if (a.getDate() == null) continue;
-            if (a.getDate().compareTo(today) >= 0) {
-                if (next == null || a.getDate().compareTo(next.getDate()) < 0) {
-                    next = a;
-                }
+            int dateCompare = a.getDate().compareTo(today);
+            if (dateCompare < 0) continue;
+            if (dateCompare == 0 && a.getTime() != null && a.getTime().compareTo(nowTime) < 0) {
+                continue;
+            }
+            if (next == null || a.getDate().compareTo(next.getDate()) < 0
+                    || (a.getDate().equals(next.getDate())
+                        && a.getTime() != null && next.getTime() != null
+                        && a.getTime().compareTo(next.getTime()) < 0)) {
+                next = a;
             }
         }
         upcomingAppointment = next;

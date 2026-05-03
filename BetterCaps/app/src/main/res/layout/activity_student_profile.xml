@@ -188,13 +188,19 @@
                         android:layout_marginBottom="10dp" />
 
                     <TextView
-                        android:id="@+id/textSessionNotes"
+                        android:id="@+id/textNotesEmpty"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/no_session_notes"
+                        android:text="@string/no_notes_for_student"
                         android:textSize="14sp"
-                        android:textColor="#5A5A7A"
-                        android:lineSpacingExtra="4dp" />
+                        android:textColor="#8A8A9A"
+                        android:visibility="gone" />
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recyclerSessionNotes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:nestedScrollingEnabled="false" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

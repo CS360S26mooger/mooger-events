@@ -26,6 +26,58 @@ public class SessionNoteRepository {
         void onFailure(Exception e);
     }
 
+    /**
+     * Fetches the single existing note for an appointment, or returns null if none exists yet.
+     * Used to decide whether to create or update when the counselor opens the notes dialog.
+     *
+     * @param appointmentId The appointment to look up.
+     * @param callback Returns the existing {@link SessionNote}, or null if none found.
+     */
+    public void getNoteForAppointment(String appointmentId, OnSingleNoteCallback callback) {
+        notesCollection.whereEqualTo("appointmentId", appointmentId)
+                .limit(1)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.isEmpty()) {
+                        callback.onSuccess(null);
+                        return;
+                    }
+                    SessionNote note = snapshot.getDocuments().get(0).toObject(SessionNote.class);
+                    if (note != null) {
+                        note.setId(snapshot.getDocuments().get(0).getId());
+                    }
+                    callback.onSuccess(note);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    public interface OnSingleNoteCallback {
+        /** @param note The existing note, or null if no note has been saved yet. */
+        void onSuccess(SessionNote note);
+        void onFailure(Exception e);
+    }
+
+    /**
+     * Updates an existing note document in place.
+     * Only touches noteText, templateKey, and updatedAt — no other fields overwritten.
+     *
+     * @param noteId      Document ID of the existing note.
+     * @param newText     Updated note body.
+     * @param templateKey Updated template key (may be unchanged).
+     * @param callback    Success/failure callback.
+     */
+    public void updateNote(String noteId, String newText, String templateKey,
+                           OnNoteActionCallback callback) {
+        java.util.Map<String, Object> updates = new java.util.HashMap<>();
+        updates.put("noteText", newText);
+        updates.put("templateKey", templateKey);
+        updates.put("updatedAt", com.google.firebase.Timestamp.now());
+        notesCollection.document(noteId)
+                .update(updates)
+                .addOnSuccessListener(unused -> callback.onSuccess(noteId))
+                .addOnFailureListener(callback::onFailure);
+    }
+
     /** Saves a session note as a new document. */
     public void saveNote(SessionNote note, OnNoteActionCallback callback) {
         String id = notesCollection.document().getId();
@@ -51,6 +103,14 @@ public class SessionNoteRepository {
                     }
                     callback.onSuccess(notes);
                 })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /** Permanently deletes a session note document. */
+    public void deleteNote(String noteId, OnNoteActionCallback callback) {
+        notesCollection.document(noteId)
+                .delete()
+                .addOnSuccessListener(unused -> callback.onSuccess(noteId))
                 .addOnFailureListener(callback::onFailure);
     }
 

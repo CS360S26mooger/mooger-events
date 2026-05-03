@@ -11,7 +11,9 @@ package com.example.moogerscouncil;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit tests for {@link Appointment}.
@@ -88,5 +90,41 @@ public class AppointmentTest {
         apt.setStatus("CONFIRMED");
         apt.setStatus("COMPLETED");
         assertEquals("COMPLETED", apt.getStatus());
+    }
+
+    @Test
+    public void sameDayDuplicateDetection_sameDate_shouldBlock() {
+        Appointment existing = new Appointment();
+        existing.setDate("2026-05-10");
+        existing.setStatus("CONFIRMED");
+
+        String requestedDate = "2026-05-10";
+        boolean hasConflict = "CONFIRMED".equals(existing.getStatus())
+                && requestedDate.equals(existing.getDate());
+        assertTrue(hasConflict);
+    }
+
+    @Test
+    public void sameDayDuplicateDetection_differentDate_shouldAllow() {
+        Appointment existing = new Appointment();
+        existing.setDate("2026-05-10");
+        existing.setStatus("CONFIRMED");
+
+        String requestedDate = "2026-05-11";
+        boolean hasConflict = "CONFIRMED".equals(existing.getStatus())
+                && requestedDate.equals(existing.getDate());
+        assertFalse(hasConflict);
+    }
+
+    @Test
+    public void sameDayDuplicateDetection_cancelledSameDay_shouldAllow() {
+        Appointment existing = new Appointment();
+        existing.setDate("2026-05-10");
+        existing.setStatus("CANCELLED");
+
+        String requestedDate = "2026-05-10";
+        boolean hasConflict = "CONFIRMED".equals(existing.getStatus())
+                && requestedDate.equals(existing.getDate());
+        assertFalse(hasConflict);
     }
 }

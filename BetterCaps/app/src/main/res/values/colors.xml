@@ -3,7 +3,7 @@
     <color name="background">#EFF6FF</color>
     <color name="primary_blue">#2563EB</color>
     <color name="white">#FFFFFF</color>
-    <color name="text_dark">#1A1A2E</color>
+    <color name="text_dark">#212121</color>
     <color name="text_gray">#8A8A9A</color>
     <color name="card_stroke">#E0E4F0</color>
     <!-- Registration page accent — dusty-rose pastel pink -->
@@ -12,6 +12,6 @@
     <color name="hint_text">#5C5C5C</color>
     <!-- Box borders: lighter than halfway so they recede behind content -->
     <color name="field_stroke">#BEBEBE</color>
-    <!-- Helper subscripts: lighter than halfway, secondary information -->
-    <color name="helper_text">#9A9A9A</color>
+    <!-- Helper subscripts: dark enough to read on white -->
+    <color name="helper_text">#666666</color>
 </resources>

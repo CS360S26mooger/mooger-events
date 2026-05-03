@@ -236,6 +236,7 @@ public class CounselorRepository {
                                        OnUpdateCallback callback) {
         Map<String, Object> updates = new HashMap<>();
         updates.put("uid", counselor.getUid());
+        updates.put("name", counselor.getName());
         updates.put("bio", counselor.getBio());
         updates.put("language", counselor.getLanguage());
         updates.put("gender", counselor.getGender());

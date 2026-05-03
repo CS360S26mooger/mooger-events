@@ -63,6 +63,17 @@
             android:name=".AvailabilitySetupActivity"
             android:exported="false" />
         <activity
+            android:name=".PastSessionsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".AddSlotActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".GenerateSlotsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".AvailabilitySettingsActivity"
             android:exported="false" />
         <activity
@@ -80,6 +91,10 @@
         <activity
             android:name=".CounselorWaitlistActivity"
             android:exported="false" />
+        <activity
+            android:name=".SessionNoteActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
     </application>
 

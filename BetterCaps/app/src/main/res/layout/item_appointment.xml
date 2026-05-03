@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="2dp"
     app:cardBackgroundColor="#FFFFFF">
 
     <LinearLayout
@@ -115,41 +115,45 @@
             android:orientation="horizontal"
             android:layout_marginBottom="8dp">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/profileButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="6dp"
-                android:text="👤 Profile"
+                android:text="Profile"
                 android:textSize="12sp"
+                android:textAllCaps="false"
                 android:textColor="#555566"
-                android:backgroundTint="#F2F4F8"
-                app:cornerRadius="8dp" />
+                app:icon="@drawable/ic_student"
+                app:iconTint="#555566"
+                app:iconSize="16dp"
+                app:iconGravity="textStart"
+                app:strokeColor="#E8E8F0"
+                app:strokeWidth="1dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="#F2F4F8" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/notesButton"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_marginHorizontal="6dp"
-                android:text="📄 Notes"
-                android:textSize="12sp"
-                android:textColor="#555566"
-                android:backgroundTint="#F2F4F8"
-                app:cornerRadius="8dp" />
-
-            <Button
-                android:id="@+id/joinButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
                 android:layout_marginStart="6dp"
-                android:text="Join"
+                android:text="Notes"
                 android:textSize="12sp"
-                android:textColor="#FFFFFF"
-                android:backgroundTint="#8B6BAE"
-                app:cornerRadius="8dp" />
+                android:textAllCaps="false"
+                android:textColor="#C96B8E"
+                app:icon="@drawable/ic_document"
+                app:iconTint="#C96B8E"
+                app:iconSize="16dp"
+                app:iconGravity="textStart"
+                app:strokeColor="#F8D7E3"
+                app:strokeWidth="1dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="#FFF0F5" />
 
         </LinearLayout>
 
@@ -158,29 +162,45 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/noShowButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
                 android:layout_marginEnd="6dp"
-                android:text="Mark No-Show"
+                android:text="No-Show"
                 android:textSize="11sp"
-                android:textColor="#B8860B"
-                android:backgroundTint="#FFFBEA"
-                app:cornerRadius="8dp" />
+                android:textAllCaps="false"
+                android:textColor="#E8761A"
+                app:icon="@drawable/ic_sleeping"
+                app:iconTint="#E8761A"
+                app:iconSize="16dp"
+                app:iconGravity="textStart"
+                app:strokeColor="#F5B87A"
+                app:strokeWidth="1dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="#FFF3E8" />
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/crisisButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
                 android:layout_weight="1"
                 android:layout_marginStart="6dp"
-                android:text="⚠ Crisis Alert"
+                android:text="Crisis"
                 android:textSize="11sp"
+                android:textAllCaps="false"
                 android:textColor="#C0392B"
-                android:backgroundTint="#FFF0F0"
-                app:cornerRadius="8dp" />
+                app:icon="@drawable/ic_warning"
+                app:iconTint="#C0392B"
+                app:iconSize="16dp"
+                app:iconGravity="textStart"
+                app:strokeColor="#F5C0C0"
+                app:strokeWidth="1dp"
+                app:cornerRadius="10dp"
+                android:backgroundTint="#FFF0F0" />
 
         </LinearLayout>
 

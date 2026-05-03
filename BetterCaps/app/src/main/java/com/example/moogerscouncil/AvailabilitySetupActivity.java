@@ -1,52 +1,44 @@
-/*
- * AvailabilitySetupActivity.java
- * Role: Dedicated counselor screen for managing time slots — viewing, adding, and
- *       removing. Replaces the inline DatePicker/TimePicker in CounselorDashboardActivity.
- *       All Firestore operations go through AvailabilityRepository.
- *
- * Design pattern: Repository pattern (AvailabilityRepository).
- * Part of the BetterCAPS counseling platform.
- */
 package com.example.moogerscouncil;
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
-/**
- * Screen where a counselor can view their existing time slots, add new ones
- * via date/time pickers, and swipe-to-delete available slots.
- *
- * <p>Launched from {@link CounselorDashboardActivity} via the "Add Availability Slot" banner.</p>
- */
 public class AvailabilitySetupActivity extends AppCompatActivity {
 
     private RecyclerView recyclerSlots;
     private TextView textEmptySlots;
     private AvailabilityRepository availabilityRepository;
-    private AvailabilitySettingsRepository settingsRepository;
-    private WaitlistRepository waitlistRepository;
-    private AppointmentRepository appointmentRepository;
     private String counselorId;
 
-    /** Flat list of all slots (available + booked) for display. */
     private final List<TimeSlot> slotList = new ArrayList<>();
-    private TimeSlotSetupAdapter slotSetupAdapter;
+    private SlotGroupAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,297 +50,294 @@ public class AvailabilitySetupActivity extends AppCompatActivity {
             finish();
             return;
         }
-
         counselorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         availabilityRepository = new AvailabilityRepository();
-        settingsRepository = new AvailabilitySettingsRepository();
-        waitlistRepository = new WaitlistRepository();
-        appointmentRepository = new AppointmentRepository();
 
         recyclerSlots = findViewById(R.id.recyclerSlots);
         textEmptySlots = findViewById(R.id.textEmptySlots);
-        MaterialButton buttonAddSlot = findViewById(R.id.buttonAddSlot);
-        MaterialButton buttonAvailabilitySettings = findViewById(R.id.buttonAvailabilitySettings);
 
-        slotSetupAdapter = new TimeSlotSetupAdapter(slotList);
+        adapter = new SlotGroupAdapter(this::onDeleteSlotTapped);
         recyclerSlots.setLayoutManager(new LinearLayoutManager(this));
-        recyclerSlots.setAdapter(slotSetupAdapter);
+        recyclerSlots.setAdapter(adapter);
 
-        attachSwipeToDelete();
-
-        buttonAddSlot.setOnClickListener(v -> showDatePicker());
-        buttonAvailabilitySettings.setOnClickListener(v ->
+        findViewById(R.id.buttonBack).setOnClickListener(v -> finish());
+        findViewById(R.id.buttonAddSlot).setOnClickListener(v ->
+                startActivity(new Intent(this, AddSlotActivity.class)));
+        findViewById(R.id.buttonAvailabilitySettings).setOnClickListener(v ->
                 startActivity(new Intent(this, AvailabilitySettingsActivity.class)));
+        findViewById(R.id.buttonGenerateSlots).setOnClickListener(v ->
+                startActivity(new Intent(this, GenerateSlotsActivity.class)));
+    }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadSlots();
     }
 
-    /**
-     * Fetches all slots (available and booked) for this counselor from Firestore.
-     */
     private void loadSlots() {
         availabilityRepository.getSlotsForCounselor(counselorId,
                 new AvailabilityRepository.OnSlotsLoadedCallback() {
                     @Override
                     public void onSuccess(List<TimeSlot> slots) {
+                        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                                .format(new Date());
                         slotList.clear();
-                        slotList.addAll(slots);
-                        slotSetupAdapter.notifyDataSetChanged();
-                        textEmptySlots.setVisibility(
-                                slots.isEmpty() ? View.VISIBLE : View.GONE);
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        AppToast.show(AvailabilitySetupActivity.this,
-                                getString(R.string.error_adding_slot),
-                                AppToast.LENGTH_SHORT);
-                    }
-                });
-    }
-
-    /**
-     * Shows a DatePickerDialog, then chained TimePickerDialog, then calls
-     * {@link AvailabilityRepository#addSlot} on confirmation.
-     */
-    private void showDatePicker() {
-        Calendar calendar = Calendar.getInstance();
-        new DatePickerDialog(this, (view, year, month, day) -> {
-            String date = String.format(java.util.Locale.US, "%04d-%02d-%02d",
-                    year, month + 1, day);
-            new TimePickerDialog(this, (tView, hour, minute) -> {
-                String time = String.format(java.util.Locale.US, "%02d:%02d", hour, minute);
-                addSlot(date, time);
-            }, calendar.get(Calendar.HOUR_OF_DAY),
-                    calendar.get(Calendar.MINUTE), true).show();
-        }, calendar.get(Calendar.YEAR),
-                calendar.get(Calendar.MONTH),
-                calendar.get(Calendar.DAY_OF_MONTH)).show();
-    }
-
-    /**
-     * Persists a new slot to Firestore and refreshes the list on success.
-     *
-     * @param date The slot date in "yyyy-MM-dd" format.
-     * @param time The slot time in "HH:mm" format.
-     */
-    private void addSlot(String date, String time) {
-        settingsRepository.getSettings(counselorId,
-                new AvailabilitySettingsRepository.OnSettingsLoadedCallback() {
-                    @Override
-                    public void onSuccess(AvailabilitySettings settings) {
-                        validateAndAddSlot(date, time, settings.getBufferMinutes());
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        validateAndAddSlot(date, time, 0);
-                    }
-                });
-    }
-
-    private void validateAndAddSlot(String date, String time, int bufferMinutes) {
-        availabilityRepository.canAddSlotWithBuffer(counselorId, date, time, bufferMinutes,
-                new AvailabilityRepository.OnBufferCheckCallback() {
-                    @Override
-                    public void onAvailable() {
-                        availabilityRepository.addSlotAndReturn(counselorId, date, time,
-                                new AvailabilityRepository.OnSlotCreatedCallback() {
-                                    @Override
-                                    public void onSuccess(TimeSlot slot) {
-                                        AppToast.show(AvailabilitySetupActivity.this,
-                                                getString(R.string.slot_added),
-                                                AppToast.LENGTH_SHORT);
-                                        loadSlots();
-                                        tryAutoResolveWaitlist(slot);
-                                    }
-
-                                    @Override
-                                    public void onFailure(Exception e) {
-                                        AppToast.show(AvailabilitySetupActivity.this,
-                                                getString(R.string.error_adding_slot),
-                                                AppToast.LENGTH_SHORT);
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void onConflict(String reason) {
-                        AppToast.show(AvailabilitySetupActivity.this,
-                                R.string.slot_conflicts_buffer,
-                                AppToast.LENGTH_LONG);
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        AppToast.show(AvailabilitySetupActivity.this,
-                                getString(R.string.error_adding_slot),
-                                AppToast.LENGTH_SHORT);
-                    }
-                });
-    }
-
-    /**
-     * After a slot is created, checks the FIFO waitlist queue and auto-books the slot
-     * for the first student whose preferences match the new slot's date and time.
-     *
-     * <p>Failure at any step is handled silently (best-effort) — the slot was already
-     * created successfully and a toast guides the counselor to the waitlist queue.</p>
-     *
-     * @param slot The newly-created slot (with its Firestore ID populated).
-     */
-    private void tryAutoResolveWaitlist(TimeSlot slot) {
-        waitlistRepository.getActiveWaitlistForCounselorOrdered(counselorId,
-                new WaitlistRepository.OnWaitlistLoadedCallback() {
-                    @Override
-                    public void onSuccess(java.util.List<WaitlistEntry> entries) {
-                        WaitlistEntry match = WaitlistMatcher.findFirstMatch(
-                                entries, slot.getDate(), slot.getTime());
-                        if (match == null) return;
-
-                        appointmentRepository.bookAppointmentForWaitlist(
-                                match.getStudentId(), counselorId, slot,
-                                new AppointmentRepository.OnWaitlistBookingCallback() {
-                                    @Override
-                                    public void onSuccess(String appointmentId) {
-                                        waitlistRepository.resolveEntry(
-                                                match.getId(), slot.getId(), appointmentId,
-                                                new WaitlistRepository.OnWaitlistSimpleCallback() {
-                                                    @Override
-                                                    public void onSuccess() {
-                                                        AppToast.show(AvailabilitySetupActivity.this,
-                                                                R.string.waitlist_auto_resolved,
-                                                                AppToast.LENGTH_LONG);
-                                                        loadSlots();
-                                                    }
-
-                                                    @Override
-                                                    public void onFailure(Exception e) {
-                                                        AppToast.show(AvailabilitySetupActivity.this,
-                                                                R.string.waitlist_auto_resolve_error,
-                                                                AppToast.LENGTH_LONG);
-                                                    }
-                                                });
-                                    }
-
-                                    @Override
-                                    public void onSlotTaken() {
-                                        // Slot was already booked between creation and this call.
-                                    }
-
-                                    @Override
-                                    public void onFailure(Exception e) {
-                                        AppToast.show(AvailabilitySetupActivity.this,
-                                                R.string.waitlist_auto_resolve_error,
-                                                AppToast.LENGTH_LONG);
-                                    }
-                                });
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        // Best-effort — waitlist check failure does not block slot creation.
-                    }
-                });
-    }
-
-    /**
-     * Attaches a swipe-left ItemTouchHelper to delete available slots.
-     * Booked (unavailable) slots are not deletable — swipe is ignored.
-     */
-    private void attachSwipeToDelete() {
-        ItemTouchHelper.SimpleCallback swipeCallback =
-                new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
-                    @Override
-                    public boolean onMove(@androidx.annotation.NonNull RecyclerView rv,
-                                         @androidx.annotation.NonNull RecyclerView.ViewHolder vh,
-                                         @androidx.annotation.NonNull RecyclerView.ViewHolder target) {
-                        return false;
-                    }
-
-                    @Override
-                    public void onSwiped(@androidx.annotation.NonNull RecyclerView.ViewHolder vh,
-                                        int direction) {
-                        int pos = vh.getAdapterPosition();
-                        TimeSlot slot = slotList.get(pos);
-
-                        if (!slot.isAvailable()) {
-                            // Restore — booked slots cannot be deleted
-                            slotSetupAdapter.notifyItemChanged(pos);
-                            AppToast.show(AvailabilitySetupActivity.this,
-                                    "Cannot remove a booked slot", AppToast.LENGTH_SHORT);
-                            return;
+                        for (TimeSlot s : slots) {
+                            if (s.getDate() == null) continue;
+                            boolean isPast = s.getDate().compareTo(today) < 0;
+                            if (isPast && s.isAvailable()) continue;
+                            slotList.add(s);
                         }
-
-                        availabilityRepository.removeSlot(counselorId, slot.getId(),
-                                new AvailabilityRepository.OnSlotActionCallback() {
-                                    @Override
-                                    public void onSuccess() {
-                                        slotList.remove(pos);
-                                        slotSetupAdapter.notifyItemRemoved(pos);
-                                        textEmptySlots.setVisibility(
-                                                slotList.isEmpty() ? View.VISIBLE : View.GONE);
-                                        AppToast.show(AvailabilitySetupActivity.this,
-                                                getString(R.string.slot_removed),
-                                                AppToast.LENGTH_SHORT);
-                                    }
-
-                                    @Override
-                                    public void onFailure(Exception e) {
-                                        slotSetupAdapter.notifyItemChanged(pos);
-                                        AppToast.show(AvailabilitySetupActivity.this,
-                                                getString(R.string.error_removing_slot),
-                                                AppToast.LENGTH_SHORT);
-                                    }
-                                });
+                        Collections.sort(slotList, (a, b) -> {
+                            int d = a.getDate().compareTo(b.getDate());
+                            return d != 0 ? d : a.getTime().compareTo(b.getTime());
+                        });
+                        adapter.setSlots(slotList);
+                        textEmptySlots.setVisibility(slotList.isEmpty() ? View.VISIBLE : View.GONE);
+                        recyclerSlots.setVisibility(slotList.isEmpty() ? View.GONE : View.VISIBLE);
                     }
-                };
-
-        new ItemTouchHelper(swipeCallback).attachToRecyclerView(recyclerSlots);
+                    @Override
+                    public void onFailure(Exception e) {
+                        AppToast.show(AvailabilitySetupActivity.this,
+                                getString(R.string.error_adding_slot), AppToast.LENGTH_SHORT);
+                    }
+                });
     }
 
-    /**
-     * Simple inline adapter for displaying slot date, time, and availability status.
-     * Used only within AvailabilitySetupActivity.
-     */
-    private static class TimeSlotSetupAdapter
-            extends RecyclerView.Adapter<TimeSlotSetupAdapter.SlotViewHolder> {
+    private void onDeleteSlotTapped(TimeSlot slot) {
+        if (slot.isAvailable()) {
+            showConfirmDeleteDialog(slot);
+        } else {
+            showBookedSlotDialog();
+        }
+    }
 
-        private final List<TimeSlot> slots;
+    private void showConfirmDeleteDialog(TimeSlot slot) {
+        android.app.Dialog dialog = new android.app.Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_confirm_action);
+        Window w = dialog.getWindow();
+        if (w != null) {
+            w.setBackgroundDrawableResource(android.R.color.transparent);
+            WindowManager.LayoutParams p = w.getAttributes();
+            p.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.88f);
+            p.gravity = Gravity.CENTER;
+            w.setAttributes(p);
+        }
+        ImageView icon = dialog.findViewById(R.id.dialogIcon);
+        icon.setImageResource(R.drawable.ic_trash);
+        icon.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFEBEE")));
+        icon.setColorFilter(Color.parseColor("#C62828"));
+        ((TextView) dialog.findViewById(R.id.dialogTitle)).setText("Remove Slot?");
+        ((TextView) dialog.findViewById(R.id.dialogBody))
+                .setText("This availability slot will be permanently removed and students will no longer be able to book it.");
+        MaterialButton btnConfirm = dialog.findViewById(R.id.btnConfirm);
+        btnConfirm.setText("Yes, remove");
+        btnConfirm.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#C62828")));
+        btnConfirm.setOnClickListener(v -> {
+            dialog.dismiss();
+            doDeleteSlot(slot);
+        });
+        dialog.findViewById(R.id.btnCancel).setOnClickListener(v -> dialog.dismiss());
+        dialog.show();
+    }
 
-        TimeSlotSetupAdapter(List<TimeSlot> slots) {
-            this.slots = slots;
+    private void doDeleteSlot(TimeSlot slot) {
+        // Optimistic update: remove immediately so the UI feels instant.
+        slotList.remove(slot);
+        adapter.removeSlotById(slot.getId());
+        textEmptySlots.setVisibility(slotList.isEmpty() ? View.VISIBLE : View.GONE);
+        recyclerSlots.setVisibility(slotList.isEmpty() ? View.GONE : View.VISIBLE);
+
+        availabilityRepository.removeSlot(counselorId, slot.getId(),
+                new AvailabilityRepository.OnSlotActionCallback() {
+                    @Override
+                    public void onSuccess() {
+                        SessionCache.getInstance().invalidateSlots(counselorId);
+                        AppToast.show(AvailabilitySetupActivity.this,
+                                getString(R.string.slot_removed), AppToast.LENGTH_SHORT);
+                    }
+                    @Override
+                    public void onFailure(Exception e) {
+                        // Rollback: reload the real state from Firestore.
+                        AppToast.show(AvailabilitySetupActivity.this,
+                                getString(R.string.error_removing_slot), AppToast.LENGTH_SHORT);
+                        loadSlots();
+                    }
+                });
+    }
+
+    private void showBookedSlotDialog() {
+        android.app.Dialog dialog = new android.app.Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_confirm_action);
+        Window w = dialog.getWindow();
+        if (w != null) {
+            w.setBackgroundDrawableResource(android.R.color.transparent);
+            WindowManager.LayoutParams p = w.getAttributes();
+            p.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.88f);
+            p.gravity = Gravity.CENTER;
+            w.setAttributes(p);
+        }
+        ImageView icon = dialog.findViewById(R.id.dialogIcon);
+        icon.setImageResource(R.drawable.ic_nav_calendar);
+        icon.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#FFF0F5")));
+        icon.setColorFilter(Color.parseColor("#C96B8E"));
+        ((TextView) dialog.findViewById(R.id.dialogTitle)).setText("Slot Already Booked");
+        ((TextView) dialog.findViewById(R.id.dialogBody))
+                .setText("A student is booked for this slot. To free it, cancel their appointment from the appointments tab first.");
+        MaterialButton btnConfirm = dialog.findViewById(R.id.btnConfirm);
+        btnConfirm.setText("OK");
+        btnConfirm.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#C96B8E")));
+        btnConfirm.setOnClickListener(v -> dialog.dismiss());
+        dialog.findViewById(R.id.btnCancel).setVisibility(View.GONE);
+        dialog.show();
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
+    // Multi-view-type adapter: TYPE_HEADER (date) + TYPE_SLOT (TimeSlot card)
+    // ──────────────────────────────────────────────────────────────────────────
+
+    interface OnSlotActionListener {
+        void onDelete(TimeSlot slot);
+    }
+
+    private static class SlotGroupAdapter
+            extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+        private static final int TYPE_HEADER = 0;
+        private static final int TYPE_SLOT   = 1;
+
+        private final List<Object> items = new ArrayList<>();
+        private final OnSlotActionListener listener;
+
+        SlotGroupAdapter(OnSlotActionListener listener) {
+            this.listener = listener;
         }
 
-        @androidx.annotation.NonNull
+        void setSlots(List<TimeSlot> slots) {
+            items.clear();
+            String lastDate = null;
+            for (TimeSlot slot : slots) {
+                if (!slot.getDate().equals(lastDate)) {
+                    items.add(slot.getDate());
+                    lastDate = slot.getDate();
+                }
+                items.add(slot);
+            }
+            notifyDataSetChanged();
+        }
+
+        void removeSlotById(String slotId) {
+            // Find the slot position.
+            int slotPos = -1;
+            for (int i = 0; i < items.size(); i++) {
+                if (items.get(i) instanceof TimeSlot
+                        && ((TimeSlot) items.get(i)).getId().equals(slotId)) {
+                    slotPos = i;
+                    break;
+                }
+            }
+            if (slotPos == -1) return;
+
+            items.remove(slotPos);
+            notifyItemRemoved(slotPos);
+
+            // If the preceding header now has no slot siblings, remove it too.
+            int headerPos = slotPos - 1;
+            if (headerPos >= 0 && items.get(headerPos) instanceof String) {
+                boolean hasNextSlot = slotPos < items.size()
+                        && items.get(slotPos) instanceof TimeSlot
+                        && ((TimeSlot) items.get(slotPos)).getDate()
+                                .equals(items.get(headerPos));
+                if (!hasNextSlot) {
+                    items.remove(headerPos);
+                    notifyItemRemoved(headerPos);
+                }
+            }
+        }
+
         @Override
-        public SlotViewHolder onCreateViewHolder(@androidx.annotation.NonNull android.view.ViewGroup parent,
-                                                 int viewType) {
-            android.view.View view = android.view.LayoutInflater.from(parent.getContext())
-                    .inflate(android.R.layout.simple_list_item_2, parent, false);
-            return new SlotViewHolder(view);
+        public int getItemViewType(int position) {
+            return items.get(position) instanceof String ? TYPE_HEADER : TYPE_SLOT;
+        }
+
+        @NonNull
+        @Override
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+            if (viewType == TYPE_HEADER) {
+                View v = inflater.inflate(R.layout.item_slot_date_header, parent, false);
+                return new HeaderViewHolder(v);
+            }
+            View v = inflater.inflate(R.layout.item_slot_counselor, parent, false);
+            return new SlotViewHolder(v);
         }
 
         @Override
-        public void onBindViewHolder(@androidx.annotation.NonNull SlotViewHolder holder,
-                                     int position) {
-            TimeSlot slot = slots.get(position);
-            holder.text1.setText(slot.getDate() + "  " + slot.getTime());
-            holder.text2.setText(slot.isAvailable() ? "Available" : "Booked");
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+            if (holder instanceof HeaderViewHolder) {
+                ((HeaderViewHolder) holder).bind((String) items.get(position));
+            } else {
+                ((SlotViewHolder) holder).bind((TimeSlot) items.get(position), listener);
+            }
         }
 
         @Override
-        public int getItemCount() {
-            return slots.size();
+        public int getItemCount() { return items.size(); }
+
+        // ── Header ViewHolder ───────────────────────────────────────────────
+        static class HeaderViewHolder extends RecyclerView.ViewHolder {
+            final TextView textDate;
+            HeaderViewHolder(View v) {
+                super(v);
+                textDate = v.findViewById(R.id.textDateHeader);
+            }
+            void bind(String rawDate) {
+                try {
+                    Date d = new SimpleDateFormat("yyyy-MM-dd", Locale.US).parse(rawDate);
+                    textDate.setText(new SimpleDateFormat("EEE, MMM d", Locale.US).format(d));
+                } catch (ParseException e) {
+                    textDate.setText(rawDate);
+                }
+            }
         }
 
+        // ── Slot ViewHolder ─────────────────────────────────────────────────
         static class SlotViewHolder extends RecyclerView.ViewHolder {
-            android.widget.TextView text1, text2;
+            final TextView textTime;
+            final TextView textStatus;
+            final ImageButton buttonDelete;
 
-            SlotViewHolder(android.view.View itemView) {
-                super(itemView);
-                text1 = itemView.findViewById(android.R.id.text1);
-                text2 = itemView.findViewById(android.R.id.text2);
+            SlotViewHolder(View v) {
+                super(v);
+                textTime     = v.findViewById(R.id.textSlotTime);
+                textStatus   = v.findViewById(R.id.textSlotStatus);
+                buttonDelete = v.findViewById(R.id.buttonDeleteSlot);
+            }
+
+            void bind(TimeSlot slot, OnSlotActionListener listener) {
+                textTime.setText(slot.getTime());
+
+                if (slot.isAvailable()) {
+                    textStatus.setText("Available");
+                    textStatus.setTextColor(Color.parseColor("#3A7D5A"));
+                    textStatus.setBackgroundTintList(
+                            ColorStateList.valueOf(Color.parseColor("#E8F5EF")));
+                    buttonDelete.setColorFilter(Color.parseColor("#C62828"));
+                    buttonDelete.setBackgroundTintList(
+                            ColorStateList.valueOf(Color.parseColor("#FFEBEE")));
+                } else {
+                    textStatus.setText("Booked");
+                    textStatus.setTextColor(Color.parseColor("#8B6BAE"));
+                    textStatus.setBackgroundTintList(
+                            ColorStateList.valueOf(Color.parseColor("#EDE7F6")));
+                    buttonDelete.setColorFilter(Color.parseColor("#9E9E9E"));
+                    buttonDelete.setBackgroundTintList(
+                            ColorStateList.valueOf(Color.parseColor("#F5F5F5")));
+                }
+                buttonDelete.setOnClickListener(v -> listener.onDelete(slot));
             }
         }
     }

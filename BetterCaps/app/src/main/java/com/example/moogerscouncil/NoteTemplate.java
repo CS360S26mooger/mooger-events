@@ -28,6 +28,40 @@ public final class NoteTemplate {
         return "General Session";
     }
 
+    /** Pre-fill text for the Presenting Concern section. */
+    public static String getConcernText(String key) {
+        if (ACADEMIC_STRESS.equals(key))  return "Presenting concern: academic stress.\nMain stressors discussed:";
+        if (ANXIETY_CHECK_IN.equals(key)) return "Anxiety check-in.\nTriggers identified:\nPhysical/emotional symptoms:";
+        if (FOLLOW_UP_PLAN.equals(key))   return "Progress since last session:\nBarriers discussed:";
+        if (CRISIS_CHECK.equals(key))     return "Crisis/safety check.\nImmediate risk level:";
+        return "";
+    }
+
+    /** Pre-fill text for the Session Summary section. */
+    public static String getSummaryText(String key) {
+        if (CRISIS_CHECK.equals(key))     return "Protective factors:";
+        if (GENERAL_SESSION.equals(key))  return "Session summary:\nKey themes:";
+        return "";
+    }
+
+    /** Pre-fill text for the Interventions Used section. */
+    public static String getInterventionsText(String key) {
+        if (ACADEMIC_STRESS.equals(key))  return "Coping strategies suggested:";
+        if (ANXIETY_CHECK_IN.equals(key)) return "Grounding or breathing practice:";
+        if (CRISIS_CHECK.equals(key))     return "Action taken:";
+        if (GENERAL_SESSION.equals(key))  return "Interventions used:";
+        return "";
+    }
+
+    /** Pre-fill text for the Action Plan section. */
+    public static String getPlanText(String key) {
+        if (ACADEMIC_STRESS.equals(key))  return "Follow-up tasks:";
+        if (ANXIETY_CHECK_IN.equals(key)) return "Next steps:";
+        if (FOLLOW_UP_PLAN.equals(key))   return "Agreed action items:\nNext appointment recommendation:";
+        if (CRISIS_CHECK.equals(key))     return "Emergency contact/referral notes:";
+        return "Plan before next session:";
+    }
+
     /** Returns the body text inserted by a template key. */
     public static String getTemplateText(String key) {
         if (ACADEMIC_STRESS.equals(key)) {

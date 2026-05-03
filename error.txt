@@ -1,6 +1,0 @@
-/home/mujeeb/VSCODE/6-Junior-Spring/SE/proj/phase3/mooger-events/BetterCaps/app/src/main/java/com/example/moogerscouncil/StudentWaitlistActivity.java:38: error: cannot find symbol
-    private TextView textEmpty;
-            ^
-  symbol:   class TextView
-  location: class StudentWaitlistActivity
-Fix with AI

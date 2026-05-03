@@ -213,14 +213,34 @@ public class QuizActivity extends AppCompatActivity {
 
     private void findCounselorMatch(IntakeAssessment assessment) {
         textResultTitle.setText(R.string.quiz_matching_counselor);
+
+        intakeRepository.getRecommendationCounts(
+                new IntakeAssessmentRepository.OnRecCountsLoadedCallback() {
+            @Override
+            public void onSuccess(java.util.Map<String, Integer> recCounts) {
+                loadCounselorsAndMatch(assessment, recCounts);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                loadCounselorsAndMatch(assessment, java.util.Collections.emptyMap());
+            }
+        });
+    }
+
+    private void loadCounselorsAndMatch(IntakeAssessment assessment,
+                                         java.util.Map<String, Integer> recCounts) {
         counselorRepository.getAllCounselors(new CounselorRepository.OnCounselorsLoadedCallback() {
             @Override
             public void onSuccess(List<Counselor> counselors) {
-                Counselor match = IntakeMatcher.findBestCounselor(counselors, assessment);
+                Counselor match = IntakeMatcher.findBestCounselor(
+                        counselors, assessment, recCounts);
                 if (match == null) {
                     showNoMatch();
                     return;
                 }
+
+                intakeRepository.incrementRecommendationCount(match.getId());
 
                 assessment.setMatchedCounselorId(match.getId());
                 assessment.setMatchedCounselorName(match.getName());

@@ -1422,12 +1422,12 @@
                 </LinearLayout>
             </ScrollView>
 
-            <!-- Fake bottom navigation -->
+            <!-- Bottom navigation — white with pastel pink trace + tab dividers -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="56dp"
-                android:background="#FFFFFF"
-                android:elevation="4dp"
+                android:layout_height="58dp"
+                android:background="@drawable/bg_nav_bar"
+                android:elevation="8dp"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -1440,8 +1440,14 @@
                     <ImageView android:layout_width="22dp" android:layout_height="22dp"
                         android:src="@drawable/ic_nav_home" android:tint="#C96B8E" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Home" android:textSize="10sp" android:textColor="#C96B8E" />
+                        android:text="Home" android:textSize="10sp" android:textColor="#C96B8E"
+                        android:layout_marginTop="3dp" />
                 </LinearLayout>
+
+                <!-- Tab divider -->
+                <View android:layout_width="1dp" android:layout_height="28dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="#F0C8DC" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -1451,10 +1457,16 @@
                     android:gravity="center"
                     android:clickable="false">
                     <ImageView android:layout_width="22dp" android:layout_height="22dp"
-                        android:src="@drawable/ic_search" android:tint="#AAAAAA" />
+                        android:src="@drawable/ic_search" android:tint="#C9A0BA" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Explore" android:textSize="10sp" android:textColor="#AAAAAA" />
+                        android:text="Explore" android:textSize="10sp" android:textColor="#C9A0BA"
+                        android:layout_marginTop="3dp" />
                 </LinearLayout>
+
+                <!-- Tab divider -->
+                <View android:layout_width="1dp" android:layout_height="28dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="#F0C8DC" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -1464,10 +1476,16 @@
                     android:gravity="center"
                     android:clickable="false">
                     <ImageView android:layout_width="22dp" android:layout_height="22dp"
-                        android:src="@drawable/ic_required" android:tint="#AAAAAA" />
+                        android:src="@drawable/ic_required" android:tint="#C9A0BA" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Tickets" android:textSize="10sp" android:textColor="#AAAAAA" />
+                        android:text="Tickets" android:textSize="10sp" android:textColor="#C9A0BA"
+                        android:layout_marginTop="3dp" />
                 </LinearLayout>
+
+                <!-- Tab divider -->
+                <View android:layout_width="1dp" android:layout_height="28dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="#F0C8DC" />
 
                 <LinearLayout
                     android:layout_width="0dp"
@@ -1477,9 +1495,10 @@
                     android:gravity="center"
                     android:clickable="false">
                     <ImageView android:layout_width="22dp" android:layout_height="22dp"
-                        android:src="@drawable/ic_student" android:tint="#AAAAAA" />
+                        android:src="@drawable/ic_student" android:tint="#C9A0BA" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-                        android:text="Profile" android:textSize="10sp" android:textColor="#AAAAAA" />
+                        android:text="Profile" android:textSize="10sp" android:textColor="#C9A0BA"
+                        android:layout_marginTop="3dp" />
                 </LinearLayout>
 
             </LinearLayout>

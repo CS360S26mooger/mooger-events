@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F2F4F8">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- Pink top bar -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="58dp"
+            android:background="#C96B8E"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingStart="8dp"
+            android:paddingEnd="16dp">
+
+            <ImageButton
+                android:id="@+id/buttonBack"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@drawable/ic_arrow_back"
+                android:tint="#FFFFFF"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Back" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Generate Slots"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <!-- Scrollable content -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="none"
+            android:clipChildren="false"
+            android:clipToPadding="false">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="24dp"
+                android:clipChildren="false"
+                android:clipToPadding="false">
+
+                <!-- Section: date -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="SELECT DATE"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#C96B8E"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.1"
+                    android:paddingHorizontal="20dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="4dp" />
+
+                <!-- Calendar card -->
+                <androidx.cardview.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="16dp"
+                    android:layout_marginBottom="4dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="8dp"
+                    app:cardBackgroundColor="#FFFFFF">
+
+                    <com.example.moogerscouncil.CustomCalendarView
+                        android:id="@+id/calendarView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="#FFFFFF" />
+
+                </androidx.cardview.widget.CardView>
+
+                <!-- Config section — revealed after date selected -->
+                <LinearLayout
+                    android:id="@+id/layoutConfig"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <!-- Selected date chip -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="12dp"
+                        android:layout_marginBottom="4dp"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFF0F5">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:padding="14dp"
+                            android:gravity="center_vertical">
+
+                            <ImageView
+                                android:layout_width="16dp"
+                                android:layout_height="16dp"
+                                android:src="@drawable/ic_nav_calendar"
+                                android:tint="#C96B8E"
+                                android:layout_marginEnd="8dp"
+                                android:contentDescription="Date" />
+
+                            <TextView
+                                android:id="@+id/textSelectedDate"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="—"
+                                android:textSize="14sp"
+                                android:textStyle="bold"
+                                android:textColor="#C96B8E" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Section: work hours -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="WORK HOURS"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="#C96B8E"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.1"
+                        android:paddingHorizontal="20dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="4dp" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="44dp"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="Start time"
+                                    android:textSize="14sp"
+                                    android:textColor="#212121" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/buttonStartTime"
+                                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                    android:layout_width="100dp"
+                                    android:layout_height="36dp"
+                                    android:text="Select"
+                                    android:textSize="13sp"
+                                    android:textColor="#9E9E9E"
+                                    android:textAllCaps="false"
+                                    android:insetTop="0dp"
+                                    android:insetBottom="0dp"
+                                    app:strokeColor="#C96B8E"
+                                    app:cornerRadius="10dp" />
+
+                            </LinearLayout>
+
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="#F0F0F0" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="44dp"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical">
+
+                                <TextView
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:text="End time"
+                                    android:textSize="14sp"
+                                    android:textColor="#212121" />
+
+                                <com.google.android.material.button.MaterialButton
+                                    android:id="@+id/buttonEndTime"
+                                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                    android:layout_width="100dp"
+                                    android:layout_height="36dp"
+                                    android:text="Select"
+                                    android:textSize="13sp"
+                                    android:textColor="#9E9E9E"
+                                    android:textAllCaps="false"
+                                    android:insetTop="0dp"
+                                    android:insetBottom="0dp"
+                                    app:strokeColor="#C96B8E"
+                                    app:cornerRadius="10dp" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Section: slot duration -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="SLOT DURATION"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="#C96B8E"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.1"
+                        android:paddingHorizontal="20dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="4dp" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF">
+
+                        <RadioGroup
+                            android:id="@+id/radioGroupDuration"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:paddingHorizontal="16dp"
+                            android:paddingVertical="14dp">
+
+                            <RadioButton
+                                android:id="@+id/radio30"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="30 min"
+                                android:checked="true"
+                                android:textSize="14sp"
+                                android:textColor="#212121"
+                                android:buttonTint="#C96B8E" />
+
+                            <RadioButton
+                                android:id="@+id/radio45"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="45 min"
+                                android:textSize="14sp"
+                                android:textColor="#212121"
+                                android:buttonTint="#C96B8E" />
+
+                            <RadioButton
+                                android:id="@+id/radio60"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="1 hour"
+                                android:textSize="14sp"
+                                android:textColor="#212121"
+                                android:buttonTint="#C96B8E" />
+
+                        </RadioGroup>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Section: breaks -->
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="BREAKS"
+                        android:textSize="11sp"
+                        android:textStyle="bold"
+                        android:textColor="#C96B8E"
+                        android:textAllCaps="true"
+                        android:letterSpacing="0.1"
+                        android:paddingHorizontal="20dp"
+                        android:paddingTop="16dp"
+                        android:paddingBottom="4dp" />
+
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="16dp"
+                        app:cardCornerRadius="14dp"
+                        app:cardElevation="2dp"
+                        app:cardBackgroundColor="#FFFFFF">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            android:padding="16dp">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/recyclerBreaks"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone" />
+
+                            <TextView
+                                android:id="@+id/textNoBreaks"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="No breaks added"
+                                android:textSize="13sp"
+                                android:textColor="#9E9E9E"
+                                android:gravity="center"
+                                android:paddingVertical="4dp"
+                                android:layout_marginBottom="10dp" />
+
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/buttonAddBreak"
+                                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                                android:layout_width="match_parent"
+                                android:layout_height="44dp"
+                                android:text="Add Break"
+                                android:textSize="14sp"
+                                android:textColor="#C96B8E"
+                                android:textAllCaps="false"
+                                android:insetTop="0dp"
+                                android:insetBottom="0dp"
+                                app:icon="@drawable/ic_add_cross"
+                                app:iconTint="#C96B8E"
+                                app:iconSize="16dp"
+                                app:iconGravity="textStart"
+                                app:strokeColor="#C96B8E"
+                                app:cornerRadius="10dp" />
+
+                        </LinearLayout>
+
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- Generate button -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonGenerate"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginHorizontal="16dp"
+                        android:layout_marginTop="20dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Generate Slots"
+                        android:textSize="16sp"
+                        android:textColor="#FFFFFF"
+                        android:textAllCaps="false"
+                        android:enabled="false"
+                        android:backgroundTint="#C96B8E"
+                        app:cornerRadius="14dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </LinearLayout>
+
+    <!-- Loading overlay -->
+    <FrameLayout
+        android:id="@+id/progressOverlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#55000000"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="vertical"
+            android:background="@drawable/dialog_rounded_bg"
+            android:padding="28dp"
+            android:gravity="center"
+            android:elevation="8dp">
+
+            <ProgressBar
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:indeterminateTint="#C96B8E"
+                android:layout_marginBottom="12dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Creating slots…"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E" />
+
+        </LinearLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

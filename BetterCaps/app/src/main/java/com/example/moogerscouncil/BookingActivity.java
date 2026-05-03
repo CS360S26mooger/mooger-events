@@ -251,6 +251,63 @@ public class BookingActivity extends AppCompatActivity
             String studentId = FirebaseAuth.getInstance().getCurrentUser().getUid();
             progressBar.setVisibility(View.VISIBLE);
 
+            appointmentRepository.hasConfirmedBookingOnDate(studentId, confirmedSlot.getDate(),
+                    new AppointmentRepository.OnDateCheckCallback() {
+                @Override
+                public void onResult(boolean hasBooking) {
+                    if (hasBooking) {
+                        progressBar.setVisibility(View.GONE);
+                        showAlreadyBookedDialog();
+                        return;
+                    }
+                    proceedWithBooking(studentId, confirmedSlot);
+                }
+
+                @Override
+                public void onFailure(Exception e) {
+                    progressBar.setVisibility(View.GONE);
+                    AppToast.show(BookingActivity.this,
+                            getString(R.string.error_booking_failed),
+                            AppToast.LENGTH_SHORT);
+                }
+            });
+        });
+
+        fragment.show(getSupportFragmentManager(), "booking_confirm");
+    }
+
+    private void showAlreadyBookedDialog() {
+        android.app.Dialog dialog = new android.app.Dialog(this);
+        dialog.requestWindowFeature(android.view.Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_confirm_action);
+        android.view.Window w = dialog.getWindow();
+        if (w != null) {
+            w.setBackgroundDrawableResource(android.R.color.transparent);
+            android.view.WindowManager.LayoutParams p = w.getAttributes();
+            p.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.88f);
+            p.gravity = android.view.Gravity.CENTER;
+            w.setAttributes(p);
+        }
+        android.widget.ImageView icon = dialog.findViewById(R.id.dialogIcon);
+        icon.setImageResource(R.drawable.ic_nav_calendar);
+        icon.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                android.graphics.Color.parseColor("#FFF0F5")));
+        icon.setColorFilter(android.graphics.Color.parseColor("#C96B8E"));
+        ((android.widget.TextView) dialog.findViewById(R.id.dialogTitle))
+                .setText(R.string.already_booked_title);
+        ((android.widget.TextView) dialog.findViewById(R.id.dialogBody))
+                .setText(R.string.already_booked_body);
+        com.google.android.material.button.MaterialButton btnConfirm =
+                dialog.findViewById(R.id.btnConfirm);
+        btnConfirm.setText(R.string.button_cancel);
+        btnConfirm.setBackgroundTintList(android.content.res.ColorStateList.valueOf(
+                android.graphics.Color.parseColor("#C96B8E")));
+        btnConfirm.setOnClickListener(v -> dialog.dismiss());
+        dialog.findViewById(R.id.btnCancel).setVisibility(android.view.View.GONE);
+        dialog.show();
+    }
+
+    private void proceedWithBooking(String studentId, TimeSlot confirmedSlot) {
             appointmentRepository.bookAppointment(studentId, counselorId, confirmedSlot,
                     new AppointmentRepository.OnBookingCallback() {
                         @Override
@@ -288,9 +345,6 @@ public class BookingActivity extends AppCompatActivity
                                     AppToast.LENGTH_LONG);
                         }
                     });
-        });
-
-        fragment.show(getSupportFragmentManager(), "booking_confirm");
     }
 
     private Set<String> slotDates(List<TimeSlot> slots) {

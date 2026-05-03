@@ -177,7 +177,6 @@ public class StudentAppointmentAdapter
             statusText        = itemView.findViewById(R.id.sessionTopic);
 
             // Hide counselor-only action buttons
-            hideIfPresent(itemView, R.id.joinButton);
             hideIfPresent(itemView, R.id.noShowButton);
             hideIfPresent(itemView, R.id.crisisButton);
             hideIfPresent(itemView, R.id.profileButton);

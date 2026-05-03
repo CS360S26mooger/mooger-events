@@ -10,10 +10,14 @@
  */
 package com.example.moogerscouncil;
 
+import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -23,8 +27,11 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
+
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -63,6 +70,12 @@ public class CounselorDashboardActivity extends AppCompatActivity {
 
     /** Master list of all counselor appointments — never filtered in place. */
     private List<Appointment> masterAppointments = new ArrayList<>();
+
+    /** Real-time Firestore listener — pushes appointment changes automatically. */
+    private ListenerRegistration appointmentListener;
+
+    private TextView textSectionLabel;
+    private int cachedWaitlistCount = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,30 +159,33 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                         } else {
                             counselorDocId = counselorId; // last resort: assume doc ID == Auth UID
                         }
-                        loadAppointments();
+                        subscribeToAppointments();
                         loadWaitlistCount();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
                         counselorDocId = counselorId;
-                        loadAppointments();
+                        subscribeToAppointments();
                         loadWaitlistCount();
                     }
                 });
 
         // Waitlist count card → CounselorWaitlistActivity
         CardView waitlistCountCard = findViewById(R.id.waitlistCountCard);
-        waitlistCountCard.setOnClickListener(v ->
-                startActivity(new Intent(this, CounselorWaitlistActivity.class)));
+        waitlistCountCard.setOnClickListener(v -> {
+            cachedWaitlistCount = -1;
+            startActivity(new Intent(this, CounselorWaitlistActivity.class));
+        });
 
         // "Add Availability" banner → AvailabilitySetupActivity
         // Slots use Auth UID as counselorId, so no doc ID needed here
         CardView addSlotBanner = findViewById(R.id.addSlotBanner);
         addSlotBanner.setOnClickListener(v ->
                 startActivity(new Intent(this, AvailabilitySetupActivity.class)));
-        findViewById(R.id.buttonOpenAvailabilitySettings).setOnClickListener(v ->
-                startActivity(new Intent(this, AvailabilitySettingsActivity.class)));
+        textSectionLabel = findViewById(R.id.textSectionLabel);
+        findViewById(R.id.buttonPastSessions).setOnClickListener(v ->
+                startActivity(new Intent(this, PastSessionsActivity.class)));
         findViewById(R.id.buttonExportToCalendar).setOnClickListener(v ->
                 exportNextAppointmentToCalendar());
 
@@ -181,13 +197,9 @@ public class CounselorDashboardActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Logout
+        // Logout — two-step confirmation matching the student-side flow
         ImageButton logoutBtn = findViewById(R.id.logoutBtn);
-        logoutBtn.setOnClickListener(v -> {
-            mAuth.signOut();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-        });
+        logoutBtn.setOnClickListener(v -> showLogoutConfirmation());
 
         // Tab selection
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -200,27 +212,129 @@ public class CounselorDashboardActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Shows the same custom logout confirmation dialog used on the student side.
+     * Uses dialog_exit.xml for a consistent pastel-pink rounded visual.
+     */
+    private void showLogoutConfirmation() {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.dialog_exit);
+
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setBackgroundDrawableResource(android.R.color.transparent);
+            WindowManager.LayoutParams params = window.getAttributes();
+            params.width = (int) (getResources().getDisplayMetrics().widthPixels * 0.88f);
+            params.gravity = Gravity.CENTER;
+            window.setAttributes(params);
+        }
+
+        MaterialButton btnConfirm = dialog.findViewById(R.id.btnExitConfirm);
+        MaterialButton btnCancel  = dialog.findViewById(R.id.btnExitCancel);
+        btnConfirm.setText(R.string.logout_confirm_yes);
+        btnCancel.setText(R.string.button_cancel);
+
+        btnConfirm.setOnClickListener(v -> {
+            dialog.dismiss();
+            SessionCache.getInstance().clearAll();
+            mAuth.signOut();
+            Intent intent = new Intent(CounselorDashboardActivity.this, LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finishAffinity();
+        });
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
-        loadAppointments(); // Refresh on return from AvailabilitySetupActivity
-        if (counselorId != null) {
+        if (counselorId != null && appointmentListener == null) {
+            subscribeToAppointments();
+        }
+        if (counselorDocId != null) {
+            refreshCounselorName();
+        }
+        // Waitlist count: render cached value instantly, refresh in background only
+        // on first load or if explicitly invalidated
+        if (counselorId != null && cachedWaitlistCount < 0) {
             loadWaitlistCount();
+        } else if (counselorId != null) {
+            waitlistCount.setText(String.valueOf(cachedWaitlistCount));
         }
     }
 
-    /**
-     * Fetches all appointments for this counselor via {@link AppointmentRepository}
-     * and populates the master list. Defaults to "Today" tab on first load.
-     */
-    private void loadAppointments() {
-        progressBar.setVisibility(View.VISIBLE);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (appointmentListener != null) {
+            appointmentListener.remove();
+            appointmentListener = null;
+        }
+    }
 
-        appointmentRepository.getAppointmentsForCounselor(counselorId,
+    private void refreshCounselorName() {
+        counselorRepository.getCounselor(counselorDocId,
+                new CounselorRepository.OnCounselorFetchedCallback() {
+                    @Override
+                    public void onSuccess(Counselor counselor) {
+                        String name = counselor.getName();
+                        if (name != null) {
+                            counselorNameText.setText(name);
+                        }
+                    }
+                    @Override
+                    public void onFailure(Exception e) { }
+                });
+    }
+
+    /**
+     * Subscribes to real-time Firestore updates for this counselor's appointments.
+     * Called once — renders from SessionCache instantly, then Firestore pushes
+     * only real changes (new booking, cancellation, no-show) silently in the
+     * background. The UI never rebuilds unless data actually changed.
+     */
+    private void subscribeToAppointments() {
+        if (counselorId == null) return;
+
+        // Render from cache immediately — zero wait, no spinner
+        List<Appointment> cached = SessionCache.getInstance().getCounselorAppointments(counselorId);
+        boolean hadCache = cached != null;
+        if (hadCache) {
+            masterAppointments = cached;
+            int selectedTab = tabLayout.getSelectedTabPosition();
+            filterByTab(selectedTab < 0 ? 0 : selectedTab);
+        } else {
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        // Subscribe once — Firestore delivers the initial snapshot from its own
+        // offline cache (redundant with ours, suppressed below) then pushes
+        // only genuine server-side mutations going forward.
+        final boolean[] initialSnapshotHandled = {false};
+        appointmentListener = appointmentRepository.listenForCounselorAppointments(
+                counselorId,
                 new AppointmentRepository.OnAppointmentsLoadedCallback() {
                     @Override
                     public void onSuccess(List<Appointment> appointments) {
                         progressBar.setVisibility(View.GONE);
+
+                        // Skip the first callback if we already rendered from SessionCache —
+                        // it's the same data from Firestore's offline cache and causes a
+                        // redundant UI rebuild / flicker.
+                        if (!initialSnapshotHandled[0]) {
+                            initialSnapshotHandled[0] = true;
+                            if (hadCache && !appointmentsChanged(appointments)) {
+                                return;
+                            }
+                        } else if (!appointmentsChanged(appointments)) {
+                            return;
+                        }
+
+                        SessionCache.getInstance().putCounselorAppointments(counselorId, appointments);
                         masterAppointments = appointments;
                         int selectedTab = tabLayout.getSelectedTabPosition();
                         filterByTab(selectedTab < 0 ? 0 : selectedTab);
@@ -229,9 +343,11 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Exception e) {
                         progressBar.setVisibility(View.GONE);
-                        AppToast.show(CounselorDashboardActivity.this,
-                                getString(R.string.error_loading_appointments),
-                                AppToast.LENGTH_LONG);
+                        if (!hadCache) {
+                            AppToast.show(CounselorDashboardActivity.this,
+                                    getString(R.string.error_loading_appointments),
+                                    AppToast.LENGTH_LONG);
+                        }
                     }
                 });
     }
@@ -277,39 +393,82 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                 break;
         }
 
-        adapter.setData(filtered);
-        updateStats(today, filtered.size());
+        List<Appointment> visible = filtered.stream()
+                .filter(a -> !"CANCELLED".equals(a.getStatus())
+                        && !"NO_SHOW".equals(a.getStatus()))
+                .collect(Collectors.toList());
+        adapter.setData(visible);
+        updateStats(today, filtered);
     }
 
     /**
-     * Updates the three stat cards with accurate counts.
-     * Today's sessions and total are always computed from the master list;
-     * the third card reflects the currently filtered (tab) count.
+     * Updates the three stat cards — all counts show only CONFIRMED (active) appointments
+     * so the dashboard reflects current bookings, not historical totals.
      *
-     * @param today         Today's date string in "yyyy-MM-dd" format.
-     * @param filteredCount The count of appointments in the current tab view.
+     * @param today        Today's date string in "yyyy-MM-dd" format.
+     * @param tabFiltered  The date-filtered list for the current tab (pre-filtered by date range).
      */
-    private void updateStats(String today, int filteredCount) {
-        long todaySessionCount = masterAppointments.stream()
-                .filter(a -> today.equals(a.getDate()))
+    private void updateStats(String today, List<Appointment> tabFiltered) {
+        long todayConfirmed = masterAppointments.stream()
+                .filter(a -> today.equals(a.getDate()) && "CONFIRMED".equals(a.getStatus()))
+                .count();
+        long totalConfirmed = masterAppointments.stream()
+                .filter(a -> "CONFIRMED".equals(a.getStatus()))
+                .count();
+        long tabConfirmed = tabFiltered.stream()
+                .filter(a -> "CONFIRMED".equals(a.getStatus()))
                 .count();
 
-        todayCount.setText(String.valueOf(todaySessionCount));
-        totalCount.setText(String.valueOf(masterAppointments.size()));
-        weekCount.setText(String.valueOf(filteredCount));
+        todayCount.setText(String.valueOf(todayConfirmed));
+        totalCount.setText(String.valueOf(totalConfirmed));
+        weekCount.setText(String.valueOf(tabConfirmed));
+    }
+
+    /**
+     * Checks if the incoming appointment list differs from what's currently displayed.
+     * Prevents redundant UI rebuilds when the snapshot listener fires but nothing changed.
+     */
+    static boolean appointmentsChanged(List<Appointment> current, List<Appointment> incoming) {
+        if (incoming.size() != current.size()) return true;
+        for (int i = 0; i < incoming.size(); i++) {
+            Appointment a = current.get(i);
+            Appointment b = incoming.get(i);
+            if (a.getId() == null || !a.getId().equals(b.getId())) return true;
+            if (a.getStatus() == null || !a.getStatus().equals(b.getStatus())) return true;
+        }
+        return false;
+    }
+
+    private boolean appointmentsChanged(List<Appointment> incoming) {
+        if (incoming.size() != masterAppointments.size()) return true;
+        for (int i = 0; i < incoming.size(); i++) {
+            Appointment a = masterAppointments.get(i);
+            Appointment b = incoming.get(i);
+            if (a.getId() == null || !a.getId().equals(b.getId())) return true;
+            if (a.getStatus() == null || !a.getStatus().equals(b.getStatus())) return true;
+        }
+        return false;
     }
 
     private void loadWaitlistCount() {
+        if (cachedWaitlistCount >= 0) {
+            waitlistCount.setText(String.valueOf(cachedWaitlistCount));
+        }
         waitlistRepository.getActiveWaitlistCountForCounselor(counselorId,
                 new WaitlistRepository.OnWaitlistCountCallback() {
                     @Override
                     public void onSuccess(int count) {
-                        waitlistCount.setText(String.valueOf(count));
+                        if (count != cachedWaitlistCount) {
+                            cachedWaitlistCount = count;
+                            waitlistCount.setText(String.valueOf(count));
+                        }
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        waitlistCount.setText("0");
+                        if (cachedWaitlistCount < 0) {
+                            waitlistCount.setText("0");
+                        }
                     }
                 });
     }

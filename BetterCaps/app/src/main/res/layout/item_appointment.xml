@@ -45,6 +45,19 @@
                 android:textStyle="bold"
                 android:textColor="#1A1A2E" />
 
+            <TextView
+                android:id="@+id/returningStudentBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/returning_student"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="#8B6BAE"
+                android:background="@drawable/bg_tag_pastel"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:visibility="gone" />
+
         </LinearLayout>
 
         <!-- Bottom chin: date · time · status pill -->

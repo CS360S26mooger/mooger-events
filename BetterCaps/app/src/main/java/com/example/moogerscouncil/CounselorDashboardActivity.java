@@ -50,6 +50,7 @@ public class CounselorDashboardActivity extends AppCompatActivity {
     private TextView todayCount;
     private TextView totalCount;
     private TextView weekCount;
+    private TextView waitlistCount;
 
     /** Firebase Auth UID — used for slot/appointment queries (written to slot documents). */
     private String counselorId;
@@ -58,6 +59,7 @@ public class CounselorDashboardActivity extends AppCompatActivity {
     private AppointmentRepository appointmentRepository;
     private AvailabilityRepository availabilityRepository;
     private CounselorRepository counselorRepository;
+    private WaitlistRepository waitlistRepository;
 
     /** Master list of all counselor appointments — never filtered in place. */
     private List<Appointment> masterAppointments = new ArrayList<>();
@@ -77,11 +79,13 @@ public class CounselorDashboardActivity extends AppCompatActivity {
         appointmentRepository = new AppointmentRepository();
         availabilityRepository = new AvailabilityRepository();
         counselorRepository = new CounselorRepository();
+        waitlistRepository = new WaitlistRepository();
 
         counselorNameText = findViewById(R.id.counselorNameText);
         todayCount = findViewById(R.id.todaySessionCount);
         totalCount = findViewById(R.id.totalPatientsCount);
         weekCount = findViewById(R.id.weekSessionCount);
+        waitlistCount = findViewById(R.id.waitlistCount);
         progressBar = findViewById(R.id.progressBar);
         tabLayout = findViewById(R.id.tabLayout);
 
@@ -143,12 +147,14 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                             counselorDocId = counselorId; // last resort: assume doc ID == Auth UID
                         }
                         loadAppointments();
+                        loadWaitlistCount();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
                         counselorDocId = counselorId;
                         loadAppointments();
+                        loadWaitlistCount();
                     }
                 });
 
@@ -189,6 +195,9 @@ public class CounselorDashboardActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         loadAppointments(); // Refresh on return from AvailabilitySetupActivity
+        if (counselorId != null) {
+            loadWaitlistCount();
+        }
     }
 
     /**
@@ -279,5 +288,20 @@ public class CounselorDashboardActivity extends AppCompatActivity {
         todayCount.setText(String.valueOf(todaySessionCount));
         totalCount.setText(String.valueOf(masterAppointments.size()));
         weekCount.setText(String.valueOf(filteredCount));
+    }
+
+    private void loadWaitlistCount() {
+        waitlistRepository.getActiveWaitlistCountForCounselor(counselorId,
+                new WaitlistRepository.OnWaitlistCountCallback() {
+                    @Override
+                    public void onSuccess(int count) {
+                        waitlistCount.setText(String.valueOf(count));
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        waitlistCount.setText("0");
+                    }
+                });
     }
 }

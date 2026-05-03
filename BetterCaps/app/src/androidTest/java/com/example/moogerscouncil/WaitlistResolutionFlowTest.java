@@ -16,6 +16,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 
 import org.junit.Before;
@@ -42,20 +43,22 @@ public class WaitlistResolutionFlowTest {
     public void setUp() throws Exception {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() == null) {
-            com.google.android.gms.tasks.Tasks.await(
-                    auth.signInAnonymously(), 30, TimeUnit.SECONDS);
+            Tasks.await(
+                    auth.signInWithEmailAndPassword("shaaahbaz@lums.edu.pk", "shahbaz"), 30, TimeUnit.SECONDS);
         }
     }
 
     @Test
     public void availabilitySetupActivityRendersAddSlotButton() {
-        ActivityScenario.launch(AvailabilitySetupActivity.class);
-        onView(withId(R.id.buttonAddSlot)).check(matches(isDisplayed()));
+        try (ActivityScenario<AvailabilitySetupActivity> scenario = ActivityScenario.launch(AvailabilitySetupActivity.class)) {
+            onView(withId(R.id.buttonAddSlot)).check(matches(isDisplayed()));
+        }
     }
 
     @Test
     public void availabilitySetupActivityRendersSlotList() {
-        ActivityScenario.launch(AvailabilitySetupActivity.class);
-        onView(withId(R.id.recyclerSlots)).check(matches(isDisplayed()));
+        try (ActivityScenario<AvailabilitySetupActivity> scenario = ActivityScenario.launch(AvailabilitySetupActivity.class)) {
+            onView(withId(R.id.recyclerSlots)).check(matches(isDisplayed()));
+        }
     }
 }

@@ -17,8 +17,15 @@ import androidx.test.filters.LargeTest;
 
 import com.google.android.material.tabs.TabLayout;
 
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.concurrent.TimeUnit;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -37,6 +44,18 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class CounselorDashboardTest {
+
+    @Before
+    public void setUp() throws Exception {
+        // Sign in with counselor credentials to avoid redirects to LoginActivity
+        Tasks.await(FirebaseAuth.getInstance()
+                .signInWithEmailAndPassword("shaaahbaz@lums.edu.pk", "shahbaz"), 10, TimeUnit.SECONDS);
+    }
+
+    @After
+    public void tearDown() {
+        FirebaseAuth.getInstance().signOut();
+    }
 
     /**
      * Builds a launch intent for {@link CounselorDashboardActivity}.

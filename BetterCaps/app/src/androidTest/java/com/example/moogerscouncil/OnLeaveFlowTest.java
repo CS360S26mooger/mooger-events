@@ -15,8 +15,14 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+
+import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.concurrent.TimeUnit;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -36,6 +42,21 @@ import static org.hamcrest.Matchers.not;
 @LargeTest
 public class OnLeaveFlowTest {
 
+    @After
+    public void tearDown() {
+        FirebaseAuth.getInstance().signOut();
+    }
+
+    private void signInCounselor() throws Exception {
+        Tasks.await(FirebaseAuth.getInstance()
+                .signInWithEmailAndPassword("shaaahbaz@lums.edu.pk", "shahbaz"), 10, TimeUnit.SECONDS);
+    }
+
+    private void signInStudent() throws Exception {
+        Tasks.await(FirebaseAuth.getInstance()
+                .signInWithEmailAndPassword("1@lums.edu.pk", "123456"), 10, TimeUnit.SECONDS);
+    }
+
     /**
      * Builds a launch intent for {@link CounselorProfileEditActivity}.
      */
@@ -49,7 +70,8 @@ public class OnLeaveFlowTest {
      * {@link CounselorProfileEditActivity}.
      */
     @Test
-    public void testOnLeaveToggleIsDisplayed() {
+    public void testOnLeaveToggleIsDisplayed() throws Exception {
+        signInCounselor();
         try (ActivityScenario<CounselorProfileEditActivity> scenario =
                      ActivityScenario.launch(editProfileIntent())) {
 
@@ -63,7 +85,8 @@ public class OnLeaveFlowTest {
      * TextInputLayout (which is initially gone).
      */
     @Test
-    public void testToggleShowsMessageField() {
+    public void testToggleShowsMessageField() throws Exception {
+        signInCounselor();
         try (ActivityScenario<CounselorProfileEditActivity> scenario =
                      ActivityScenario.launch(editProfileIntent())) {
 
@@ -85,7 +108,8 @@ public class OnLeaveFlowTest {
      * dropdown (which is initially gone).
      */
     @Test
-    public void testToggleShowsReferralDropdown() {
+    public void testToggleShowsReferralDropdown() throws Exception {
+        signInCounselor();
         try (ActivityScenario<CounselorProfileEditActivity> scenario =
                      ActivityScenario.launch(editProfileIntent())) {
 
@@ -108,7 +132,8 @@ public class OnLeaveFlowTest {
      * Note: requires a test counselor document with onLeave=true in Firestore.
      */
     @Test
-    public void testOnLeaveCounselorShowsBadgeInDirectory() {
+    public void testOnLeaveCounselorShowsBadgeInDirectory() throws Exception {
+        signInStudent();
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(),
                 CounselorListActivity.class);
         try (ActivityScenario<CounselorListActivity> scenario =
@@ -126,7 +151,8 @@ public class OnLeaveFlowTest {
      * Note: requires a COUNSELOR_ID extra pointing to a counselor with onLeave=true.
      */
     @Test
-    public void testOnLeaveCounselorProfileShowsLeaveCard() {
+    public void testOnLeaveCounselorProfileShowsLeaveCard() throws Exception {
+        signInStudent();
         // Use a known test counselor ID with onLeave=true in Firestore
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(),
                 CounselorProfileActivity.class);

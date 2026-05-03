@@ -15,8 +15,15 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.concurrent.TimeUnit;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -38,6 +45,18 @@ public class BookingFlowTest {
     /** Intent extra key matching BookingActivity's expected constant. */
     private static final String EXTRA_COUNSELOR_ID   = "counselorId";
     private static final String EXTRA_COUNSELOR_NAME = "counselorName";
+
+    @Before
+    public void setUp() throws Exception {
+        // Sign in with student credentials to avoid redirects to LoginActivity
+        Tasks.await(FirebaseAuth.getInstance()
+                .signInWithEmailAndPassword("1@lums.edu.pk", "123456"), 10, TimeUnit.SECONDS);
+    }
+
+    @After
+    public void tearDown() {
+        FirebaseAuth.getInstance().signOut();
+    }
 
     /**
      * Builds a launch intent with dummy counselor extras so
@@ -114,8 +133,9 @@ public class BookingFlowTest {
         try (ActivityScenario<BookingActivity> scenario =
                      ActivityScenario.launch(makeIntent())) {
 
+            // Updated to match multiline formatting in BookingActivity.onCreate
             onView(withId(R.id.counselorNameTitle))
-                    .check(matches(withText("Book with Dr. Test")));
+                    .check(matches(withText("Book with\nDr. Test")));
         }
     }
 }

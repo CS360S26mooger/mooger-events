@@ -15,8 +15,15 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.concurrent.TimeUnit;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -36,6 +43,18 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class EmergencyButtonTest {
+
+    @Before
+    public void setUp() throws Exception {
+        // Sign in with student credentials to avoid redirects to LoginActivity
+        Tasks.await(FirebaseAuth.getInstance()
+                .signInWithEmailAndPassword("1@lums.edu.pk", "123456"), 10, TimeUnit.SECONDS);
+    }
+
+    @After
+    public void tearDown() {
+        FirebaseAuth.getInstance().signOut();
+    }
 
     /**
      * Builds a launch intent for {@link StudentHomeActivity}.

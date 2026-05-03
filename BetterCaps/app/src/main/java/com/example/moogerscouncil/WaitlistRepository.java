@@ -10,10 +10,13 @@ import java.util.List;
 public class WaitlistRepository {
 
     private final CollectionReference waitlistCollection;
+    private final CollectionReference offersCollection;
 
     /** Initialises a repository for the waitlist collection. */
     public WaitlistRepository() {
-        waitlistCollection = FirebaseFirestore.getInstance().collection("waitlist");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        waitlistCollection = db.collection("waitlist");
+        offersCollection = db.collection("waitlistOffers");
     }
 
     public interface OnWaitlistActionCallback {
@@ -29,6 +32,17 @@ public class WaitlistRepository {
 
     public interface OnWaitlistCountCallback {
         void onSuccess(int count);
+        void onFailure(Exception e);
+    }
+
+    public interface OnNextWaitlistCallback {
+        void onSuccess(WaitlistEntry entry);
+        void onEmpty();
+        void onFailure(Exception e);
+    }
+
+    public interface OnWaitlistSimpleCallback {
+        void onSuccess();
         void onFailure(Exception e);
     }
 
@@ -111,6 +125,56 @@ public class WaitlistRepository {
                     }
                     callback.onSuccess(entries);
                 })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /** Returns the oldest active entry for a counselor. */
+    public void getNextActiveEntry(String counselorId, OnNextWaitlistCallback callback) {
+        getActiveWaitlistForCounselor(counselorId, new OnWaitlistLoadedCallback() {
+            @Override
+            public void onSuccess(List<WaitlistEntry> entries) {
+                if (entries.isEmpty()) {
+                    callback.onEmpty();
+                    return;
+                }
+                WaitlistEntry next = entries.get(0);
+                for (WaitlistEntry entry : entries) {
+                    if (String.valueOf(entry.getRequestedAt())
+                            .compareTo(String.valueOf(next.getRequestedAt())) < 0) {
+                        next = entry;
+                    }
+                }
+                callback.onSuccess(next);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                callback.onFailure(e);
+            }
+        });
+    }
+
+    /** Marks a waitlist entry as offered and creates a waitlistOffers record. */
+    public void markOffered(WaitlistEntry entry, TimeSlot slot,
+                            OnWaitlistSimpleCallback callback) {
+        String offerId = offersCollection.document().getId();
+        WaitlistOffer offer = new WaitlistOffer(entry, slot);
+        offer.setId(offerId);
+        FirebaseFirestore.getInstance().runBatch(batch -> {
+            batch.set(offersCollection.document(offerId), offer);
+            batch.update(waitlistCollection.document(entry.getId()),
+                    "status", WaitlistEntry.STATUS_OFFERED,
+                    "offeredSlotId", slot.getId(),
+                    "offeredAt", com.google.firebase.Timestamp.now());
+        }).addOnSuccessListener(unused -> callback.onSuccess())
+          .addOnFailureListener(callback::onFailure);
+    }
+
+    /** Marks a waitlist entry as booked after a student accepts an offered slot. */
+    public void markBooked(String entryId, OnWaitlistSimpleCallback callback) {
+        waitlistCollection.document(entryId)
+                .update("status", WaitlistEntry.STATUS_BOOKED)
+                .addOnSuccessListener(unused -> callback.onSuccess())
                 .addOnFailureListener(callback::onFailure);
     }
 }

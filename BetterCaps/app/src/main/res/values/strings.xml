@@ -226,4 +226,27 @@
     <string name="returning_student">Returning</string>
     <string name="session_notes_title">Session Notes</string>
     <string name="no_session_notes">No notes saved for this appointment yet.</string>
+    <string name="availability_settings_title">Availability Settings</string>
+    <string name="buffer_time_title">Buffer time between sessions</string>
+    <string name="buffer_0">No buffer</string>
+    <string name="buffer_10">10 minutes</string>
+    <string name="buffer_15">15 minutes</string>
+    <string name="buffer_30">30 minutes</string>
+    <string name="slot_conflicts_buffer">This slot is too close to another session.</string>
+    <string name="settings_saved">Settings saved.</string>
+    <string name="settings_save_error">Could not save settings.</string>
+    <string name="calendar_export_title">Calendar Export</string>
+    <string name="export_to_calendar">Export to Calendar</string>
+    <string name="calendar_export_unavailable">No calendar app found.</string>
+    <string name="waitlist_slot_offered">A slot has opened for you.</string>
+    <string name="accept_slot">Accept Slot</string>
+    <string name="decline_slot">Decline</string>
+    <string name="enable_calendar_export">Enable device calendar export</string>
+    <string name="enable_ics_export">Enable ICS export</string>
+    <string name="provider_none">None</string>
+    <string name="provider_device">Device Calendar</string>
+    <string name="provider_google">Google Calendar</string>
+    <string name="provider_outlook">Outlook Calendar</string>
+    <string name="button_save_settings">Save Settings</string>
+    <string name="no_appointments_to_export">No upcoming confirmed appointments to export.</string>
 </resources>

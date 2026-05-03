@@ -43,6 +43,12 @@ public class AvailabilityRepository {
         void onFailure(Exception e);
     }
 
+    public interface OnBufferCheckCallback {
+        void onAvailable();
+        void onConflict(String reason);
+        void onFailure(Exception e);
+    }
+
     // -------------------------------------------------------------------------
     // Path helper
     // -------------------------------------------------------------------------
@@ -105,6 +111,55 @@ public class AvailabilityRepository {
                     callback.onSuccess(available);
                 })
                 .addOnFailureListener(callback::onFailure);
+    }
+
+    /** Fetches slots for one counselor on one date. */
+    public void getSlotsForDate(String counselorId, String date, OnSlotsLoadedCallback callback) {
+        getSlotsForCounselor(counselorId, new OnSlotsLoadedCallback() {
+            @Override
+            public void onSuccess(List<TimeSlot> slots) {
+                List<TimeSlot> sameDate = new ArrayList<>();
+                for (TimeSlot slot : slots) {
+                    if (date != null && date.equals(slot.getDate())) {
+                        sameDate.add(slot);
+                    }
+                }
+                callback.onSuccess(sameDate);
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                callback.onFailure(e);
+            }
+        });
+    }
+
+    /**
+     * Checks whether a new slot would violate the counselor's buffer settings.
+     * Rule: 60-minute session length plus configured buffer minutes.
+     */
+    public void canAddSlotWithBuffer(String counselorId, String date, String time,
+                                     int bufferMinutes,
+                                     OnBufferCheckCallback callback) {
+        getSlotsForCounselor(counselorId, new OnSlotsLoadedCallback() {
+            @Override
+            public void onSuccess(List<TimeSlot> slots) {
+                try {
+                    if (BufferTimeValidator.hasConflict(slots, date, time, bufferMinutes)) {
+                        callback.onConflict("Slot conflicts with buffer time.");
+                    } else {
+                        callback.onAvailable();
+                    }
+                } catch (IllegalArgumentException e) {
+                    callback.onFailure(e);
+                }
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                callback.onFailure(e);
+            }
+        });
     }
 
     /**

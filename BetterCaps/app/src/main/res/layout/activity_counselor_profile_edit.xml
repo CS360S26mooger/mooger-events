@@ -233,6 +233,18 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/buttonSchedulingSettings"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:text="@string/availability_settings_title"
+            android:textAllCaps="false"
+            android:textColor="#C96B8E"
+            android:layout_marginBottom="12dp"
+            app:strokeColor="#C96B8E"
+            app:cornerRadius="12dp" />
+
         <!-- Save button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/buttonSaveProfile"

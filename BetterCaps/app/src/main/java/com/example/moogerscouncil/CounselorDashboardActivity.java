@@ -10,6 +10,7 @@
  */
 package com.example.moogerscouncil;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -163,6 +164,10 @@ public class CounselorDashboardActivity extends AppCompatActivity {
         CardView addSlotBanner = findViewById(R.id.addSlotBanner);
         addSlotBanner.setOnClickListener(v ->
                 startActivity(new Intent(this, AvailabilitySetupActivity.class)));
+        findViewById(R.id.buttonOpenAvailabilitySettings).setOnClickListener(v ->
+                startActivity(new Intent(this, AvailabilitySettingsActivity.class)));
+        findViewById(R.id.buttonExportToCalendar).setOnClickListener(v ->
+                exportNextAppointmentToCalendar());
 
         // Edit profile button — pass the real Firestore doc ID for profile ops
         ImageButton editProfileButton = findViewById(R.id.buttonEditProfile);
@@ -303,5 +308,30 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                         waitlistCount.setText("0");
                     }
                 });
+    }
+
+    private void exportNextAppointmentToCalendar() {
+        Appointment next = null;
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
+        for (Appointment appointment : masterAppointments) {
+            if (!"CONFIRMED".equals(appointment.getStatus())) continue;
+            if (appointment.getDate() == null || appointment.getDate().compareTo(today) < 0) {
+                continue;
+            }
+            if (next == null || appointment.getDate().compareTo(next.getDate()) < 0) {
+                next = appointment;
+            }
+        }
+        if (next == null) {
+            Toast.makeText(this, R.string.no_appointments_to_export, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        try {
+            String counselorName = counselorNameText.getText() == null
+                    ? null : counselorNameText.getText().toString();
+            startActivity(CalendarSyncHelper.buildInsertEventIntent(next, counselorName));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(this, R.string.calendar_export_unavailable, Toast.LENGTH_LONG).show();
+        }
     }
 }

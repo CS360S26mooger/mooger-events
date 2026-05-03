@@ -61,7 +61,9 @@ public class BookingActivity extends AppCompatActivity
     private AvailabilityRepository availabilityRepository;
     private AppointmentRepository appointmentRepository;
     private WaitlistRepository waitlistRepository;
+    private AvailabilitySettingsRepository availabilitySettingsRepository;
     private String assessmentId;
+    private int bufferMinutes = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,7 @@ public class BookingActivity extends AppCompatActivity
         availabilityRepository = new AvailabilityRepository();
         appointmentRepository = new AppointmentRepository();
         waitlistRepository = new WaitlistRepository();
+        availabilitySettingsRepository = new AvailabilitySettingsRepository();
 
         TextView titleText = findViewById(R.id.counselorNameTitle);
         String name = counselorName != null ? counselorName : "Counselor";
@@ -104,7 +107,7 @@ public class BookingActivity extends AppCompatActivity
         calendarView.setMinDate(System.currentTimeMillis());
         calendarView.setOnDateClickListener(this::showSlotsForDate);
 
-        loadSlots(todayString());
+        loadSettingsThenSlots(todayString());
     }
 
     /** Returns today's date as a "yyyy-MM-dd" string. */
@@ -139,10 +142,11 @@ public class BookingActivity extends AppCompatActivity
         // Cache miss — live Firestore fetch with Auth-UID → doc-ID fallback
         progressBar.setVisibility(View.VISIBLE);
 
-        availabilityRepository.getAvailableSlotsForCounselor(counselorId,
+        availabilityRepository.getSlotsForCounselor(counselorId,
                 new AvailabilityRepository.OnSlotsLoadedCallback() {
                     @Override
-                    public void onSuccess(List<TimeSlot> slots) {
+                    public void onSuccess(List<TimeSlot> allSlots) {
+                        List<TimeSlot> slots = bufferValidAvailableSlots(allSlots);
                         if (!slots.isEmpty()) {
                             progressBar.setVisibility(View.GONE);
                             SessionCache.getInstance().putSlots(counselorId, slots);
@@ -154,10 +158,11 @@ public class BookingActivity extends AppCompatActivity
                         // Zero slots on the Auth-UID path — try the Firestore doc ID
                         String fallback = counselorDocId;
                         if (fallback != null && !fallback.equals(counselorId)) {
-                            availabilityRepository.getAvailableSlotsForCounselor(fallback,
+                            availabilityRepository.getSlotsForCounselor(fallback,
                                     new AvailabilityRepository.OnSlotsLoadedCallback() {
                                         @Override
-                                        public void onSuccess(List<TimeSlot> fbSlots) {
+                                        public void onSuccess(List<TimeSlot> allFbSlots) {
+                                            List<TimeSlot> fbSlots = bufferValidAvailableSlots(allFbSlots);
                                             progressBar.setVisibility(View.GONE);
                                             String key = fbSlots.isEmpty() ? counselorId : fallback;
                                             // Cache under both keys so next open is instant
@@ -337,5 +342,45 @@ public class BookingActivity extends AppCompatActivity
                         Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    private void loadSettingsThenSlots(String initialDate) {
+        availabilitySettingsRepository.getSettings(counselorId,
+                new AvailabilitySettingsRepository.OnSettingsLoadedCallback() {
+                    @Override
+                    public void onSuccess(AvailabilitySettings settings) {
+                        bufferMinutes = settings.getBufferMinutes();
+                        loadSlots(initialDate);
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        bufferMinutes = 0;
+                        loadSlots(initialDate);
+                    }
+                });
+    }
+
+    private List<TimeSlot> bufferValidAvailableSlots(List<TimeSlot> allSlots) {
+        List<TimeSlot> available = new ArrayList<>();
+        for (TimeSlot candidate : allSlots) {
+            if (!candidate.isAvailable()) continue;
+            boolean conflictsWithBooked = false;
+            for (TimeSlot existing : allSlots) {
+                if (existing.isAvailable()) continue;
+                if (candidate.getDate() == null || !candidate.getDate().equals(existing.getDate())) continue;
+                try {
+                    if (BufferTimeValidator.isWithinBlockedWindow(
+                            existing.getTime(), candidate.getTime(), bufferMinutes)) {
+                        conflictsWithBooked = true;
+                        break;
+                    }
+                } catch (IllegalArgumentException ignored) {
+                    // Keep malformed legacy slots visible rather than failing the booking screen.
+                }
+            }
+            if (!conflictsWithBooked) available.add(candidate);
+        }
+        return available;
     }
 }

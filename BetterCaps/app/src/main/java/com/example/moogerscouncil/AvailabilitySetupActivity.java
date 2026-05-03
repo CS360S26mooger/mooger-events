@@ -40,6 +40,7 @@ public class AvailabilitySetupActivity extends AppCompatActivity {
     private RecyclerView recyclerSlots;
     private TextView textEmptySlots;
     private AvailabilityRepository availabilityRepository;
+    private AvailabilitySettingsRepository settingsRepository;
     private String counselorId;
 
     /** Flat list of all slots (available + booked) for display. */
@@ -59,10 +60,12 @@ public class AvailabilitySetupActivity extends AppCompatActivity {
 
         counselorId = FirebaseAuth.getInstance().getCurrentUser().getUid();
         availabilityRepository = new AvailabilityRepository();
+        settingsRepository = new AvailabilitySettingsRepository();
 
         recyclerSlots = findViewById(R.id.recyclerSlots);
         textEmptySlots = findViewById(R.id.textEmptySlots);
         MaterialButton buttonAddSlot = findViewById(R.id.buttonAddSlot);
+        MaterialButton buttonAvailabilitySettings = findViewById(R.id.buttonAvailabilitySettings);
 
         slotSetupAdapter = new TimeSlotSetupAdapter(slotList);
         recyclerSlots.setLayoutManager(new LinearLayoutManager(this));
@@ -71,6 +74,8 @@ public class AvailabilitySetupActivity extends AppCompatActivity {
         attachSwipeToDelete();
 
         buttonAddSlot.setOnClickListener(v -> showDatePicker());
+        buttonAvailabilitySettings.setOnClickListener(v ->
+                startActivity(new Intent(this, AvailabilitySettingsActivity.class)));
 
         loadSlots();
     }
@@ -125,19 +130,56 @@ public class AvailabilitySetupActivity extends AppCompatActivity {
      * @param time The slot time in "HH:mm" format.
      */
     private void addSlot(String date, String time) {
-        availabilityRepository.addSlot(counselorId, date, time,
-                new AvailabilityRepository.OnSlotActionCallback() {
+        settingsRepository.getSettings(counselorId,
+                new AvailabilitySettingsRepository.OnSettingsLoadedCallback() {
                     @Override
-                    public void onSuccess() {
+                    public void onSuccess(AvailabilitySettings settings) {
+                        validateAndAddSlot(date, time, settings.getBufferMinutes());
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        validateAndAddSlot(date, time, 0);
+                    }
+                });
+    }
+
+    private void validateAndAddSlot(String date, String time, int bufferMinutes) {
+        availabilityRepository.canAddSlotWithBuffer(counselorId, date, time, bufferMinutes,
+                new AvailabilityRepository.OnBufferCheckCallback() {
+                    @Override
+                    public void onAvailable() {
+                        availabilityRepository.addSlot(counselorId, date, time,
+                                new AvailabilityRepository.OnSlotActionCallback() {
+                                    @Override
+                                    public void onSuccess() {
+                                        Toast.makeText(AvailabilitySetupActivity.this,
+                                                getString(R.string.slot_added),
+                                                Toast.LENGTH_SHORT).show();
+                                        loadSlots();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Exception e) {
+                                        Toast.makeText(AvailabilitySetupActivity.this,
+                                                getString(R.string.error_adding_slot),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void onConflict(String reason) {
                         Toast.makeText(AvailabilitySetupActivity.this,
-                                getString(R.string.slot_added), Toast.LENGTH_SHORT).show();
-                        loadSlots();
+                                R.string.slot_conflicts_buffer,
+                                Toast.LENGTH_LONG).show();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
                         Toast.makeText(AvailabilitySetupActivity.this,
-                                getString(R.string.error_adding_slot), Toast.LENGTH_SHORT).show();
+                                getString(R.string.error_adding_slot),
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }

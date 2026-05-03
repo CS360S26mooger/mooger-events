@@ -260,6 +260,32 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonOpenAvailabilitySettings"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/availability_settings_title"
+                android:textAllCaps="false"
+                android:textColor="#C96B8E"
+                app:strokeColor="#C96B8E"
+                app:cornerRadius="12dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonExportToCalendar"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginBottom="14dp"
+                android:text="@string/export_to_calendar"
+                android:textAllCaps="false"
+                android:textColor="#3D5AF1"
+                app:strokeColor="#3D5AF1"
+                app:cornerRadius="12dp" />
+
             <!-- Add Availability button -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/addSlotBanner"

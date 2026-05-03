@@ -217,12 +217,60 @@ public class AppointmentRepository {
                                 .collection("slots")
                                 .document(slotId)
                                 .update("available", true)
-                                .addOnCompleteListener(task -> callback.onSuccess());
+                                .addOnCompleteListener(task ->
+                                        offerSlotToNextWaitlistedStudent(counselorId, slotId, callback));
                     } else {
                         callback.onSuccess();
                     }
                 })
                 .addOnFailureListener(callback::onFailure);
+    }
+
+    private void offerSlotToNextWaitlistedStudent(String counselorId, String slotId,
+                                                  OnStatusUpdateCallback callback) {
+        db.collection("Slots")
+                .document(counselorId)
+                .collection("slots")
+                .document(slotId)
+                .get()
+                .addOnSuccessListener(slotDoc -> {
+                    TimeSlot slot = slotDoc.toObject(TimeSlot.class);
+                    if (slot == null) {
+                        callback.onSuccess();
+                        return;
+                    }
+                    slot.setId(slotDoc.getId());
+                    WaitlistRepository waitlistRepository = new WaitlistRepository();
+                    waitlistRepository.getNextActiveEntry(counselorId,
+                            new WaitlistRepository.OnNextWaitlistCallback() {
+                                @Override
+                                public void onSuccess(WaitlistEntry entry) {
+                                    waitlistRepository.markOffered(entry, slot,
+                                            new WaitlistRepository.OnWaitlistSimpleCallback() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    callback.onSuccess();
+                                                }
+
+                                                @Override
+                                                public void onFailure(Exception e) {
+                                                    callback.onSuccess();
+                                                }
+                                            });
+                                }
+
+                                @Override
+                                public void onEmpty() {
+                                    callback.onSuccess();
+                                }
+
+                                @Override
+                                public void onFailure(Exception e) {
+                                    callback.onSuccess();
+                                }
+                            });
+                })
+                .addOnFailureListener(e -> callback.onSuccess());
     }
 
     // -------------------------------------------------------------------------

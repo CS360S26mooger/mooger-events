@@ -12,25 +12,29 @@ package com.example.moogerscouncil;
 
 import android.content.res.ColorStateList;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.ViewCompat;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
-
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 /**
  * RecyclerView adapter for the counselor's appointment dashboard cards.
@@ -98,6 +102,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
         holder.sessionTime.setText(normalizeTime(apt.getTime()));
         holder.sessionDate.setText(formatDate(apt.getDate()));
+        holder.returningBadge.setVisibility(apt.isReturningStudent() ? View.VISIBLE : View.GONE);
 
         // Status badge styling
         applyStatusBadge(holder, apt.getStatus());
@@ -108,18 +113,10 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
         // Placeholder action buttons (Phase 4)
         holder.joinButton.setOnClickListener(v ->
-                Toast.makeText(context, "Video call coming in Phase 4", Toast.LENGTH_SHORT).show());
-        holder.crisisButton.setOnClickListener(v ->
-                new androidx.appcompat.app.AlertDialog.Builder(context)
-                        .setTitle("Crisis Alert")
-                        .setMessage("Escalate this student to campus emergency services?")
-                        .setPositiveButton("Escalate", null)
-                        .setNegativeButton("Cancel", null)
-                        .show());
-        holder.profileButton.setOnClickListener(v ->
-                Toast.makeText(context, "Student profile coming in Phase 4", Toast.LENGTH_SHORT).show());
-        holder.notesButton.setOnClickListener(v ->
-                Toast.makeText(context, "Session notes coming in Phase 4", Toast.LENGTH_SHORT).show());
+                Toast.makeText(context, R.string.action_video_placeholder, Toast.LENGTH_SHORT).show());
+        holder.crisisButton.setOnClickListener(v -> showCrisisDialog(apt));
+        holder.profileButton.setOnClickListener(v -> openStudentProfile(apt));
+        holder.notesButton.setOnClickListener(v -> showNoteDialog(apt));
     }
 
     /**
@@ -185,22 +182,100 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
      * @param position The adapter position.
      */
     private void markNoShow(Appointment apt, ViewHolder holder, int position) {
-        appointmentRepository.updateAppointmentStatus(apt.getId(), "NO_SHOW",
+        appointmentRepository.markNoShowWithFollowUp(apt.getId(),
                 new AppointmentRepository.OnStatusUpdateCallback() {
                     @Override
                     public void onSuccess() {
                         apt.setStatus("NO_SHOW");
+                        apt.setNoShowFollowUpRequired(true);
+                        apt.setNoShowFollowUpStatus("PENDING");
                         applyStatusBadge(holder, "NO_SHOW");
-                        Toast.makeText(context, context.getString(R.string.marked_no_show),
+                        Toast.makeText(context, context.getString(R.string.no_show_followup_created),
                                 Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(context, "Failed to update status",
+                        Toast.makeText(context, R.string.error_update_status,
                                 Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void openStudentProfile(Appointment appointment) {
+        Intent intent = new Intent(context, StudentProfileActivity.class);
+        intent.putExtra(StudentProfileActivity.EXTRA_STUDENT_ID, appointment.getStudentId());
+        intent.putExtra(StudentProfileActivity.EXTRA_APPOINTMENT_ID, appointment.getId());
+        intent.putExtra(StudentProfileActivity.EXTRA_COUNSELOR_ID, appointment.getCounselorId());
+        context.startActivity(intent);
+    }
+
+    private void showCrisisDialog(Appointment appointment) {
+        if (!(context instanceof FragmentActivity)) {
+            Toast.makeText(context, R.string.crisis_escalation_error, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        CrisisEscalationDialogFragment
+                .newInstance(appointment.getId(), appointment.getCounselorId(),
+                        appointment.getStudentId())
+                .show(((FragmentActivity) context).getSupportFragmentManager(),
+                        "crisis_escalation");
+    }
+
+    private void showNoteDialog(Appointment appointment) {
+        View dialogView = LayoutInflater.from(context)
+                .inflate(R.layout.dialog_session_note, null, false);
+        ChipGroup templateChips = dialogView.findViewById(R.id.chipGroupNoteTemplates);
+        EditText noteEdit = dialogView.findViewById(R.id.editSessionNote);
+        final String[] selectedTemplate = {NoteTemplate.GENERAL_SESSION};
+
+        for (String key : NoteTemplate.ALL_KEYS) {
+            Chip chip = new Chip(context);
+            chip.setText(NoteTemplate.getDisplayName(key));
+            chip.setCheckable(true);
+            chip.setOnClickListener(v -> {
+                selectedTemplate[0] = key;
+                noteEdit.setText(NoteTemplate.getTemplateText(key));
+                noteEdit.setSelection(noteEdit.getText().length());
+            });
+            templateChips.addView(chip);
+        }
+
+        AlertDialog dialog = new AlertDialog.Builder(context)
+                .setView(dialogView)
+                .setNegativeButton(R.string.button_cancel, null)
+                .setPositiveButton(R.string.save_note, null)
+                .create();
+        dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setOnClickListener(v -> saveNote(appointment, selectedTemplate[0], noteEdit, dialog)));
+        dialog.show();
+    }
+
+    private void saveNote(Appointment appointment, String templateKey,
+                          EditText noteEdit, AlertDialog dialog) {
+        String text = noteEdit.getText() == null ? "" : noteEdit.getText().toString().trim();
+        if (text.isEmpty()) {
+            Toast.makeText(context, R.string.note_text_required, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        SessionNote note = new SessionNote(
+                appointment.getId(),
+                appointment.getCounselorId(),
+                appointment.getStudentId(),
+                templateKey,
+                text);
+        new SessionNoteRepository().saveNote(note, new SessionNoteRepository.OnNoteActionCallback() {
+            @Override
+            public void onSuccess(String noteId) {
+                Toast.makeText(context, R.string.note_saved, Toast.LENGTH_SHORT).show();
+                dialog.dismiss();
+            }
+
+            @Override
+            public void onFailure(Exception e) {
+                Toast.makeText(context, R.string.note_save_error, Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     private static String formatDate(String raw) {
@@ -238,7 +313,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     /** ViewHolder for a single appointment card. */
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView studentName, sessionTopic, sessionTime, sessionDate;
+        TextView studentName, sessionTopic, sessionTime, sessionDate, returningBadge;
         Button joinButton, noShowButton, crisisButton, profileButton, notesButton;
 
         public ViewHolder(@NonNull View itemView) {
@@ -247,6 +322,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             sessionTopic = itemView.findViewById(R.id.sessionTopic);
             sessionTime = itemView.findViewById(R.id.sessionTime);
             sessionDate = itemView.findViewById(R.id.sessionDate);
+            returningBadge = itemView.findViewById(R.id.returningStudentBadge);
             joinButton = itemView.findViewById(R.id.joinButton);
             noShowButton = itemView.findViewById(R.id.noShowButton);
             crisisButton = itemView.findViewById(R.id.crisisButton);

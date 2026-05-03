@@ -1,5 +1,6 @@
 package com.example.moogerscouncil;
 
+import com.google.firebase.Timestamp;
 
 /**
  * Represents a confirmed appointment between a student and counselor.
@@ -12,6 +13,11 @@ public class Appointment {
     private String date;
     private String time;
     private String status; // "CONFIRMED", "COMPLETED", "CANCELLED"
+    private boolean noShowFollowUpRequired;
+    private String noShowFollowUpStatus;
+    private Timestamp noShowMarkedAt;
+    private boolean returningStudent;
+    private String crisisEscalationId;
 
     public Appointment() {}
 
@@ -35,4 +41,29 @@ public class Appointment {
 
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+
+    public boolean isNoShowFollowUpRequired() { return noShowFollowUpRequired; }
+    public void setNoShowFollowUpRequired(boolean noShowFollowUpRequired) {
+        this.noShowFollowUpRequired = noShowFollowUpRequired;
+    }
+
+    public String getNoShowFollowUpStatus() { return noShowFollowUpStatus; }
+    public void setNoShowFollowUpStatus(String noShowFollowUpStatus) {
+        this.noShowFollowUpStatus = noShowFollowUpStatus;
+    }
+
+    public Timestamp getNoShowMarkedAt() { return noShowMarkedAt; }
+    public void setNoShowMarkedAt(Timestamp noShowMarkedAt) {
+        this.noShowMarkedAt = noShowMarkedAt;
+    }
+
+    public boolean isReturningStudent() { return returningStudent; }
+    public void setReturningStudent(boolean returningStudent) {
+        this.returningStudent = returningStudent;
+    }
+
+    public String getCrisisEscalationId() { return crisisEscalationId; }
+    public void setCrisisEscalationId(String crisisEscalationId) {
+        this.crisisEscalationId = crisisEscalationId;
+    }
 }

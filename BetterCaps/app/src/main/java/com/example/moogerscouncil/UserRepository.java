@@ -71,6 +71,14 @@ public class UserRepository {
     }
 
     /**
+     * Callback for student document lookups by UID.
+     */
+    public interface OnStudentFetchedCallback {
+        void onSuccess(Student student);
+        void onFailure(Exception e);
+    }
+
+    /**
      * Callback for role-only fetch operations used for post-login routing.
      */
     public interface OnRoleFetchedCallback {
@@ -129,6 +137,31 @@ public class UserRepository {
                     } else {
                         callback.onFailure(new IllegalStateException("User document not found"));
                     }
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
+     * Fetches a student document by Firebase Auth UID.
+     *
+     * @param uid Student UID.
+     * @param callback Receives the student or a failure.
+     */
+    public void getStudentById(String uid, OnStudentFetchedCallback callback) {
+        usersCollection.document(uid)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (!doc.exists()) {
+                        callback.onFailure(new IllegalStateException("Student not found"));
+                        return;
+                    }
+                    Student student = doc.toObject(Student.class);
+                    if (student == null) {
+                        callback.onFailure(new IllegalStateException("Could not parse student"));
+                        return;
+                    }
+                    student.setUid(doc.getId());
+                    callback.onSuccess(student);
                 })
                 .addOnFailureListener(callback::onFailure);
     }

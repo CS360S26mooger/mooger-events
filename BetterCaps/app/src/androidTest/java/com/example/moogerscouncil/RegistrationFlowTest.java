@@ -24,6 +24,9 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import androidx.test.ext.junit.rules.ActivityScenarioRule;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import com.google.firebase.auth.FirebaseAuth;
+
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,6 +42,12 @@ public class RegistrationFlowTest {
     @Rule
     public ActivityScenarioRule<RegisterActivity> activityRule =
             new ActivityScenarioRule<>(RegisterActivity.class);
+
+    @Before
+    public void setUp() {
+        // Ensure no user is logged in before testing registration
+        FirebaseAuth.getInstance().signOut();
+    }
 
     /**
      * All six input fields and the register button must be visible on launch.

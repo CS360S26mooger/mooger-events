@@ -4,9 +4,15 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.concurrent.TimeUnit;
 
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
@@ -25,8 +31,14 @@ import static androidx.test.espresso.matcher.ViewMatchers.Visibility;
 public class WaitlistCounselorViewTest {
 
     @Before
-    public void setUp() {
-        ActivityScenario.launch(CounselorWaitlistActivity.class);
+    public void setUp() throws Exception {
+        Tasks.await(FirebaseAuth.getInstance()
+                .signInWithEmailAndPassword("shaaahbaz@lums.edu.pk", "shahbaz"), 10, TimeUnit.SECONDS);
+    }
+
+    @After
+    public void tearDown() {
+        FirebaseAuth.getInstance().signOut();
     }
 
     // ------------------------------------------------------------------
@@ -35,13 +47,19 @@ public class WaitlistCounselorViewTest {
 
     @Test
     public void toolbarIsDisplayed() {
-        onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
+        try (ActivityScenario<CounselorWaitlistActivity> scenario =
+                     ActivityScenario.launch(CounselorWaitlistActivity.class)) {
+            onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
+        }
     }
 
     @Test
     public void recyclerViewIsPresent() {
-        onView(withId(R.id.recyclerCounselorWaitlist))
-                .check(matches(withEffectiveVisibility(Visibility.VISIBLE)));
+        try (ActivityScenario<CounselorWaitlistActivity> scenario =
+                     ActivityScenario.launch(CounselorWaitlistActivity.class)) {
+            onView(withId(R.id.recyclerCounselorWaitlist))
+                    .check(matches(withEffectiveVisibility(Visibility.VISIBLE)));
+        }
     }
 
     // ------------------------------------------------------------------
@@ -50,21 +68,27 @@ public class WaitlistCounselorViewTest {
 
     @Test
     public void emptyStateTextIsPresent() {
-        onView(withId(R.id.textWaitlistEmpty))
-                .check(matches(anyOf(
-                        withEffectiveVisibility(Visibility.VISIBLE),
-                        withEffectiveVisibility(Visibility.GONE))));
+        try (ActivityScenario<CounselorWaitlistActivity> scenario =
+                     ActivityScenario.launch(CounselorWaitlistActivity.class)) {
+            onView(withId(R.id.textWaitlistEmpty))
+                    .check(matches(anyOf(
+                            withEffectiveVisibility(Visibility.VISIBLE),
+                            withEffectiveVisibility(Visibility.GONE))));
+        }
     }
 
     @Test
     public void exactlyOneOfEmptyTextOrRecyclerIsVisible() {
-        onView(withId(R.id.textWaitlistEmpty))
-                .check(matches(anyOf(
-                        withEffectiveVisibility(Visibility.VISIBLE),
-                        withEffectiveVisibility(Visibility.GONE))));
-        onView(withId(R.id.recyclerCounselorWaitlist))
-                .check(matches(anyOf(
-                        withEffectiveVisibility(Visibility.VISIBLE),
-                        withEffectiveVisibility(Visibility.GONE))));
+        try (ActivityScenario<CounselorWaitlistActivity> scenario =
+                     ActivityScenario.launch(CounselorWaitlistActivity.class)) {
+            onView(withId(R.id.textWaitlistEmpty))
+                    .check(matches(anyOf(
+                            withEffectiveVisibility(Visibility.VISIBLE),
+                            withEffectiveVisibility(Visibility.GONE))));
+            onView(withId(R.id.recyclerCounselorWaitlist))
+                    .check(matches(anyOf(
+                            withEffectiveVisibility(Visibility.VISIBLE),
+                            withEffectiveVisibility(Visibility.GONE))));
+        }
     }
 }

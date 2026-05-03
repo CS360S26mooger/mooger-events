@@ -1,6 +1,7 @@
 package com.example.moogerscouncil;
 
 import android.content.Intent;
+import android.view.View;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
@@ -11,6 +12,9 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.hamcrest.Description;
+import org.hamcrest.Matcher;
+import org.hamcrest.TypeSafeMatcher;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -98,8 +102,26 @@ public class OnLeaveFlowTest {
         Intent intent = new Intent(ApplicationProvider.getApplicationContext(), CounselorListActivity.class);
         try (ActivityScenario<CounselorListActivity> scenario = ActivityScenario.launch(intent)) {
             Thread.sleep(2000); // Give firestore time to load list
-            onView(withText(R.string.currently_away)).check(matches(isDisplayed()));
+            onView(withIndex(withText(R.string.currently_away), 0)).check(matches(isDisplayed()));
         }
+    }
+
+    private static Matcher<View> withIndex(final Matcher<View> matcher, final int index) {
+        return new TypeSafeMatcher<View>() {
+            int currentIndex = 0;
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with index: ");
+                description.appendValue(index);
+                matcher.describeTo(description);
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                return matcher.matches(view) && currentIndex++ == index;
+            }
+        };
     }
 
     @Test

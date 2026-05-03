@@ -97,16 +97,32 @@ public final class WaitlistMatcher {
     public static boolean existingSlotsMatchPreferences(List<TimeSlot> availableSlots,
                                                         List<String> preferredDates,
                                                         String startTime, String endTime) {
+        return findFirstMatchingSlot(availableSlots, preferredDates, startTime, endTime) != null;
+    }
+
+    /**
+     * Returns the first available slot that falls within the student's preferred dates and
+     * time window, or null if none exists.
+     *
+     * @param availableSlots All available slots for the counselor.
+     * @param preferredDates The dates the student is available on.
+     * @param startTime      Start of the preferred time window ("HH:mm").
+     * @param endTime        End of the preferred time window ("HH:mm").
+     * @return The first matching available slot, or null.
+     */
+    public static TimeSlot findFirstMatchingSlot(List<TimeSlot> availableSlots,
+                                                  List<String> preferredDates,
+                                                  String startTime, String endTime) {
         if (availableSlots == null || preferredDates == null
-                || startTime == null || endTime == null) return false;
+                || startTime == null || endTime == null) return null;
         for (TimeSlot slot : availableSlots) {
             if (!slot.isAvailable()) continue;
             if (!preferredDates.contains(slot.getDate())) continue;
             if (slot.getTime().compareTo(startTime) >= 0
                     && slot.getTime().compareTo(endTime) < 0) {
-                return true;
+                return slot;
             }
         }
-        return false;
+        return null;
     }
 }

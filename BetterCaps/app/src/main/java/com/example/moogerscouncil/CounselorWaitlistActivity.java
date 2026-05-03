@@ -300,7 +300,7 @@ public class CounselorWaitlistActivity extends AppCompatActivity {
      * Generates all 30-minute-interval times from {@code startTime} (inclusive)
      * up to {@code endTime} (exclusive).
      */
-    private static List<String> buildTimesInRange(String startTime, String endTime) {
+    static List<String> buildTimesInRange(String startTime, String endTime) {
         List<String> times = new ArrayList<>();
         if (startTime == null || endTime == null) return times;
         int s = toMinutes(startTime);
@@ -311,7 +311,7 @@ public class CounselorWaitlistActivity extends AppCompatActivity {
         return times;
     }
 
-    private static int toMinutes(String hhmm) {
+    static int toMinutes(String hhmm) {
         String[] parts = hhmm.split(":");
         return Integer.parseInt(parts[0]) * 60 + Integer.parseInt(parts[1]);
     }

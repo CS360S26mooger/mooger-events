@@ -16,13 +16,49 @@ import android.widget.Toast;
 /**
  * Branded in-app notification that overlays the current Activity window.
  * Uses DecorView injection instead of Toast.setView() (deprecated API 30+).
+ *
+ * <p>Cross-screen messages: call {@link #scheduleForNextActivity} before navigating away,
+ * then call {@link #consumePending} in the destination activity's {@code onResume}.
+ * This survives the activity transition because the message is held in a static field
+ * until the next activity is ready to display it.</p>
  */
 public final class AppToast {
 
     public static final int LENGTH_SHORT = Toast.LENGTH_SHORT;
     public static final int LENGTH_LONG = Toast.LENGTH_LONG;
 
+    private static volatile String pendingMessage;
+    private static volatile int pendingDuration;
+
     private AppToast() {}
+
+    /**
+     * Queues a message to be shown by the next activity that calls
+     * {@link #consumePending(Context)}. Use this instead of {@link #show} when the
+     * current activity is about to finish so the toast survives the screen transition.
+     */
+    public static void scheduleForNextActivity(CharSequence message, int duration) {
+        pendingMessage = message.toString();
+        pendingDuration = duration;
+    }
+
+    public static void scheduleForNextActivity(Context context, int messageRes, int duration) {
+        scheduleForNextActivity(context.getString(messageRes), duration);
+    }
+
+    /**
+     * Shows and clears any pending toast queued by {@link #scheduleForNextActivity}.
+     * Call this from {@code onResume} of every activity that is a navigation target.
+     */
+    public static void consumePending(Context context) {
+        String msg = pendingMessage;
+        int dur = pendingDuration;
+        if (msg != null) {
+            pendingMessage = null;
+            pendingDuration = 0;
+            show(context, msg, dur);
+        }
+    }
 
     public static void show(Context context, CharSequence message, int duration) {
         Activity activity = resolveActivity(context);
@@ -43,7 +79,7 @@ public final class AppToast {
         view.setAlpha(0f);
         view.animate().alpha(1f).setDuration(220).start();
 
-        int displayMs = (duration == Toast.LENGTH_LONG) ? 3500 : 2000;
+        int displayMs = (duration == Toast.LENGTH_LONG) ? 5000 : 2000;
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             if (view.getParent() != null) {
                 view.animate().alpha(0f).setDuration(220)

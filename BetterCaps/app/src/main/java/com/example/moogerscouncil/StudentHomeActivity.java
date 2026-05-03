@@ -872,6 +872,7 @@ public class StudentHomeActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        AppToast.consumePending(this);
         // Skip the very first resume — onCreate already loaded the data.
         // On subsequent resumes (returning from BookingActivity etc.) refresh.
         if (firstResume) {

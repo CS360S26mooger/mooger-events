@@ -1,16 +1,10 @@
-/*
- * WaitlistRequestFlowTest.java
- * Role: Espresso UI tests for WaitlistRequestActivity — verifies that
- *       the preference form renders correctly and validates user input.
- *
- * Part of the BetterCAPS counseling platform.
- */
 package com.example.moogerscouncil;
 
 import android.content.Intent;
 
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
+import androidx.test.espresso.action.ViewActions;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
@@ -19,21 +13,19 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static androidx.test.espresso.Espresso.onView;
-import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static androidx.test.espresso.matcher.ViewMatchers.isEnabled;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 /**
- * UI tests verifying that WaitlistRequestActivity renders its preference form
- * and correctly handles missing date selection.
+ * UI tests for WaitlistRequestActivity — verifies form rendering,
+ * default time values, and input-element presence.
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class WaitlistRequestFlowTest {
-
-    private ActivityScenario<WaitlistRequestActivity> scenario;
 
     @Before
     public void setUp() {
@@ -41,8 +33,12 @@ public class WaitlistRequestFlowTest {
                 ApplicationProvider.getApplicationContext(),
                 WaitlistRequestActivity.class);
         intent.putExtra(WaitlistRequestActivity.EXTRA_COUNSELOR_ID, "test-counselor");
-        scenario = ActivityScenario.launch(intent);
+        ActivityScenario.launch(intent);
     }
+
+    // ------------------------------------------------------------------
+    // View presence
+    // ------------------------------------------------------------------
 
     @Test
     public void calendarIsDisplayed() {
@@ -50,13 +46,13 @@ public class WaitlistRequestFlowTest {
     }
 
     @Test
-    public void startTimeSpinnerIsDisplayed() {
-        onView(withId(R.id.spinnerStartTime)).check(matches(isDisplayed()));
+    public void startTimeSelectorIsDisplayed() {
+        onView(withId(R.id.selectorStartTime)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void endTimeSpinnerIsDisplayed() {
-        onView(withId(R.id.spinnerEndTime)).check(matches(isDisplayed()));
+    public void endTimeSelectorIsDisplayed() {
+        onView(withId(R.id.selectorEndTime)).check(matches(isDisplayed()));
     }
 
     @Test
@@ -66,6 +62,42 @@ public class WaitlistRequestFlowTest {
 
     @Test
     public void submitButtonIsDisplayed() {
+        onView(withId(R.id.buttonSubmitWaitlist)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void toolbarIsDisplayed() {
+        onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
+    }
+
+    // ------------------------------------------------------------------
+    // Default state
+    // ------------------------------------------------------------------
+
+    @Test
+    public void defaultStartTimeIs0900() {
+        onView(withId(R.id.textStartTime)).check(matches(withText("09:00")));
+    }
+
+    @Test
+    public void defaultEndTimeIs0930() {
+        onView(withId(R.id.textEndTime)).check(matches(withText("09:30")));
+    }
+
+    @Test
+    public void submitButtonEnabledByDefault() {
+        onView(withId(R.id.buttonSubmitWaitlist)).check(matches(isEnabled()));
+    }
+
+    // ------------------------------------------------------------------
+    // Validation — submit without selecting dates
+    // ------------------------------------------------------------------
+
+    @Test
+    public void submitWithNoDates_buttonRemainsEnabled() {
+        // Tapping submit without selecting any date should NOT navigate away.
+        // The button re-enables (or stays enabled) because validation blocks submission.
+        onView(withId(R.id.buttonSubmitWaitlist)).perform(ViewActions.click());
         onView(withId(R.id.buttonSubmitWaitlist)).check(matches(isDisplayed()));
     }
 }

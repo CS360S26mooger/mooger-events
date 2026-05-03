@@ -1,11 +1,3 @@
-/*
- * OnLeaveFlowTest.java
- * Role: Espresso UI tests for the counselor on-leave flow (US-19).
- *       Verifies the toggle, message/referral fields, directory badge,
- *       and profile on-leave card display.
- *
- * Part of the BetterCAPS counseling platform.
- */
 package com.example.moogerscouncil;
 
 import android.content.Intent;
@@ -17,8 +9,10 @@ import androidx.test.filters.LargeTest;
 
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -32,18 +26,26 @@ import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.Matchers.not;
 
-/**
- * Espresso instrumentation tests for the counselor on-leave flow (US-19).
- *
- * <p>Tests cover the profile edit screen toggle behaviour and the student-facing
- * directory badge and profile card display.</p>
- */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class OnLeaveFlowTest {
 
+    @Before
+    public void setUp() throws Exception {
+        Counselor c = new Counselor();
+        c.setId("test_on_leave_counselor");
+        c.setUid("test_on_leave_counselor");
+        c.setName("Dr. OnLeave");
+        c.setOnLeave(true);
+
+        Tasks.await(FirebaseFirestore.getInstance().collection("counselors")
+                .document("test_on_leave_counselor").set(c), 10, TimeUnit.SECONDS);
+    }
+
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
+        Tasks.await(FirebaseFirestore.getInstance().collection("counselors")
+                .document("test_on_leave_counselor").delete(), 10, TimeUnit.SECONDS);
         FirebaseAuth.getInstance().signOut();
     }
 
@@ -57,112 +59,58 @@ public class OnLeaveFlowTest {
                 .signInWithEmailAndPassword("1@lums.edu.pk", "123456"), 10, TimeUnit.SECONDS);
     }
 
-    /**
-     * Builds a launch intent for {@link CounselorProfileEditActivity}.
-     */
     private Intent editProfileIntent() {
         return new Intent(ApplicationProvider.getApplicationContext(),
                 CounselorProfileEditActivity.class);
     }
 
-    /**
-     * Verifies that the on-leave SwitchMaterial is visible in
-     * {@link CounselorProfileEditActivity}.
-     */
     @Test
     public void testOnLeaveToggleIsDisplayed() throws Exception {
         signInCounselor();
-        try (ActivityScenario<CounselorProfileEditActivity> scenario =
-                     ActivityScenario.launch(editProfileIntent())) {
-
-            onView(withId(R.id.switchOnLeave))
-                    .check(matches(isDisplayed()));
+        try (ActivityScenario<CounselorProfileEditActivity> scenario = ActivityScenario.launch(editProfileIntent())) {
+            onView(withId(R.id.switchOnLeave)).check(matches(isDisplayed()));
         }
     }
 
-    /**
-     * Verifies that toggling the on-leave switch on reveals the leave message
-     * TextInputLayout (which is initially gone).
-     */
     @Test
     public void testToggleShowsMessageField() throws Exception {
         signInCounselor();
-        try (ActivityScenario<CounselorProfileEditActivity> scenario =
-                     ActivityScenario.launch(editProfileIntent())) {
-
-            // Initially hidden
-            onView(withId(R.id.layoutLeaveMessage))
-                    .check(matches(not(isDisplayed())));
-
-            // Toggle on
+        try (ActivityScenario<CounselorProfileEditActivity> scenario = ActivityScenario.launch(editProfileIntent())) {
+            onView(withId(R.id.layoutLeaveMessage)).check(matches(not(isDisplayed())));
             onView(withId(R.id.switchOnLeave)).perform(click());
-
-            // Now visible
-            onView(withId(R.id.layoutLeaveMessage))
-                    .check(matches(isDisplayed()));
+            onView(withId(R.id.layoutLeaveMessage)).check(matches(isDisplayed()));
         }
     }
 
-    /**
-     * Verifies that toggling the on-leave switch on reveals the referral counselor
-     * dropdown (which is initially gone).
-     */
     @Test
     public void testToggleShowsReferralDropdown() throws Exception {
         signInCounselor();
-        try (ActivityScenario<CounselorProfileEditActivity> scenario =
-                     ActivityScenario.launch(editProfileIntent())) {
-
-            // Initially hidden
-            onView(withId(R.id.layoutReferralCounselor))
-                    .check(matches(not(isDisplayed())));
-
-            // Toggle on
+        try (ActivityScenario<CounselorProfileEditActivity> scenario = ActivityScenario.launch(editProfileIntent())) {
+            onView(withId(R.id.layoutReferralCounselor)).check(matches(not(isDisplayed())));
             onView(withId(R.id.switchOnLeave)).perform(click());
-
-            // Now visible
-            onView(withId(R.id.layoutReferralCounselor))
-                    .check(matches(isDisplayed()));
+            onView(withId(R.id.layoutReferralCounselor)).check(matches(isDisplayed()));
         }
     }
 
-    /**
-     * Verifies that the counselor directory shows the "Currently Away" badge
-     * for counselors with onLeave == true.
-     * Note: requires a test counselor document with onLeave=true in Firestore.
-     */
     @Test
     public void testOnLeaveCounselorShowsBadgeInDirectory() throws Exception {
         signInStudent();
-        Intent intent = new Intent(ApplicationProvider.getApplicationContext(),
-                CounselorListActivity.class);
-        try (ActivityScenario<CounselorListActivity> scenario =
-                     ActivityScenario.launch(intent)) {
-
-            // The badge text is "Currently Away" for on-leave counselors
-            onView(withText(R.string.currently_away))
-                    .check(matches(isDisplayed()));
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), CounselorListActivity.class);
+        try (ActivityScenario<CounselorListActivity> scenario = ActivityScenario.launch(intent)) {
+            Thread.sleep(2000); // Give firestore time to load list
+            onView(withText(R.string.currently_away)).check(matches(isDisplayed()));
         }
     }
 
-    /**
-     * Verifies that launching {@link CounselorProfileActivity} for an on-leave counselor
-     * shows the on-leave card.
-     * Note: requires a COUNSELOR_ID extra pointing to a counselor with onLeave=true.
-     */
     @Test
     public void testOnLeaveCounselorProfileShowsLeaveCard() throws Exception {
         signInStudent();
-        // Use a known test counselor ID with onLeave=true in Firestore
-        Intent intent = new Intent(ApplicationProvider.getApplicationContext(),
-                CounselorProfileActivity.class);
+        Intent intent = new Intent(ApplicationProvider.getApplicationContext(), CounselorProfileActivity.class);
         intent.putExtra("COUNSELOR_ID", "test_on_leave_counselor");
 
-        try (ActivityScenario<CounselorProfileActivity> scenario =
-                     ActivityScenario.launch(intent)) {
-
-            onView(withId(R.id.cardOnLeave))
-                    .check(matches(isDisplayed()));
+        try (ActivityScenario<CounselorProfileActivity> scenario = ActivityScenario.launch(intent)) {
+            Thread.sleep(1000);
+            onView(withId(R.id.cardOnLeave)).check(matches(isDisplayed()));
         }
     }
 }

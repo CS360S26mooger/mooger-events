@@ -9,6 +9,7 @@ import androidx.test.filters.LargeTest;
 
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.junit.After;
 import org.junit.Before;
@@ -22,20 +23,28 @@ import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 
-/** Espresso tests for waitlist entry points. */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class WaitlistFlowTest {
 
     @Before
     public void setUp() throws Exception {
-        // Sign in with student credentials to avoid redirects to LoginActivity
         Tasks.await(FirebaseAuth.getInstance()
                 .signInWithEmailAndPassword("1@lums.edu.pk", "123456"), 10, TimeUnit.SECONDS);
+
+        Counselor c = new Counselor();
+        c.setId("test_counselor_id");
+        c.setUid("test_counselor_id");
+        c.setName("Dr. Test");
+
+        Tasks.await(FirebaseFirestore.getInstance().collection("counselors")
+                .document("test_counselor_id").set(c), 10, TimeUnit.SECONDS);
     }
 
     @After
-    public void tearDown() {
+    public void tearDown() throws Exception {
+        Tasks.await(FirebaseFirestore.getInstance().collection("counselors")
+                .document("test_counselor_id").delete(), 10, TimeUnit.SECONDS);
         FirebaseAuth.getInstance().signOut();
     }
 

@@ -39,6 +39,7 @@ public class CustomCalendarView extends LinearLayout {
 
     private Calendar displayMonth;
     private Set<String> highlightedDates = new HashSet<>();
+    private Set<String> selectedDates    = new HashSet<>(); // multi-select support
     private String selectedDate;
     private String todayStr;
     private long minDateMillis = 0;
@@ -180,11 +181,11 @@ public class CustomCalendarView extends LinearLayout {
         dayCal.set(Calendar.DAY_OF_MONTH, day);
         String dateStr = toDateStr(dayCal);
 
-        boolean isToday    = dateStr.equals(todayStr);
-        boolean isHighlight = highlightedDates.contains(dateStr);
-        boolean isSelected  = dateStr.equals(selectedDate);
-        boolean isPast      = dateStr.compareTo(todayStr) < 0;
-        boolean isDisabled  = minDateMillis > 0 && isPast;
+        boolean isToday       = dateStr.equals(todayStr);
+        boolean isHighlight   = highlightedDates.contains(dateStr);
+        boolean isSelected    = dateStr.equals(selectedDate) || selectedDates.contains(dateStr);
+        boolean isPast        = dateStr.compareTo(todayStr) < 0;
+        boolean isDisabled    = minDateMillis > 0 && isPast;
 
         // Fixed 36×36 dp inner circle so it stays round on all screen sizes
         TextView dayView = new TextView(getContext());
@@ -261,6 +262,12 @@ public class CustomCalendarView extends LinearLayout {
     /** Marks these dates with a hollow pink ring decoration. */
     public void setHighlightedDates(Set<String> dates) {
         highlightedDates = dates != null ? dates : new HashSet<>();
+        rebuildGrid();
+    }
+
+    /** Fills these dates with the selection colour (multi-select support). */
+    public void setSelectedDates(Set<String> dates) {
+        selectedDates = dates != null ? dates : new HashSet<>();
         rebuildGrid();
     }
 

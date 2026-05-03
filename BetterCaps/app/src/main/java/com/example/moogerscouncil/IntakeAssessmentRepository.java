@@ -1,19 +1,26 @@
 package com.example.moogerscouncil;
 
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /** Repository for Firestore intake assessment operations. */
 public class IntakeAssessmentRepository {
 
     private final CollectionReference intakeCollection;
+    private final CollectionReference recCountsCollection;
 
     /** Initialises a repository for the intakeAssessments collection. */
     public IntakeAssessmentRepository() {
-        intakeCollection = FirebaseFirestore.getInstance().collection("intakeAssessments");
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        intakeCollection = db.collection("intakeAssessments");
+        recCountsCollection = db.collection("recommendationCounts");
     }
 
     public interface OnAssessmentSavedCallback {
@@ -129,5 +136,40 @@ public class IntakeAssessmentRepository {
         if (item.getCreatedAt() == null) return false;
         if (latest.getCreatedAt() == null) return true;
         return item.getCreatedAt().compareTo(latest.getCreatedAt()) > 0;
+    }
+
+    // --- Recommendation counter ---
+
+    public interface OnRecCountsLoadedCallback {
+        void onSuccess(Map<String, Integer> counts);
+        void onFailure(Exception e);
+    }
+
+    /**
+     * Fetches global recommendation counts for all counselors.
+     * Each document in recommendationCounts/{counselorId} has a "count" field.
+     */
+    public void getRecommendationCounts(OnRecCountsLoadedCallback callback) {
+        recCountsCollection.get()
+                .addOnSuccessListener(snapshot -> {
+                    Map<String, Integer> counts = new HashMap<>();
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
+                        Long val = doc.getLong("count");
+                        counts.put(doc.getId(), val != null ? val.intValue() : 0);
+                    }
+                    callback.onSuccess(counts);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
+     * Atomically increments the recommendation count for a counselor.
+     * Creates the document if it doesn't exist yet.
+     */
+    public void incrementRecommendationCount(String counselorId) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("count", FieldValue.increment(1));
+        recCountsCollection.document(counselorId)
+                .set(data, SetOptions.merge());
     }
 }

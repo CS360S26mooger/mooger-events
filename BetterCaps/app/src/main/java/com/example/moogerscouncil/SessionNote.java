@@ -17,6 +17,11 @@ public class SessionNote {
     private boolean privateToCounselor;
     private Timestamp createdAt;
     private Timestamp updatedAt;
+    /** Date of the appointment this note belongs to (yyyy-MM-dd). Stored at creation so the
+     *  history list shows session date rather than note-save date. */
+    private String appointmentDate;
+    /** Time of the appointment this note belongs to (HH:mm). */
+    private String appointmentTime;
 
     /** Required empty constructor for Firestore. */
     public SessionNote() {}
@@ -63,4 +68,10 @@ public class SessionNote {
     }
     public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
     public void setUpdatedAt(Timestamp updatedAt) { this.updatedAt = updatedAt; }
+
+    public String getAppointmentDate() { return appointmentDate; }
+    public void setAppointmentDate(String appointmentDate) { this.appointmentDate = appointmentDate; }
+
+    public String getAppointmentTime() { return appointmentTime; }
+    public void setAppointmentTime(String appointmentTime) { this.appointmentTime = appointmentTime; }
 }

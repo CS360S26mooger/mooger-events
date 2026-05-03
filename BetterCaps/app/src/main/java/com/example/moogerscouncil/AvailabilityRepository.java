@@ -2,6 +2,7 @@ package com.example.moogerscouncil;
 
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -251,6 +252,59 @@ public class AvailabilityRepository {
                     slot.setAvailable(true);
                     callback.onSuccess(slot);
                 })
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
+     * Creates multiple slots for one date using a single Firestore WriteBatch.
+     * Used by {@link GenerateSlotsActivity} for bulk slot generation.
+     *
+     * @param counselorId Firebase Auth UID of the counselor.
+     * @param date        Date in "yyyy-MM-dd" format.
+     * @param times       List of times in "HH:mm" format.
+     * @param callback    Success/failure callback.
+     */
+    public void addSlotsBatch(String counselorId, String date, List<String> times,
+                               OnSlotActionCallback callback) {
+        WriteBatch batch = db.batch();
+        CollectionReference col = slotsFor(counselorId);
+        for (String time : times) {
+            Map<String, Object> data = new HashMap<>();
+            data.put("counselorId", counselorId);
+            data.put("date", date);
+            data.put("time", time);
+            data.put("available", true);
+            batch.set(col.document(), data);
+        }
+        batch.commit()
+                .addOnSuccessListener(unused -> callback.onSuccess())
+                .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
+     * Creates slots for multiple dates in a single Firestore WriteBatch.
+     * Used by {@link GenerateSlotsActivity} for multi-day bulk generation.
+     *
+     * @param counselorId  Firebase Auth UID of the counselor.
+     * @param slotsPerDate Map of "yyyy-MM-dd" date → list of "HH:mm" times.
+     * @param callback     Success/failure callback.
+     */
+    public void addSlotsBatchMultiDay(String counselorId, Map<String, List<String>> slotsPerDate,
+                                      OnSlotActionCallback callback) {
+        WriteBatch batch = db.batch();
+        CollectionReference col = slotsFor(counselorId);
+        for (Map.Entry<String, List<String>> entry : slotsPerDate.entrySet()) {
+            for (String time : entry.getValue()) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("counselorId", counselorId);
+                data.put("date", entry.getKey());
+                data.put("time", time);
+                data.put("available", true);
+                batch.set(col.document(), data);
+            }
+        }
+        batch.commit()
+                .addOnSuccessListener(unused -> callback.onSuccess())
                 .addOnFailureListener(callback::onFailure);
     }
 

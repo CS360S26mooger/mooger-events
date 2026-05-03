@@ -23,10 +23,10 @@
     <string name="error_email_domain">Must be a @lums.edu.pk email address</string>
     <string name="error_password_length">Password must be at least 6 characters</string>
     <string name="error_password_mismatch">Passwords do not match</string>
-    <string name="error_registration_failed">Registration failed. Please try again.</string>
-    <string name="error_firestore_write">Account created but profile save failed. Please log in again.</string>
-    <string name="error_fetching_role">Unable to determine account type. Please try again.</string>
-    <string name="error_login_failed">Login failed. Please check your credentials.</string>
+    <string name="error_registration_failed">Registration failed, please try again</string>
+    <string name="error_firestore_write">Account created but profile save failed, please log in again</string>
+    <string name="error_fetching_role">Unable to determine account type, please try again</string>
+    <string name="error_login_failed">Login failed, please check your credentials</string>
 
     <!-- Privacy Policy -->
     <string name="title_privacy_policy">Privacy Policy</string>
@@ -47,12 +47,12 @@
     <string name="filter_gender">Gender</string>
     <string name="filter_all_languages">All Languages</string>
     <string name="filter_all_genders">All Genders</string>
-    <string name="no_counselors_match">No counselors match your current filters.</string>
+    <string name="no_counselors_match">No counselors match your current filters</string>
     <string name="currently_unavailable">Currently Unavailable</string>
     <string name="view_slots">View Slots</string>
     <string name="view_profile">View Profile</string>
-    <string name="error_loading_counselors">Unable to load counselors. Please try again.</string>
-    <string name="error_loading_profile">Unable to load counselor profile.</string>
+    <string name="error_loading_counselors">Unable to load counselors</string>
+    <string name="error_loading_profile">Unable to load counselor profile</string>
 
     <!-- Counselor Profile (US-23) -->
     <string name="title_counselor_profile">Counselor Profile</string>
@@ -66,6 +66,8 @@
     <!-- Counselor Profile Edit (US-06) -->
     <string name="title_edit_profile">Edit Profile</string>
     <string name="edit_profile">Edit Profile</string>
+    <string name="hint_display_name">Display Name</string>
+    <string name="helper_display_name">How students will see your name</string>
     <string name="hint_bio">Bio</string>
     <string name="helper_bio">Tell students about your approach and experience</string>
     <string name="hint_language">Language</string>
@@ -75,18 +77,18 @@
     <string name="label_select_specializations">Specialization Areas</string>
     <string name="button_save_profile">Save Profile</string>
     <string name="success_profile_saved">Profile updated successfully</string>
-    <string name="error_saving_profile">Failed to save profile. Please try again.</string>
+    <string name="error_saving_profile">Failed to save profile, please try again</string>
 
     <!-- Booking Flow (US-01) -->
     <string name="title_booking">Book with %s</string>
     <string name="label_available_times">Available Times</string>
-    <string name="no_slots_for_date">No available slots for this date.</string>
+    <string name="no_slots_for_date">No available slots for this date</string>
     <string name="no_slots_available">No slots available right now</string>
-    <string name="no_slots_waitlist_message">No slots available right now. You can join this counselor\'s waitlist and we\'ll offer you the next available slot.</string>
-    <string name="booking_success">Appointment booked successfully!</string>
-    <string name="error_slot_taken">This slot was just booked by someone else. Please choose another.</string>
-    <string name="error_booking_failed">Unable to book appointment. Please try again.</string>
-    <string name="error_loading_slots">Unable to load available slots.</string>
+    <string name="no_slots_waitlist_message">No slots available right now — join the waitlist to be notified when one opens</string>
+    <string name="booking_success">Appointment booked</string>
+    <string name="error_slot_taken">This slot was just booked by someone else</string>
+    <string name="error_booking_failed">Unable to book appointment, please try again</string>
+    <string name="error_loading_slots">Unable to load available slots</string>
     <string name="confirm_booking_title">Confirm Your Appointment</string>
     <string name="label_counselor">Counselor:</string>
     <string name="label_date">Date:</string>
@@ -95,33 +97,33 @@
     <string name="button_cancel">Cancel</string>
 
     <!-- Intake Matching + Waitlist (Sprint 5) -->
-    <string name="quiz_saving_assessment">Saving your assessment...</string>
-    <string name="quiz_matching_counselor">Finding your best match...</string>
+    <string name="quiz_saving_assessment">Saving your assessment</string>
+    <string name="quiz_matching_counselor">Finding your best match</string>
     <string name="quiz_match_title">We found a counselor for you</string>
-    <string name="quiz_match_reason">Matched based on your concerns and preferred support type.</string>
-    <string name="quiz_match_summary">Based on your concern about "%1$s" and your preference for "%2$s", this counselor is a strong fit.</string>
-    <string name="quiz_browse_fallback">You can still browse every counselor and choose someone who feels right.</string>
-    <string name="assessment_error_save">Could not save your assessment. Please try again.</string>
+    <string name="quiz_match_reason">Matched based on your concerns and preferred support type</string>
+    <string name="quiz_match_summary">Based on your concern about "%1$s" and your preference for "%2$s", this counselor is a strong fit</string>
+    <string name="quiz_browse_fallback">You can still browse every counselor and choose someone who feels right</string>
+    <string name="assessment_error_save">Could not save your assessment, please try again</string>
     <string name="join_waitlist">Join Waitlist</string>
-    <string name="waitlist_joined">You have joined the waitlist.</string>
-    <string name="waitlist_already_joined">You are already on this counselor\'s waitlist.</string>
-    <string name="waitlist_error">Could not join waitlist. Please try again.</string>
+    <string name="waitlist_joined">You have joined the waitlist</string>
+    <string name="waitlist_already_joined">You are already on this counselor\'s waitlist</string>
+    <string name="waitlist_error">Could not join waitlist, please try again</string>
     <string name="waitlist_status_title">Your Waitlist</string>
     <string name="latest_match_title">Your Latest Match</string>
     <string name="latest_match_subtitle">Recommended counselor: %1$s</string>
-    <string name="latest_match_empty">Take the quiz to get a counselor recommendation.</string>
-    <string name="waitlist_status_subtitle">You are waiting for %1$d counselor(s).</string>
-    <string name="waitlist_status_empty">You are not on any counselor waitlists.</string>
+    <string name="latest_match_empty">Take the quiz to get a counselor recommendation</string>
+    <string name="waitlist_status_subtitle">You are waiting for %1$d counselor(s)</string>
+    <string name="waitlist_status_empty">You are not on any counselor waitlists</string>
     <string name="waitlist_reason_no_slots">No slots available</string>
     <string name="waitlist_reason_preferred_counselor">Preferred counselor</string>
     <string name="no_counselors_available">No counselors available</string>
-    <string name="error_login_required">Please log in to continue.</string>
+    <string name="error_login_required">Please log in to continue</string>
 
     <!-- Counselor Dashboard Tabs (US-05/US-10) -->
     <string name="tab_today">Today</string>
     <string name="tab_this_week">This Week</string>
     <string name="tab_this_month">This Month</string>
-    <string name="error_loading_appointments">Unable to load appointments.</string>
+    <string name="error_loading_appointments">Unable to load appointments</string>
     <string name="status_confirmed">Confirmed</string>
     <string name="status_completed">Completed</string>
     <string name="status_cancelled">Cancelled</string>
@@ -132,11 +134,11 @@
     <string name="title_manage_availability">Manage Availability</string>
     <string name="button_add_slot">Add New Slot</string>
     <string name="label_your_slots">Your Time Slots</string>
-    <string name="no_slots_added">No slots added yet.</string>
-    <string name="slot_added">Slot added successfully.</string>
-    <string name="slot_removed">Slot removed.</string>
-    <string name="error_adding_slot">Failed to add slot.</string>
-    <string name="error_removing_slot">Failed to remove slot.</string>
+    <string name="no_slots_added">No slots added yet</string>
+    <string name="slot_added">Slot added</string>
+    <string name="slot_removed">Slot removed</string>
+    <string name="error_adding_slot">Failed to add slot</string>
+    <string name="error_removing_slot">Failed to remove slot</string>
 
     <!-- On-Leave Status (US-19) -->
     <string name="label_on_leave_section">Leave Status</string>
@@ -158,13 +160,13 @@
     <string name="button_give_feedback">Give Feedback</string>
     <string name="button_dismiss">Dismiss</string>
     <string name="error_rating_required">Please select a rating</string>
-    <string name="feedback_submitted">Thank you for your feedback!</string>
-    <string name="error_feedback_submission">Unable to submit feedback. Please try again.</string>
-    <string name="no_pending_feedback">No completed sessions awaiting feedback.</string>
+    <string name="feedback_submitted">Thank you for your feedback</string>
+    <string name="error_feedback_submission">Unable to submit feedback, please try again</string>
+    <string name="no_pending_feedback">No completed sessions awaiting feedback</string>
 
     <!-- Emergency Button (US-20) -->
     <string name="emergency_title">Emergency Contacts</string>
-    <string name="emergency_message">If you or someone you know is in immediate danger, please contact one of the following services.</string>
+    <string name="emergency_message">If you or someone you know is in immediate danger, please contact one of the following services</string>
     <string name="call_crisis_line">Call Crisis Line</string>
     <string name="call_campus_security">Campus Emergency</string>
     <string name="crisis_line_number">0311-7786264</string>
@@ -179,14 +181,14 @@
     <string name="add_session_note">Add Session Note</string>
     <string name="trigger_crisis_escalation">Trigger Crisis Escalation</string>
     <string name="session_history_title">Session History</string>
-    <string name="note_saved">Session note saved.</string>
-    <string name="note_save_error">Could not save note.</string>
-    <string name="note_text_required">Please enter a note before saving.</string>
-    <string name="session_note_hint">Write private session notes...</string>
+    <string name="note_saved">Session note saved</string>
+    <string name="note_save_error">Could not save note</string>
+    <string name="note_text_required">Please enter a note before saving</string>
+    <string name="session_note_hint">Write private session notes</string>
     <string name="save_note">Save Note</string>
     <string name="crisis_escalation_title">Crisis Escalation</string>
-    <string name="crisis_escalation_saved">Crisis escalation recorded.</string>
-    <string name="crisis_escalation_error">Could not record crisis escalation.</string>
+    <string name="crisis_escalation_saved">Crisis escalation recorded</string>
+    <string name="crisis_escalation_error">Could not record crisis escalation</string>
     <string name="save_escalation">Save Escalation</string>
     <string name="crisis_severity_label">Severity</string>
     <string name="crisis_severity_moderate">Moderate</string>
@@ -197,13 +199,13 @@
     <string name="crisis_action_caps">Refer CAPS</string>
     <string name="crisis_action_safety_plan">Safety Plan</string>
     <string name="crisis_action_other">Other</string>
-    <string name="crisis_notes_hint">Document action taken and next steps...</string>
+    <string name="crisis_notes_hint">Document action taken and next steps</string>
     <string name="waitlist_count_title">Waitlist</string>
     <string name="students_waiting">Students waiting</string>
-    <string name="no_show_followup_created">No-show marked. Follow-up required.</string>
+    <string name="no_show_followup_created">No-show marked, follow-up required</string>
     <string name="no_show_followup_status">Follow-up: %1$s</string>
     <string name="no_show_followup_status_placeholder">Follow-up: PENDING</string>
-    <string name="no_intake_found">No intake assessment found for this student.</string>
+    <string name="no_intake_found">No intake assessment found for this student</string>
     <string name="unknown_student">Unknown Student</string>
     <string name="profile_preferred_name">Preferred name: %1$s</string>
     <string name="profile_pronouns">Pronouns: %1$s</string>
@@ -217,28 +219,28 @@
     <string name="intake_duration_placeholder">Duration: -</string>
     <string name="intake_support_type_placeholder">Support type: -</string>
     <string name="intake_urgency_placeholder">Urgency: -</string>
-    <string name="no_session_history">No session history found.</string>
+    <string name="no_session_history">No session history found</string>
     <string name="history_counselor_id">Counselor ID: %1$s</string>
     <string name="history_counselor_placeholder">Counselor ID: -</string>
     <string name="history_date_time_placeholder">Date and time</string>
-    <string name="action_video_placeholder">Video call is not available in this sprint.</string>
-    <string name="error_update_status">Failed to update status.</string>
+    <string name="action_video_placeholder">Video call is not available in this sprint</string>
+    <string name="error_update_status">Failed to update status</string>
     <string name="returning_student">Returning</string>
     <string name="session_notes_title">Session Notes</string>
-    <string name="no_session_notes">No notes saved for this appointment yet.</string>
+    <string name="no_session_notes">No notes saved for this appointment yet</string>
     <string name="availability_settings_title">Availability Settings</string>
     <string name="buffer_time_title">Buffer time between sessions</string>
     <string name="buffer_0">No buffer</string>
     <string name="buffer_10">10 minutes</string>
     <string name="buffer_15">15 minutes</string>
     <string name="buffer_30">30 minutes</string>
-    <string name="slot_conflicts_buffer">This slot is too close to another session.</string>
-    <string name="settings_saved">Settings saved.</string>
-    <string name="settings_save_error">Could not save settings.</string>
+    <string name="slot_conflicts_buffer">This slot is too close to another session</string>
+    <string name="settings_saved">Settings saved</string>
+    <string name="settings_save_error">Could not save settings</string>
     <string name="calendar_export_title">Calendar Export</string>
     <string name="export_to_calendar">Export to Calendar</string>
-    <string name="calendar_export_unavailable">No calendar app found.</string>
-    <string name="waitlist_slot_offered">A slot has opened for you.</string>
+    <string name="calendar_export_unavailable">No calendar app found</string>
+    <string name="waitlist_slot_offered">A slot has opened for you</string>
     <string name="accept_slot">Accept Slot</string>
     <string name="decline_slot">Decline</string>
     <string name="enable_calendar_export">Enable device calendar export</string>
@@ -248,7 +250,7 @@
     <string name="provider_google">Google Calendar</string>
     <string name="provider_outlook">Outlook Calendar</string>
     <string name="button_save_settings">Save Settings</string>
-    <string name="no_appointments_to_export">No upcoming confirmed appointments to export.</string>
+    <string name="no_appointments_to_export">No upcoming confirmed appointments to export</string>
 
     <!-- Sprint 8: Waitlist Hardening -->
     <string name="waitlist_request_title">Join Waitlist</string>
@@ -257,23 +259,23 @@
     <string name="waitlist_end_time_label">Preferred end time</string>
     <string name="waitlist_note_hint">Optional note to counselor (e.g. topics to discuss)</string>
     <string name="waitlist_submit_button">Join Waitlist</string>
-    <string name="waitlist_no_dates_selected">Please select at least one available date.</string>
-    <string name="waitlist_invalid_time_range">End time must be after start time.</string>
-    <string name="waitlist_slots_available">A slot already matches your preferences. Please book directly.</string>
+    <string name="waitlist_no_dates_selected">Please select at least one available date</string>
+    <string name="waitlist_invalid_time_range">End time must be after start time</string>
+    <string name="waitlist_slots_available">A slot already matches your preferences — please book directly</string>
     <string name="dialog_slot_available_title">A slot is available!</string>
     <string name="dialog_slot_available_body">There\'s an open slot on %1$s at %2$s that fits your preferences.\nWould you like to book it now?</string>
     <string name="dialog_slot_book_now">Book Now</string>
     <string name="dialog_slot_join_waitlist_instead">Join Waitlist Instead</string>
-    <string name="dialog_slot_booking_success">Appointment booked successfully!</string>
-    <string name="dialog_slot_taken_fallback">That slot was just taken. Adding you to the waitlist instead.</string>
-    <string name="waitlist_join_success">You have been added to the waitlist.</string>
-    <string name="waitlist_already_on_list">You are already on this counselor\'s waitlist.</string>
-    <string name="waitlist_join_error">Could not join waitlist. Please try again.</string>
-    <string name="waitlist_load_error">Could not load waitlist. Please try again.</string>
+    <string name="dialog_slot_booking_success">Appointment booked</string>
+    <string name="dialog_slot_taken_fallback">That slot was just taken — adding you to the waitlist instead</string>
+    <string name="waitlist_join_success">You have been added to the waitlist</string>
+    <string name="waitlist_already_on_list">You are already on this counselor\'s waitlist</string>
+    <string name="waitlist_join_error">Could not join waitlist, please try again</string>
+    <string name="waitlist_load_error">Could not load waitlist, please try again</string>
     <string name="waitlist_checking_slots">Checking slot availability…</string>
 
     <string name="student_waitlist_title">My Waitlist Requests</string>
-    <string name="student_waitlist_empty">You have no waitlist requests.</string>
+    <string name="student_waitlist_empty">You have no waitlist requests</string>
     <string name="waitlist_status_active">Active</string>
     <string name="waitlist_status_resolved">Resolved</string>
     <string name="waitlist_status_cancelled">Cancelled</string>
@@ -282,14 +284,52 @@
     <string name="waitlist_requested_label">Requested: %1$s</string>
     <string name="waitlist_cancel_button">Cancel Request</string>
     <string name="waitlist_cancel_confirm">Are you sure you want to cancel this waitlist request?</string>
-    <string name="waitlist_cancel_success">Waitlist request cancelled.</string>
-    <string name="waitlist_cancel_error">Could not cancel request. Please try again.</string>
+    <string name="waitlist_cancel_success">Waitlist request cancelled</string>
+    <string name="waitlist_cancel_error">Could not cancel request, please try again</string>
 
     <string name="counselor_waitlist_title">Waitlist Queue</string>
-    <string name="counselor_waitlist_empty">No students are on your waitlist.</string>
+    <string name="counselor_waitlist_empty">No students are on your waitlist</string>
     <string name="counselor_waitlist_create_slot">Create Slot for Student</string>
     <string name="counselor_waitlist_student_label">Student: %1$s</string>
 
-    <string name="waitlist_auto_resolved">A waitlist request was auto-booked for this slot.</string>
-    <string name="waitlist_auto_resolve_error">Slot created but auto-booking failed. Check waitlist queue.</string>
+    <string name="waitlist_auto_resolved">A waitlist request was auto-booked for this slot</string>
+    <string name="waitlist_auto_resolve_error">Slot created but auto-booking failed — check waitlist queue</string>
+
+    <!-- Sprint 9: Notes upsert -->
+    <string name="note_updated">Session note updated</string>
+    <string name="note_deleted">Session note deleted</string>
+    <string name="note_load_error">Could not load existing note</string>
+    <string name="note_empty_error">Note cannot be empty</string>
+    <string name="note_text_hint">Write your session notes…</string>
+
+    <!-- Sprint 9: Logout confirmation -->
+    <string name="logout_confirm_title">Log Out</string>
+    <string name="logout_confirm_message">Are you sure you want to log out?</string>
+    <string name="logout_confirm_yes">Yes, log out</string>
+
+    <!-- Sprint 9: Stats rename -->
+    <string name="stat_total_bookings">Total Bookings</string>
+
+    <!-- Duplicate day booking guard -->
+    <string name="already_booked_title">Already Booked</string>
+    <string name="already_booked_body">You already have an appointment on this day — please choose a different date</string>
+
+    <!-- Past sessions -->
+    <string name="past_sessions">Past Sessions</string>
+    <string name="upcoming_sessions">Upcoming Sessions</string>
+    <string name="no_past_sessions">No past sessions found</string>
+    <string name="noshow_too_early_title">Too Early</string>
+    <string name="noshow_too_early_body">A student can only be marked as a no-show 10 minutes after the session start time</string>
+
+    <!-- Sprint 10: Session note sections -->
+    <string name="note_section_concern">Presenting Concern</string>
+    <string name="note_section_summary">Session Summary</string>
+    <string name="note_section_interventions">Interventions Used</string>
+    <string name="note_section_plan">Action Plan</string>
+    <string name="note_concern_hint">What brought them in today?</string>
+    <string name="note_summary_hint">What happened in this session?</string>
+    <string name="note_interventions_hint">Techniques and approaches used…</string>
+    <string name="note_plan_hint">Plan before the next session…</string>
+    <string name="note_history_title">Session Notes History</string>
+    <string name="no_notes_for_student">No session notes on record for this student</string>
 </resources>

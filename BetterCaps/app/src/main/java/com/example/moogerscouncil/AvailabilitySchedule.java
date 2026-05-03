@@ -59,6 +59,13 @@ public class AvailabilitySchedule {
                         .add(slot);
             }
         }
+        for (List<TimeSlot> dateSlots : schedule.slotsByDate.values()) {
+            dateSlots.sort((a, b) -> {
+                String ta = a.getTime() != null ? a.getTime() : "";
+                String tb = b.getTime() != null ? b.getTime() : "";
+                return ta.compareTo(tb);
+            });
+        }
         return schedule;
     }
 

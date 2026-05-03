@@ -14,7 +14,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:padding="16dp"
-        android:background="#FFFFFF">
+        android:background="#FFF5F7">
 
         <LinearLayout
             android:layout_width="0dp"
@@ -44,19 +44,19 @@
             android:id="@+id/buttonEditProfile"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_edit"
+            android:src="@drawable/ic_pen"
             android:contentDescription="@string/edit_profile"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="#8A8A9A"
             android:layout_marginEnd="4dp" />
 
         <ImageButton
             android:id="@+id/logoutBtn"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:src="@android:drawable/ic_menu_close_clear_cancel"
+            android:src="@drawable/ic_nav_logout"
+            android:contentDescription="@string/button_logout"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:tint="#8A8A9A" />
+            android:tint="#C96B8E" />
 
     </LinearLayout>
 
@@ -71,140 +71,158 @@
             android:orientation="vertical"
             android:paddingBottom="24dp">
 
-            <!-- Stats row -->
+            <!-- Stats row — inline horizontal cards, progressive pink -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="16dp">
+                android:paddingHorizontal="16dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="12dp"
+                android:clipToPadding="false">
 
-                <!-- Today's Sessions -->
+                <!-- Today's Sessions — lightest pink -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
+                    android:layout_height="84dp"
                     android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#FFFFFF">
+                    android:layout_marginEnd="6dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="3dp"
+                    app:cardBackgroundColor="#FFF0F5">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="14dp">
 
-                        <TextView
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_nav_calendar"
+                            android:tint="#C96B8E"
+                            android:layout_marginEnd="10dp" />
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="📅"
-                            android:textSize="20sp" />
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/todaySessionCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="22sp"
-                            android:textStyle="bold"
-                            android:textColor="#1A1A2E" />
+                            <TextView
+                                android:id="@+id/todaySessionCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="#1A1A2E" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Today's Sessions"
-                            android:textSize="11sp"
-                            android:textColor="#8A8A9A"
-                            android:gravity="center" />
-
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Today"
+                                android:textSize="11sp"
+                                android:textColor="#8A8A9A" />
+                        </LinearLayout>
                     </LinearLayout>
-
                 </androidx.cardview.widget.CardView>
 
-                <!-- Total Patients -->
+                <!-- Total Bookings — medium pink -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
+                    android:layout_height="84dp"
                     android:layout_weight="1"
-                    android:layout_marginHorizontal="4dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#FFFFFF">
+                    android:layout_marginHorizontal="3dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="3dp"
+                    app:cardBackgroundColor="#FFD6E7">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="14dp">
 
-                        <TextView
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_student"
+                            android:tint="#C96B8E"
+                            android:layout_marginEnd="10dp" />
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="👥"
-                            android:textSize="20sp" />
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/totalPatientsCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="22sp"
-                            android:textStyle="bold"
-                            android:textColor="#1A1A2E" />
+                            <TextView
+                                android:id="@+id/totalPatientsCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="#1A1A2E" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Total Patients"
-                            android:textSize="11sp"
-                            android:textColor="#8A8A9A"
-                            android:gravity="center" />
-
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/stat_total_bookings"
+                                android:textSize="11sp"
+                                android:textColor="#8A8A9A" />
+                        </LinearLayout>
                     </LinearLayout>
-
                 </androidx.cardview.widget.CardView>
 
-                <!-- This Week -->
+                <!-- This Week — deepest pink -->
                 <androidx.cardview.widget.CardView
                     android:layout_width="0dp"
-                    android:layout_height="100dp"
+                    android:layout_height="84dp"
                     android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp"
-                    app:cardBackgroundColor="#FFFFFF">
+                    android:layout_marginStart="6dp"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="3dp"
+                    app:cardBackgroundColor="#FFBFD2">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingHorizontal="14dp">
 
-                        <TextView
+                        <ImageView
+                            android:layout_width="28dp"
+                            android:layout_height="28dp"
+                            android:src="@drawable/ic_nav_history"
+                            android:tint="#C96B8E"
+                            android:layout_marginEnd="10dp" />
+
+                        <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="🕐"
-                            android:textSize="20sp" />
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/weekSessionCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textSize="22sp"
-                            android:textStyle="bold"
-                            android:textColor="#1A1A2E" />
+                            <TextView
+                                android:id="@+id/weekSessionCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="0"
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="#1A1A2E" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="This Week"
-                            android:textSize="11sp"
-                            android:textColor="#8A8A9A"
-                            android:gravity="center" />
-
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/tab_this_week"
+                                android:textSize="11sp"
+                                android:textColor="#8A8A9A" />
+                        </LinearLayout>
                     </LinearLayout>
-
                 </androidx.cardview.widget.CardView>
 
             </LinearLayout>
@@ -215,7 +233,7 @@
                 android:layout_height="74dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="12dp"
-                app:cardCornerRadius="16dp"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="2dp"
                 app:cardBackgroundColor="#FFFFFF">
 
@@ -260,42 +278,57 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonOpenAvailabilitySettings"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="10dp"
-                android:text="@string/availability_settings_title"
-                android:textAllCaps="false"
-                android:textColor="#C96B8E"
-                app:strokeColor="#C96B8E"
-                app:cornerRadius="12dp" />
+                android:layout_marginBottom="14dp">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/buttonExportToCalendar"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="14dp"
-                android:text="@string/export_to_calendar"
-                android:textAllCaps="false"
-                android:textColor="#3D5AF1"
-                app:strokeColor="#3D5AF1"
-                app:cornerRadius="12dp" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonPastSessions"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="52dp"
+                    android:layout_marginEnd="6dp"
+                    android:text="@string/past_sessions"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
+                    android:backgroundTint="#C96B8E"
+                    android:elevation="4dp"
+                    android:stateListAnimator="@null"
+                    app:cornerRadius="16dp" />
 
-            <!-- Add Availability button -->
-            <androidx.cardview.widget.CardView
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonExportToCalendar"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="52dp"
+                    android:layout_marginStart="6dp"
+                    android:text="@string/export_to_calendar"
+                    android:textAllCaps="false"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
+                    android:backgroundTint="#7B61FF"
+                    android:elevation="4dp"
+                    android:stateListAnimator="@null"
+                    app:cornerRadius="16dp" />
+
+            </LinearLayout>
+
+            <!-- Add Availability button — white floating card with pink-purple trace -->
+            <com.google.android.material.card.MaterialCardView
                 android:id="@+id/addSlotBanner"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="20dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="0dp"
-                app:cardBackgroundColor="#7B61FF">
+                app:cardCornerRadius="20dp"
+                app:cardElevation="5dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="#F0C8DC"
+                app:strokeWidth="1.5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -304,23 +337,17 @@
                     android:gravity="center"
                     android:padding="16dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="➕"
-                        android:textSize="18sp"
-                        android:layout_marginEnd="10dp" />
-
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:gravity="center">
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Add Availability Slot"
-                            android:textColor="#FFFFFF"
+                            android:textColor="#C96B8E"
                             android:textSize="15sp"
                             android:textStyle="bold" />
 
@@ -328,44 +355,72 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Tap to add a new time slot"
-                            android:textColor="#E0D9FF"
+                            android:textColor="#D4899F"
                             android:textSize="11sp" />
 
                     </LinearLayout>
 
                 </LinearLayout>
 
-            </androidx.cardview.widget.CardView>
+            </com.google.android.material.card.MaterialCardView>
 
-            <!-- Tab layout: Today / This Week / This Month -->
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tabLayout"
+            <!-- Section label for the tab layout -->
+            <TextView
+                android:id="@+id/textSectionLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="6dp"
+                android:text="@string/upcoming_sessions"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#C96B8E"
+                android:textAllCaps="true"
+                android:letterSpacing="0.08" />
+
+            <!-- Tab layout wrapped in a card for white bg + pastel pink trace + dividers -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="10dp"
-                app:tabMode="fixed"
-                app:tabGravity="fill"
-                app:tabTextColor="#8A8A9A"
-                app:tabSelectedTextColor="#3D5AF1"
-                app:tabIndicatorColor="#3D5AF1">
+                app:cardCornerRadius="14dp"
+                app:cardElevation="2dp"
+                app:cardBackgroundColor="#FFFFFF"
+                app:strokeColor="#F0C8DC"
+                app:strokeWidth="1.5dp">
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
+                <com.google.android.material.tabs.TabLayout
+                    android:id="@+id/tabLayout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/tab_today" />
+                    android:background="#FFFFFF"
+                    app:tabMode="fixed"
+                    app:tabGravity="fill"
+                    app:tabTextColor="#8A8A9A"
+                    app:tabSelectedTextColor="#C96B8E"
+                    app:tabIndicatorColor="#C96B8E"
+                    app:tabIndicatorHeight="0dp"
+                    app:tabRippleColor="#FFE8F5">
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/tab_this_week" />
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tab_today" />
 
-                <com.google.android.material.tabs.TabItem
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/tab_this_month" />
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tab_this_week" />
 
-            </com.google.android.material.tabs.TabLayout>
+                    <com.google.android.material.tabs.TabItem
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tab_this_month" />
+
+                </com.google.android.material.tabs.TabLayout>
+
+            </com.google.android.material.card.MaterialCardView>
 
             <!-- Progress bar -->
             <ProgressBar

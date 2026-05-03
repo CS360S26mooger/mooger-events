@@ -1,31 +1,43 @@
 package com.example.moogerscouncil;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
- * Counselor-facing student profile with latest intake and workflow actions.
+ * Counselor-facing student profile. Shows latest intake assessment and
+ * a full timestamped history of all session notes for this student.
  */
 public class StudentProfileActivity extends AppCompatActivity {
 
-    public static final String EXTRA_STUDENT_ID = "STUDENT_ID";
-    public static final String EXTRA_APPOINTMENT_ID = "APPOINTMENT_ID";
-    public static final String EXTRA_COUNSELOR_ID = "COUNSELOR_ID";
+    public static final String EXTRA_STUDENT_ID       = "STUDENT_ID";
+    public static final String EXTRA_APPOINTMENT_ID   = "APPOINTMENT_ID";
+    public static final String EXTRA_COUNSELOR_ID     = "COUNSELOR_ID";
+    public static final String EXTRA_APPOINTMENT_DATE = "APPOINTMENT_DATE";
+    public static final String EXTRA_APPOINTMENT_TIME = "APPOINTMENT_TIME";
 
     private String studentId;
     private String appointmentId;
     private String counselorId;
+    private String appointmentDate;
+    private String appointmentTime;
+
     private TextView textStudentName;
     private TextView textPreferredName;
     private TextView textPronouns;
@@ -34,18 +46,20 @@ public class StudentProfileActivity extends AppCompatActivity {
     private TextView textSupportType;
     private TextView textUrgency;
     private TextView textIntakeEmpty;
-    private TextView textSessionNotes;
+    private TextView textNotesEmpty;
     private ChipGroup chipIntakeTags;
-    private String selectedTemplateKey = NoteTemplate.GENERAL_SESSION;
+    private RecyclerView recyclerSessionNotes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_student_profile);
 
-        studentId = getIntent().getStringExtra(EXTRA_STUDENT_ID);
-        appointmentId = getIntent().getStringExtra(EXTRA_APPOINTMENT_ID);
-        counselorId = getIntent().getStringExtra(EXTRA_COUNSELOR_ID);
+        studentId       = getIntent().getStringExtra(EXTRA_STUDENT_ID);
+        appointmentId   = getIntent().getStringExtra(EXTRA_APPOINTMENT_ID);
+        counselorId     = getIntent().getStringExtra(EXTRA_COUNSELOR_ID);
+        appointmentDate = getIntent().getStringExtra(EXTRA_APPOINTMENT_DATE);
+        appointmentTime = getIntent().getStringExtra(EXTRA_APPOINTMENT_TIME);
 
         if (studentId == null) {
             AppToast.show(this, R.string.error_loading_profile, AppToast.LENGTH_SHORT);
@@ -54,23 +68,33 @@ public class StudentProfileActivity extends AppCompatActivity {
         }
 
         ((ImageButton) findViewById(R.id.buttonBack)).setOnClickListener(v -> finish());
-        textStudentName = findViewById(R.id.textStudentProfileName);
+
+        textStudentName   = findViewById(R.id.textStudentProfileName);
         textPreferredName = findViewById(R.id.textStudentPreferredName);
-        textPronouns = findViewById(R.id.textStudentPronouns);
+        textPronouns      = findViewById(R.id.textStudentPronouns);
         textPrimaryConcern = findViewById(R.id.textIntakePrimaryConcern);
-        textDuration = findViewById(R.id.textIntakeDuration);
-        textSupportType = findViewById(R.id.textIntakeSupportType);
-        textUrgency = findViewById(R.id.textIntakeUrgency);
-        textIntakeEmpty = findViewById(R.id.textIntakeEmpty);
-        textSessionNotes = findViewById(R.id.textSessionNotes);
-        chipIntakeTags = findViewById(R.id.chipIntakeTags);
+        textDuration      = findViewById(R.id.textIntakeDuration);
+        textSupportType   = findViewById(R.id.textIntakeSupportType);
+        textUrgency       = findViewById(R.id.textIntakeUrgency);
+        textIntakeEmpty   = findViewById(R.id.textIntakeEmpty);
+        textNotesEmpty    = findViewById(R.id.textNotesEmpty);
+        chipIntakeTags    = findViewById(R.id.chipIntakeTags);
+
+        recyclerSessionNotes = findViewById(R.id.recyclerSessionNotes);
+        recyclerSessionNotes.setLayoutManager(new LinearLayoutManager(this));
+        recyclerSessionNotes.setNestedScrollingEnabled(false);
 
         findViewById(R.id.buttonViewHistory).setOnClickListener(v -> {
             Intent intent = new Intent(this, SessionHistoryActivity.class);
             intent.putExtra(EXTRA_STUDENT_ID, studentId);
             startActivity(intent);
         });
-        findViewById(R.id.buttonAddSessionNote).setOnClickListener(v -> showNoteDialog());
+
+        findViewById(R.id.buttonAddSessionNote).setOnClickListener(v ->
+                startActivity(SessionNoteActivity.newIntent(
+                        this, appointmentId, counselorId, studentId,
+                        appointmentDate, appointmentTime)));
+
         findViewById(R.id.buttonTriggerCrisis).setOnClickListener(v ->
                 CrisisEscalationDialogFragment
                         .newInstance(appointmentId, counselorId, studentId)
@@ -78,6 +102,11 @@ public class StudentProfileActivity extends AppCompatActivity {
 
         loadStudent();
         loadLatestIntake();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         loadSessionNotes();
     }
 
@@ -92,7 +121,6 @@ public class StudentProfileActivity extends AppCompatActivity {
                         textPronouns.setText(getString(R.string.profile_pronouns,
                                 valueOrDash(student.getPronouns())));
                     }
-
                     @Override
                     public void onFailure(Exception e) {
                         textStudentName.setText(R.string.unknown_student);
@@ -116,15 +144,25 @@ public class StudentProfileActivity extends AppCompatActivity {
                                 valueOrDash(assessment.getUrgencyLevel())));
                         chipIntakeTags.removeAllViews();
                         if (assessment.getRecommendedSpecializations() != null) {
+                            ColorStateList tagBg = ColorStateList.valueOf(
+                                    Color.parseColor("#FFE8F5"));
+                            ColorStateList tagText = ColorStateList.valueOf(
+                                    Color.parseColor("#C96B8E"));
+                            ColorStateList tagStroke = ColorStateList.valueOf(
+                                    Color.parseColor("#F0C8DC"));
+                            float strokePx = getResources().getDisplayMetrics().density * 1.2f;
                             for (String tag : assessment.getRecommendedSpecializations()) {
                                 Chip chip = new Chip(StudentProfileActivity.this);
                                 chip.setText(tag);
                                 chip.setCheckable(false);
+                                chip.setChipBackgroundColor(tagBg);
+                                chip.setTextColor(tagText);
+                                chip.setChipStrokeColor(tagStroke);
+                                chip.setChipStrokeWidth(strokePx);
                                 chipIntakeTags.addView(chip);
                             }
                         }
                     }
-
                     @Override
                     public void onFailure(Exception e) {
                         textIntakeEmpty.setVisibility(View.VISIBLE);
@@ -133,93 +171,41 @@ public class StudentProfileActivity extends AppCompatActivity {
                 });
     }
 
-    private void showNoteDialog() {
-        View dialogView = getLayoutInflater().inflate(R.layout.dialog_session_note, null);
-        ChipGroup templateChips = dialogView.findViewById(R.id.chipGroupNoteTemplates);
-        EditText noteEdit = dialogView.findViewById(R.id.editSessionNote);
-        selectedTemplateKey = NoteTemplate.GENERAL_SESSION;
-        buildTemplateChips(templateChips, noteEdit);
+    /** Loads ALL session notes for this student across all appointments, sorted newest first. */
+    private void loadSessionNotes() {
+        new SessionNoteRepository().getNotesForStudent(studentId,
+                new SessionNoteRepository.OnNotesLoadedCallback() {
+                    @Override
+                    public void onSuccess(List<SessionNote> notes) {
+                        // Sort newest first by createdAt
+                        List<SessionNote> sorted = new ArrayList<>(notes);
+                        Collections.sort(sorted, (a, b) -> {
+                            if (a.getCreatedAt() == null && b.getCreatedAt() == null) return 0;
+                            if (a.getCreatedAt() == null) return 1;
+                            if (b.getCreatedAt() == null) return -1;
+                            return b.getCreatedAt().compareTo(a.getCreatedAt());
+                        });
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(dialogView)
-                .setNegativeButton(R.string.button_cancel, null)
-                .setPositiveButton(R.string.save_note, null)
-                .create();
-        dialog.setOnShowListener(d -> dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setOnClickListener(v -> saveNote(noteEdit, dialog)));
-        dialog.show();
-    }
-
-    private void buildTemplateChips(ChipGroup templateChips, EditText noteEdit) {
-        for (String key : NoteTemplate.ALL_KEYS) {
-            Chip chip = new Chip(this);
-            chip.setText(NoteTemplate.getDisplayName(key));
-            chip.setCheckable(true);
-            chip.setOnClickListener(v -> {
-                selectedTemplateKey = key;
-                noteEdit.setText(NoteTemplate.getTemplateText(key));
-                noteEdit.setSelection(noteEdit.getText().length());
-            });
-            templateChips.addView(chip);
-        }
-    }
-
-    private void saveNote(EditText noteEdit, AlertDialog dialog) {
-        String text = noteEdit.getText() == null ? "" : noteEdit.getText().toString().trim();
-        if (text.isEmpty()) {
-            AppToast.show(this, R.string.note_text_required, AppToast.LENGTH_SHORT);
-            return;
-        }
-        SessionNote note = new SessionNote(
-                appointmentId, counselorId, studentId, selectedTemplateKey, text);
-        new SessionNoteRepository().saveNote(note, new SessionNoteRepository.OnNoteActionCallback() {
-            @Override
-            public void onSuccess(String noteId) {
-                AppToast.show(StudentProfileActivity.this, R.string.note_saved,
-                        AppToast.LENGTH_SHORT);
-                dialog.dismiss();
-                loadSessionNotes();
-            }
-
-            @Override
-            public void onFailure(Exception e) {
-                AppToast.show(StudentProfileActivity.this, R.string.note_save_error,
-                        AppToast.LENGTH_LONG);
-            }
-        });
+                        if (sorted.isEmpty()) {
+                            textNotesEmpty.setVisibility(View.VISIBLE);
+                            recyclerSessionNotes.setVisibility(View.GONE);
+                        } else {
+                            textNotesEmpty.setVisibility(View.GONE);
+                            recyclerSessionNotes.setVisibility(View.VISIBLE);
+                            recyclerSessionNotes.setAdapter(
+                                    new SessionNoteHistoryAdapter(sorted));
+                        }
+                    }
+                    @Override
+                    public void onFailure(Exception e) {
+                        textNotesEmpty.setVisibility(View.VISIBLE);
+                        textNotesEmpty.setText(R.string.no_notes_for_student);
+                        recyclerSessionNotes.setVisibility(View.GONE);
+                    }
+                });
     }
 
     private String valueOrDash(String value) {
         return value == null || value.isEmpty() ? "-" : value;
-    }
-
-    private void loadSessionNotes() {
-        if (appointmentId == null || appointmentId.isEmpty()) {
-            textSessionNotes.setText(R.string.no_session_notes);
-            return;
-        }
-        new SessionNoteRepository().getNotesForAppointment(appointmentId,
-                new SessionNoteRepository.OnNotesLoadedCallback() {
-                    @Override
-                    public void onSuccess(java.util.List<SessionNote> notes) {
-                        if (notes.isEmpty()) {
-                            textSessionNotes.setText(R.string.no_session_notes);
-                            return;
-                        }
-                        StringBuilder builder = new StringBuilder();
-                        for (SessionNote note : notes) {
-                            if (builder.length() > 0) builder.append("\n\n");
-                            builder.append(NoteTemplate.getDisplayName(note.getTemplateKey()))
-                                    .append("\n")
-                                    .append(valueOrDash(note.getNoteText()));
-                        }
-                        textSessionNotes.setText(builder.toString());
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        textSessionNotes.setText(R.string.no_session_notes);
-                    }
-                });
     }
 }

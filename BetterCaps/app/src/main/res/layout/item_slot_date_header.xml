@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="20dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="16dp"
+    android:paddingBottom="6dp">
+
+    <ImageView
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:src="@drawable/ic_nav_calendar"
+        android:tint="#C96B8E"
+        android:layout_marginEnd="6dp"
+        android:contentDescription="Date" />
+
+    <TextView
+        android:id="@+id/textDateHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Monday, Apr 14"
+        android:textSize="13sp"
+        android:textStyle="bold"
+        android:textColor="#C96B8E"
+        android:textAllCaps="false"
+        android:letterSpacing="0.02" />
+
+</LinearLayout>

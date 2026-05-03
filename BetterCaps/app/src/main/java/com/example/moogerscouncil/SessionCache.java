@@ -38,7 +38,10 @@ public final class SessionCache {
     private static final long COUNSELORS_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
     /** TTL for appointment data (shorter — bookings can happen any time). */
-    private static final long APPOINTMENTS_TTL_MS = 60 * 1000;   // 1 minute
+    private static final long APPOINTMENTS_TTL_MS = 60 * 1000;       // 1 minute
+
+    /** TTL for counselor-side appointments (fresh per session, invalidated after actions). */
+    private static final long COUNSELOR_APPOINTMENTS_TTL_MS = 2 * 60 * 1000; // 2 minutes
 
     // ── Cached entries ──
 
@@ -51,6 +54,10 @@ public final class SessionCache {
     private List<Appointment> cachedStudentAppointments;
     private String cachedAppointmentsStudentId;
     private long appointmentsFetchedAt;
+
+    private List<Appointment> cachedCounselorAppointments;
+    private String cachedCounselorAppointmentsId;
+    private long counselorAppointmentsFetchedAt;
 
     private final java.util.Map<String, Counselor> cachedSingleCounselors = new java.util.HashMap<>();
     private long singleCounselorFetchedAt;
@@ -170,6 +177,57 @@ public final class SessionCache {
         }
     }
 
+    // ── Counselor appointments ──
+
+    /**
+     * Returns the cached counselor appointment list if still fresh, or null if expired/absent.
+     * Invalidated explicitly after no-show, slot changes, etc.
+     */
+    public List<Appointment> getCounselorAppointments(String counselorId) {
+        if (cachedCounselorAppointments != null
+                && counselorId.equals(cachedCounselorAppointmentsId)
+                && !isExpired(counselorAppointmentsFetchedAt, COUNSELOR_APPOINTMENTS_TTL_MS)) {
+            return cachedCounselorAppointments;
+        }
+        return null;
+    }
+
+    /** Stores the counselor appointment list. */
+    public void putCounselorAppointments(String counselorId, List<Appointment> appointments) {
+        this.cachedCounselorAppointments = appointments;
+        this.cachedCounselorAppointmentsId = counselorId;
+        this.counselorAppointmentsFetchedAt = now();
+    }
+
+    /** Call after a no-show, slot deletion, or any counselor-side mutation. */
+    public void invalidateCounselorAppointments() {
+        cachedCounselorAppointments = null;
+    }
+
+    // ── Availability settings ──
+
+    private AvailabilitySettings cachedSettings;
+    private String cachedSettingsCounselorId;
+
+    /** Returns the cached settings for the given counselor, or null if not cached. */
+    public AvailabilitySettings getSettings(String counselorId) {
+        if (cachedSettings != null && counselorId.equals(cachedSettingsCounselorId)) {
+            return cachedSettings;
+        }
+        return null;
+    }
+
+    /** Stores the availability settings in cache. */
+    public void putSettings(String counselorId, AvailabilitySettings settings) {
+        this.cachedSettings = settings;
+        this.cachedSettingsCounselorId = counselorId;
+    }
+
+    /** Call after saving new settings. */
+    public void invalidateSettings() {
+        cachedSettings = null;
+    }
+
     // ── Invalidation ──
 
     /** Call after a booking or cancellation to force appointment refresh. */
@@ -189,6 +247,8 @@ public final class SessionCache {
         cachedStudent = null;
         cachedCounselors = null;
         cachedStudentAppointments = null;
+        cachedCounselorAppointments = null;
+        cachedSettings = null;
         cachedSingleCounselors.clear();
         cachedSlots.clear();
     }

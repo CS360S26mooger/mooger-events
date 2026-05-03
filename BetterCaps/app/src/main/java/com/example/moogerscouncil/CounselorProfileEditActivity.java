@@ -11,6 +11,8 @@
 package com.example.moogerscouncil;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -37,6 +39,7 @@ import java.util.List;
  */
 public class CounselorProfileEditActivity extends AppCompatActivity {
 
+    private TextInputEditText editTextDisplayName;
     private TextInputEditText editTextBio;
     private TextInputEditText editTextLanguage;
     private TextInputEditText editTextGender;
@@ -72,6 +75,7 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
         }
         counselorRepository = new CounselorRepository();
 
+        editTextDisplayName = findViewById(R.id.editTextDisplayName);
         editTextBio = findViewById(R.id.editTextBio);
         editTextLanguage = findViewById(R.id.editTextLanguage);
         editTextGender = findViewById(R.id.editTextGender);
@@ -85,6 +89,19 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
         layoutReferralCounselor = findViewById(R.id.layoutReferralCounselor);
         editTextLeaveMessage = findViewById(R.id.editTextLeaveMessage);
         dropdownReferral = findViewById(R.id.dropdownReferral);
+
+        // TextInputLayout (M2 style + M3 theme) programmatically applies a state-based
+        // colorOnSurface alpha, making unfocused text appear grey. Override it here so
+        // all states get a solid near-black regardless of focus.
+        int nearBlack = 0xFF0D0D0D;
+        editTextDisplayName.setTextColor(nearBlack);
+        editTextBio.setTextColor(nearBlack);
+        editTextLanguage.setTextColor(nearBlack);
+        editTextGender.setTextColor(nearBlack);
+        editTextLeaveMessage.setTextColor(nearBlack);
+        dropdownReferral.setTextColor(nearBlack);
+
+        findViewById(R.id.buttonBack).setOnClickListener(v -> finish());
 
         switchOnLeave.setOnCheckedChangeListener((buttonView, isChecked) -> {
             int visibility = isChecked ? View.VISIBLE : View.GONE;
@@ -109,12 +126,24 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
      */
     private void buildSpecializationChips(List<String> existingSpecializations) {
         chipGroupSpecializations.removeAllViews();
+        ColorStateList chipBg = new ColorStateList(
+                new int[][] { new int[] { android.R.attr.state_checked }, new int[] {} },
+                new int[] { Color.parseColor("#FFE8F5"), Color.WHITE });
+        ColorStateList chipText = new ColorStateList(
+                new int[][] { new int[] { android.R.attr.state_checked }, new int[] {} },
+                new int[] { Color.parseColor("#C96B8E"), Color.parseColor("#8A8A9A") });
+        ColorStateList chipStroke = ColorStateList.valueOf(Color.parseColor("#F0C8DC"));
         for (String tag : SpecializationTags.ALL_TAGS) {
             Chip chip = new Chip(this);
             chip.setText(tag);
             chip.setCheckable(true);
             chip.setChecked(existingSpecializations != null
                     && existingSpecializations.contains(tag));
+            chip.setChipBackgroundColor(chipBg);
+            chip.setTextColor(chipText);
+            chip.setChipStrokeColor(chipStroke);
+            chip.setChipStrokeWidth(getResources().getDisplayMetrics().density * 1.2f);
+            chip.setRippleColor(ColorStateList.valueOf(Color.parseColor("#FFE8F5")));
             chipGroupSpecializations.addView(chip);
         }
     }
@@ -127,6 +156,9 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
                 new CounselorRepository.OnCounselorFetchedCallback() {
                     @Override
                     public void onSuccess(Counselor counselor) {
+                        if (counselor.getName() != null) {
+                            editTextDisplayName.setText(counselor.getName());
+                        }
                         if (counselor.getBio() != null) {
                             editTextBio.setText(counselor.getBio());
                         }
@@ -229,6 +261,8 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
      * it to Firestore via {@link CounselorRepository#updateCounselorProfile}.
      */
     private void saveProfile() {
+        String displayName = editTextDisplayName.getText() != null
+                ? editTextDisplayName.getText().toString().trim() : "";
         String bio = editTextBio.getText() != null
                 ? editTextBio.getText().toString().trim() : "";
         String language = editTextLanguage.getText() != null
@@ -250,6 +284,7 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
         String authUid = FirebaseAuth.getInstance().getCurrentUser().getUid();
         Counselor updatedCounselor = new Counselor();
         updatedCounselor.setUid(authUid);
+        updatedCounselor.setName(displayName);
         updatedCounselor.setBio(bio);
         updatedCounselor.setLanguage(language);
         updatedCounselor.setGender(gender);
@@ -274,6 +309,7 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
                 new CounselorRepository.OnUpdateCallback() {
                     @Override
                     public void onSuccess() {
+                        SessionCache.getInstance().invalidateCounselors();
                         AppToast.show(CounselorProfileEditActivity.this,
                                 getString(R.string.success_profile_saved),
                                 AppToast.LENGTH_SHORT);

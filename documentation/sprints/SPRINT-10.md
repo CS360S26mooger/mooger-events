@@ -1,45 +1,71 @@
-# Sprint 8 — US-16 (Admin Reminders) + US-18 (Secure Messaging) + US-17 Returning Student + Final Polish
+# Sprint 10 — US-16 (Admin Reminders) + US-18 (Secure Messaging) + US-17 Returning Student + Final Polish
 ### Admin, Messaging, Notifications, and Final Integration Sprint
 
 ---
 
 ## 0. Pre-Sprint Status Report
 
-### Sprint 7 Review — Scheduling and Connecting Logic: COMPLETE
+### Sprint 9.5 Review — Slot Management Overhaul & Bulk Generation: COMPLETE
 
-Sprint 7 completed the scheduling layer on top of the student/counselor workflows:
+Sprint 9.5 delivered the dashboard hardening, session management fixes, a full redesign of the counselor availability management flow, and automated bulk slot generation.
 
-| Deliverable | Expected status | Notes |
+| Deliverable | Status | Notes |
 |---|---|---|
-| `AvailabilitySettings.java` | Done | Stores buffer minutes and calendar export preferences. |
-| `AvailabilitySettingsRepository.java` | Done | Reads/writes `availabilitySettings/{counselorId}`. |
-| `AvailabilitySetupActivity.java` | Hardened | Blocks buffer-conflicting slot creation. |
-| `BookingActivity.java` | Hardened | Empty slot state routes to waitlist. |
-| `WaitlistRepository.java` | Hardened | Can offer slot to next active waitlisted student. |
-| `CalendarSyncHelper.java` | Done | Android calendar intent / ICS helper. |
+| `AddSlotActivity.java` | Done | Calendar-first single slot creation; past dates blocked; existing slot dates highlighted. |
+| `GenerateSlotsActivity.java` | Done | Full-day generation with work hours, slot duration (30/45/60 min), and break filtering. |
+| `AvailabilityRepository.addSlotsBatch()` | Done | Single `WriteBatch` commit for all generated slots — atomic. |
+| `SlotGroupAdapter` (inner class) | Done | Multi-view-type adapter: date headers + slot cards with optimistic deletion. |
+| `item_slot_counselor.xml` | Done | Floating card per slot: time, Available/Booked tag, trash button. |
+| `item_slot_date_header.xml` | Done | Pink date group header with calendar icon. |
+| `activity_add_slot.xml` | Done | Mirrors student booking screen (20dp/8dp card). |
+| `activity_generate_slots.xml` | Done | Full-day generation form with calendar, work hours, duration, breaks sections. |
+| `dialog_add_break.xml` | Done | Break entry dialog with two time-picker buttons. |
+| `item_break.xml` | Done | Break list row with time range and remove button. |
+| `ic_sleeping.xml` | Done | Sleeping-person drawable; orange no-show theme applied sitewide. |
+| `CounselorProfileEditActivity` M3 text fix | Done | `setTextColor(0xFF0D0D0D)` override post-`findViewById()` for all five fields. |
 
-### Current State Before Sprint 8
+### Sprint 9.5 Phase A Review — Dashboard Hardening & Session Management: COMPLETE
 
-The app now supports:
+Sprint 9.5 (Phase A) hardened the counselor dashboard and session note layer:
+
+| Deliverable | Status | Notes |
+|---|---|---|
+| Session note deletion (US-31) | Done | `SessionNoteRepository.deleteNote()` + confirmation dialog in `SessionNoteActivity`. |
+| Active-only appointment filter (US-32) | Done | `filterByTab()` stream-filters `CANCELLED`/`NO_SHOW` before adapter hand-off. |
+| Appointment-anchored note timestamps (US-33) | Done | `SessionNoteHistoryAdapter.buildTimestamp()` uses appointment date/time fields. |
+| `SessionCache` with TTL + background refresh (US-34) | Done | 2-min TTL for counselor appointments; cache-first render, Firestore refresh in background. |
+| Live booking statistics (US-35) | Done | `updateStats()` filters `CONFIRMED` only for all three stat card counts. |
+| No-show confirmation guard + orange theme (US-36) | Done | `confirmNoShow()` dialog; `ic_sleeping` drawable; `#E8761A` colour theme. |
+| `loadAppointments()` → `subscribeToAppointments()` bug fix | Done | Two stale call sites in `CounselorDashboardActivity` corrected. |
+
+### Current State Before Sprint 10
+
+The app now supports the full end-to-end flow for students and counselors:
 
 ```text
-Student registration → intake quiz → counselor recommendation → directory/profile → booking/waitlist
-Counselor dashboard → student profile → session history → notes → crisis escalation
-Scheduling settings → buffer validation → calendar export
+Student:  registration → intake quiz → counselor recommendation → directory → booking/waitlist
+          home → calendar → history → feedback → emergency → discreet mode
+
+Counselor: dashboard (cache-first, active-only) → student profile → session history
+           → notes (upsert, deletion) → crisis escalation → no-show (guarded, orange theme)
+           → manage availability (date-grouped list, optimistic delete)
+           → add slot (calendar-first, past-blocked, highlights) 
+           → generate slots (work hours + duration + breaks → batch write)
+           → waitlist queue → on-leave status → availability settings
 ```
 
 The remaining backlog stories are system-level and final-polish features:
 
-| Story | Current state | Sprint 8 target |
+| Story | Current state | Sprint 10 target |
 |---|---|---|
 | **US-16** Admin automated reminders | Not implemented | Admin configures reminder settings; reminder records are generated/displayed. |
 | **US-18** Secure pre-session message | Not implemented | Counselor sends appointment-linked message to student; student can read it. |
-| **US-17** Returning student indicator | Not implemented / optional cache | Dashboard shows returning badge if student has prior completed/no-show appointments. |
+| **US-17** Returning student indicator | Not implemented | Dashboard shows returning badge if student has prior completed/no-show appointments. |
 | Final polish | Partially done | Javadocs, repository consistency, tests, strings, manifest, build cleanup. |
 
 ### Important Scope Decision for Reminders
 
-Android apps cannot reliably send server-side reminders to users when closed unless Firebase Cloud Messaging / Cloud Functions or WorkManager is configured. To keep this project buildable and demo-safe, Sprint 8 implements **prototype-level automated reminders**:
+Android apps cannot reliably send server-side reminders to users when closed unless Firebase Cloud Messaging / Cloud Functions or WorkManager is configured. To keep this project buildable and demo-safe, Sprint 10 implements **prototype-level automated reminders**:
 
 1. Admin configures reminder timing/text in Firestore.
 2. `ReminderRepository` can create reminder records for upcoming appointments.
@@ -50,7 +76,7 @@ Do **not** add Cloud Functions or external server code unless explicitly require
 
 ---
 
-## 1. Sprint 8 Objective
+## 1. Sprint 10 Objective
 
 By the end of this sprint:
 
@@ -845,7 +871,7 @@ Do not add external dependencies for notifications/OAuth unless Gradle is update
 
 ## 11. Definition of Done
 
-Sprint 8 is done only when:
+Sprint 10 is done only when:
 
 - Admin role routes to `AdminDashboardActivity`.
 - Admin can configure reminder settings and save them to Firestore.

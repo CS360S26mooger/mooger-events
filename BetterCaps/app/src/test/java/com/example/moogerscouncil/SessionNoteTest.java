@@ -4,7 +4,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+
+import com.google.firebase.Timestamp;
 
 /** Unit tests for {@link SessionNote}. */
 public class SessionNoteTest {
@@ -52,5 +55,25 @@ public class SessionNoteTest {
         assertEquals(NoteTemplate.GENERAL_SESSION, note.getTemplateKey());
         assertEquals("Updated", note.getNoteText());
         assertTrue(note.isPrivateToCounselor());
+    }
+
+    @Test
+    public void setNoteTextUpdatesContent() {
+        SessionNote note = new SessionNote("a", "c", "s", NoteTemplate.GENERAL_SESSION, "Original");
+        note.setNoteText("Revised text after edit");
+        assertEquals("Revised text after edit", note.getNoteText());
+    }
+
+    @Test
+    public void createdAtAndUpdatedAtAreIndependentFields() {
+        // Verifies the two timestamp fields are distinct so the repository can update
+        // updatedAt via update() without changing createdAt (upsert-safe schema).
+        SessionNote note = new SessionNote("a", "c", "s", null, "Text");
+        assertNotNull(note.getCreatedAt());
+        assertNotNull(note.getUpdatedAt());
+        Timestamp originalCreated = note.getCreatedAt();
+        note.setUpdatedAt(Timestamp.now());
+        // createdAt must not be affected by setUpdatedAt
+        assertEquals(originalCreated, note.getCreatedAt());
     }
 }

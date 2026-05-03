@@ -46,13 +46,17 @@ public class AvailabilitySettingsActivity extends AppCompatActivity {
     }
 
     private void loadSettings() {
+        AvailabilitySettings cached = SessionCache.getInstance().getSettings(counselorId);
+        if (cached != null) {
+            applySettings(cached);
+            return;
+        }
+
         repository.getSettings(counselorId, new AvailabilitySettingsRepository.OnSettingsLoadedCallback() {
             @Override
             public void onSuccess(AvailabilitySettings settings) {
-                applyBufferSelection(settings.getBufferMinutes());
-                switchCalendarExport.setChecked(settings.isExternalCalendarEnabled());
-                switchIcsExport.setChecked(settings.isExportIcsEnabled());
-                applyProviderSelection(settings.getCalendarProvider());
+                SessionCache.getInstance().putSettings(counselorId, settings);
+                applySettings(settings);
             }
 
             @Override
@@ -60,6 +64,13 @@ public class AvailabilitySettingsActivity extends AppCompatActivity {
                 applyBufferSelection(0);
             }
         });
+    }
+
+    private void applySettings(AvailabilitySettings settings) {
+        applyBufferSelection(settings.getBufferMinutes());
+        switchCalendarExport.setChecked(settings.isExternalCalendarEnabled());
+        switchIcsExport.setChecked(settings.isExportIcsEnabled());
+        applyProviderSelection(settings.getCalendarProvider());
     }
 
     private void saveSettings() {
@@ -70,6 +81,7 @@ public class AvailabilitySettingsActivity extends AppCompatActivity {
         repository.saveSettings(settings, new AvailabilitySettingsRepository.OnSettingsSavedCallback() {
             @Override
             public void onSuccess() {
+                SessionCache.getInstance().putSettings(counselorId, settings);
                 AppToast.show(AvailabilitySettingsActivity.this,
                         R.string.settings_saved,
                         AppToast.LENGTH_SHORT);

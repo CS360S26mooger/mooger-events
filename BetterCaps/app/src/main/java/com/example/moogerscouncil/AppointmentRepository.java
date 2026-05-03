@@ -14,6 +14,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.Timestamp;
 
 import java.util.Collections;
@@ -119,6 +120,36 @@ public class AppointmentRepository {
          * @param e The exception describing the failure.
          */
         void onFailure(Exception e);
+    }
+
+    public interface OnDateCheckCallback {
+        void onResult(boolean hasBooking);
+        void onFailure(Exception e);
+    }
+
+    /**
+     * Checks whether a student already has a CONFIRMED appointment on the given date.
+     * Uses a two-field query (studentId + date) to avoid needing a composite index,
+     * then filters for CONFIRMED status client-side.
+     */
+    public void hasConfirmedBookingOnDate(String studentId, String date,
+                                          OnDateCheckCallback callback) {
+        appointmentsCollection
+                .whereEqualTo("studentId", studentId)
+                .whereEqualTo("date", date)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    boolean found = false;
+                    for (DocumentSnapshot doc : snapshot.getDocuments()) {
+                        String status = doc.getString("status");
+                        if ("CONFIRMED".equals(status)) {
+                            found = true;
+                            break;
+                        }
+                    }
+                    callback.onResult(found);
+                })
+                .addOnFailureListener(callback::onFailure);
     }
 
     // -------------------------------------------------------------------------
@@ -329,6 +360,69 @@ public class AppointmentRepository {
                     callback.onSuccess(appointments);
                 })
                 .addOnFailureListener(callback::onFailure);
+    }
+
+    /**
+     * Subscribes to real-time updates for a counselor's appointments.
+     * Firestore pushes changes automatically — no polling needed.
+     *
+     * @param counselorId The counselor's Auth UID.
+     * @param callback    Called on every change (initial load + subsequent mutations).
+     * @return A ListenerRegistration — call .remove() in onDestroy to unsubscribe.
+     */
+    public ListenerRegistration listenForCounselorAppointments(
+            String counselorId, OnAppointmentsLoadedCallback callback) {
+        return appointmentsCollection
+                .whereEqualTo("counselorId", counselorId)
+                .addSnapshotListener((snapshots, error) -> {
+                    if (error != null) {
+                        callback.onFailure(error);
+                        return;
+                    }
+                    if (snapshots == null) return;
+                    List<Appointment> appointments = new java.util.ArrayList<>();
+                    for (DocumentSnapshot doc : snapshots.getDocuments()) {
+                        Appointment a = doc.toObject(Appointment.class);
+                        if (a != null) {
+                            a.setId(doc.getId());
+                            appointments.add(a);
+                        }
+                    }
+                    Collections.sort(appointments, (a, b) ->
+                            String.valueOf(a.getDate()).compareTo(String.valueOf(b.getDate())));
+                    callback.onSuccess(appointments);
+                });
+    }
+
+    /**
+     * Subscribes to real-time updates for a student's appointments.
+     *
+     * @param studentId The student's Auth UID.
+     * @param callback  Called on every change.
+     * @return A ListenerRegistration — call .remove() in onDestroy to unsubscribe.
+     */
+    public ListenerRegistration listenForStudentAppointments(
+            String studentId, OnAppointmentsLoadedCallback callback) {
+        return appointmentsCollection
+                .whereEqualTo("studentId", studentId)
+                .addSnapshotListener((snapshots, error) -> {
+                    if (error != null) {
+                        callback.onFailure(error);
+                        return;
+                    }
+                    if (snapshots == null) return;
+                    List<Appointment> appointments = new java.util.ArrayList<>();
+                    for (DocumentSnapshot doc : snapshots.getDocuments()) {
+                        Appointment a = doc.toObject(Appointment.class);
+                        if (a != null) {
+                            a.setId(doc.getId());
+                            appointments.add(a);
+                        }
+                    }
+                    Collections.sort(appointments, (a, b) ->
+                            String.valueOf(a.getDate()).compareTo(String.valueOf(b.getDate())));
+                    callback.onSuccess(appointments);
+                });
     }
 
     /**

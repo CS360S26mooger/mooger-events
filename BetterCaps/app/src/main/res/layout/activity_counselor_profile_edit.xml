@@ -4,256 +4,340 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F2F4F8">
+    android:background="#F2F4F8"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp">
+        android:orientation="vertical">
 
-        <!-- Toolbar row -->
+        <!-- Pink top bar -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="58dp"
+            android:background="#C96B8E"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:layout_marginBottom="24dp">
+            android:paddingStart="8dp"
+            android:paddingEnd="16dp">
 
             <ImageButton
                 android:id="@+id/buttonBack"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:src="@drawable/ic_arrow_back"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/edit_profile"
-                android:onClick="finish"
-                android:tint="#1A1A2E" />
+                android:tint="#FFFFFF"
+                android:contentDescription="Back" />
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="@string/title_edit_profile"
-                android:textSize="20sp"
+                android:textColor="#FFFFFF"
                 android:textStyle="bold"
-                android:textColor="#1A1A2E"
-                android:layout_marginStart="12dp" />
+                android:textSize="18sp" />
 
         </LinearLayout>
 
-        <!-- Bio -->
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        <!-- Form card -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_bio"
-            app:helperText="@string/helper_bio"
-            app:hintTextColor="@color/register_pink"
-            app:boxStrokeColor="@color/text_input_stroke"
-            app:boxStrokeWidth="1.5dp"
-            app:helperTextTextColor="@color/helper_text"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            android:layout_marginBottom="16dp">
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            app:cardCornerRadius="20dp"
+            app:cardElevation="4dp"
+            app:cardBackgroundColor="#FFFFFF">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextBio"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:minLines="4"
-                android:gravity="top"
-                android:textColor="@color/text_dark"
-                android:textColorHint="@color/hint_text"
-                android:textSize="15sp" />
+                android:orientation="vertical"
+                android:padding="24dp">
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <!-- Section: PROFILE -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="PROFILE"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#C96B8E"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.1"
+                    android:layout_marginBottom="16dp" />
 
-        <!-- Language -->
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_language"
-            app:helperText="@string/helper_language"
-            app:hintTextColor="@color/register_pink"
-            app:boxStrokeColor="@color/text_input_stroke"
-            app:boxStrokeWidth="1.5dp"
-            app:helperTextTextColor="@color/helper_text"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            android:layout_marginBottom="16dp">
+                <!-- Display Name -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_display_name"
+                    app:helperText="@string/helper_display_name"
+                    app:hintTextColor="@color/register_pink"
+                    app:boxStrokeColor="@color/text_input_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:helperTextTextColor="@color/helper_text"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    android:layout_marginBottom="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextLanguage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:textColor="@color/text_dark"
-                android:textColorHint="@color/hint_text"
-                android:textSize="15sp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextDisplayName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textPersonName"
+                        android:textColor="#212121"
+                        android:textColorHint="@color/register_pink"
+                        android:textSize="15sp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Gender -->
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_gender"
-            app:helperText="@string/helper_gender"
-            app:hintTextColor="@color/register_pink"
-            app:boxStrokeColor="@color/text_input_stroke"
-            app:boxStrokeWidth="1.5dp"
-            app:helperTextTextColor="@color/helper_text"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            android:layout_marginBottom="24dp">
+                <!-- Bio -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_bio"
+                    app:helperText="@string/helper_bio"
+                    app:hintTextColor="@color/register_pink"
+                    app:boxStrokeColor="@color/text_input_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:helperTextTextColor="@color/helper_text"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    android:layout_marginBottom="16dp">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextGender"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="text"
-                android:textColor="@color/text_dark"
-                android:textColorHint="@color/hint_text"
-                android:textSize="15sp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextBio"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:minLines="4"
+                        android:gravity="top"
+                        android:textColor="#212121"
+                        android:textColorHint="@color/register_pink"
+                        android:textSize="15sp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Specializations header -->
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/label_select_specializations"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#1A1A2E"
-            android:layout_marginBottom="12dp" />
+                <!-- Language -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_language"
+                    app:helperText="@string/helper_language"
+                    app:hintTextColor="@color/register_pink"
+                    app:boxStrokeColor="@color/text_input_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:helperTextTextColor="@color/helper_text"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    android:layout_marginBottom="16dp">
 
-        <!-- Specialization chips — populated programmatically -->
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/chipGroupSpecializations"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:singleSelection="false"
-            android:layout_marginBottom="24dp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextLanguage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textColor="#212121"
+                        android:textColorHint="@color/register_pink"
+                        android:textSize="15sp" />
 
-        <!-- Divider -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#E0E0E0"
-            android:layout_marginBottom="16dp" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- On-Leave Section header -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/label_on_leave_section"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#1A1A2E"
-            android:layout_marginBottom="8dp" />
+                <!-- Gender -->
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_gender"
+                    app:helperText="@string/helper_gender"
+                    app:hintTextColor="@color/register_pink"
+                    app:boxStrokeColor="@color/text_input_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:helperTextTextColor="@color/helper_text"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    android:layout_marginBottom="20dp">
 
-        <!-- On-leave toggle -->
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switchOnLeave"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/label_on_leave_toggle"
-            android:textSize="14sp"
-            android:layout_marginBottom="8dp" />
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextGender"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="text"
+                        android:textColor="#212121"
+                        android:textColorHint="@color/register_pink"
+                        android:textSize="15sp" />
 
-        <!-- Leave message field (shown only when on leave) -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutLeaveMessage"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_leave_message"
-            app:helperText="@string/helper_leave_message"
-            app:hintTextColor="@color/register_pink"
-            app:boxStrokeColor="@color/text_input_stroke"
-            app:boxStrokeWidth="1.5dp"
-            app:helperTextTextColor="@color/helper_text"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            android:visibility="gone"
-            android:layout_marginBottom="8dp">
+                </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextLeaveMessage"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textMultiLine"
-                android:minLines="2"
-                android:gravity="top"
-                android:textColor="@color/text_dark"
-                android:textColorHint="@color/hint_text"
-                android:textSize="15sp" />
+                <!-- Pastel divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#F0C8DC"
+                    android:layout_marginBottom="20dp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <!-- Section: SPECIALIZATIONS -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="SPECIALIZATIONS"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#C96B8E"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.1"
+                    android:layout_marginBottom="12dp" />
 
-        <!-- Referral counselor dropdown (shown only when on leave) -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/layoutReferralCounselor"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/hint_referral_counselor"
-            app:helperText="@string/helper_referral_counselor"
-            app:hintTextColor="@color/register_pink"
-            app:boxStrokeColor="@color/text_input_stroke"
-            app:boxStrokeWidth="1.5dp"
-            app:helperTextTextColor="@color/helper_text"
-            app:boxCornerRadiusTopStart="12dp"
-            app:boxCornerRadiusTopEnd="12dp"
-            app:boxCornerRadiusBottomStart="12dp"
-            app:boxCornerRadiusBottomEnd="12dp"
-            android:visibility="gone"
-            android:layout_marginBottom="24dp">
+                <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupSpecializations"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:singleSelection="false"
+                    android:layout_marginBottom="20dp" />
 
-            <AutoCompleteTextView
-                android:id="@+id/dropdownReferral"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="none"
-                android:textColor="@color/text_dark"
-                android:textColorHint="@color/hint_text"
-                android:textSize="15sp" />
+                <!-- Pastel divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#F0C8DC"
+                    android:layout_marginBottom="20dp" />
 
-        </com.google.android.material.textfield.TextInputLayout>
+                <!-- Section: LEAVE SETTINGS -->
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="LEAVE SETTINGS"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#C96B8E"
+                    android:textAllCaps="true"
+                    android:letterSpacing="0.1"
+                    android:layout_marginBottom="8dp" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonSchedulingSettings"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:text="@string/availability_settings_title"
-            android:textAllCaps="false"
-            android:textColor="#C96B8E"
-            android:layout_marginBottom="12dp"
-            app:strokeColor="#C96B8E"
-            app:cornerRadius="12dp" />
+                <com.google.android.material.switchmaterial.SwitchMaterial
+                    android:id="@+id/switchOnLeave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_on_leave_toggle"
+                    android:textSize="14sp"
+                    android:textColor="#2D2D2D"
+                    android:layout_marginBottom="8dp" />
 
-        <!-- Save button -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonSaveProfile"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:text="@string/button_save_profile"
-            android:textSize="16sp"
-            android:backgroundTint="#3D5AF1"
-            app:cornerRadius="12dp" />
+                <!-- Leave message field (shown only when on leave) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutLeaveMessage"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_leave_message"
+                    app:helperText="@string/helper_leave_message"
+                    app:hintTextColor="@color/register_pink"
+                    app:boxStrokeColor="@color/text_input_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:helperTextTextColor="@color/helper_text"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="8dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editTextLeaveMessage"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textMultiLine"
+                        android:minLines="2"
+                        android:gravity="top"
+                        android:textColor="#212121"
+                        android:textColorHint="@color/register_pink"
+                        android:textSize="15sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Referral counselor dropdown (shown only when on leave) -->
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layoutReferralCounselor"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/hint_referral_counselor"
+                    app:helperText="@string/helper_referral_counselor"
+                    app:hintTextColor="@color/register_pink"
+                    app:boxStrokeColor="@color/text_input_stroke"
+                    app:boxStrokeWidth="1.5dp"
+                    app:boxBackgroundColor="#FFFFFF"
+                    app:helperTextTextColor="@color/helper_text"
+                    app:boxCornerRadiusTopStart="12dp"
+                    app:boxCornerRadiusTopEnd="12dp"
+                    app:boxCornerRadiusBottomStart="12dp"
+                    app:boxCornerRadiusBottomEnd="12dp"
+                    android:visibility="gone"
+                    android:layout_marginBottom="20dp">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/dropdownReferral"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:background="@null"
+                        android:textColor="#212121"
+                        android:textColorHint="@color/register_pink"
+                        android:textSize="15sp" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <!-- Pastel divider -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#F0C8DC"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Scheduling settings button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonSchedulingSettings"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:text="@string/availability_settings_title"
+                    android:textAllCaps="false"
+                    android:textColor="#C96B8E"
+                    android:layout_marginBottom="12dp"
+                    app:strokeColor="#C96B8E"
+                    app:cornerRadius="12dp" />
+
+                <!-- Save button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonSaveProfile"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:text="@string/button_save_profile"
+                    android:textSize="16sp"
+                    android:textColor="#FFFFFF"
+                    android:backgroundTint="#7B61FF"
+                    app:cornerRadius="12dp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 

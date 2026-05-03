@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -86,17 +85,17 @@ public class CrisisEscalationDialogFragment extends DialogFragment {
                 new CrisisEscalationRepository.OnCrisisActionCallback() {
                     @Override
                     public void onSuccess(String escalationId) {
-                        Toast.makeText(requireContext(),
+                        AppToast.show(requireContext(),
                                 R.string.crisis_escalation_saved,
-                                Toast.LENGTH_LONG).show();
+                                AppToast.LENGTH_LONG);
                         dialog.dismiss();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(requireContext(),
+                        AppToast.show(requireContext(),
                                 R.string.crisis_escalation_error,
-                                Toast.LENGTH_LONG).show();
+                                AppToast.LENGTH_LONG);
                     }
                 });
     }

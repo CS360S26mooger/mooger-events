@@ -98,6 +98,29 @@ public class AppointmentRepository {
         void onFailure(Exception e);
     }
 
+    /**
+     * Callback for waitlist-triggered booking. Returns the new appointment ID so the
+     * caller can pass it to {@link WaitlistRepository#resolveEntry}.
+     */
+    public interface OnWaitlistBookingCallback {
+        /**
+         * Called when the booking transaction committed successfully.
+         *
+         * @param appointmentId The Firestore document ID of the created appointment.
+         */
+        void onSuccess(String appointmentId);
+
+        /** Called when the slot was already taken (race condition). */
+        void onSlotTaken();
+
+        /**
+         * Called when the transaction failed for a non-race-condition reason.
+         *
+         * @param e The exception describing the failure.
+         */
+        void onFailure(Exception e);
+    }
+
     // -------------------------------------------------------------------------
     // Write operations
     // -------------------------------------------------------------------------
@@ -151,6 +174,58 @@ public class AppointmentRepository {
             return null;
 
         }).addOnSuccessListener(unused -> callback.onSuccess())
+          .addOnFailureListener(e -> {
+              if (e.getMessage() != null && e.getMessage().contains("SLOT_TAKEN")) {
+                  callback.onSlotTaken();
+              } else {
+                  callback.onFailure(e);
+              }
+          });
+    }
+
+    /**
+     * Atomically books a time slot on behalf of a waitlisted student.
+     *
+     * <p>Identical transaction logic to {@link #bookAppointment} but accepts the
+     * student UID directly (no Firebase Auth context required) and returns the
+     * generated appointment ID so the caller can call
+     * {@link WaitlistRepository#resolveEntry} atomically.</p>
+     *
+     * @param studentId   The waitlisted student's UID.
+     * @param counselorId The counselor being booked.
+     * @param slot        The {@link TimeSlot} to book (must have a valid ID).
+     * @param callback    Three-way callback: success with appointmentId, slot-taken, or failure.
+     */
+    public void bookAppointmentForWaitlist(String studentId, String counselorId,
+                                           TimeSlot slot, OnWaitlistBookingCallback callback) {
+        DocumentReference slotRef = db.collection("Slots")
+                .document(counselorId)
+                .collection("slots")
+                .document(slot.getId());
+        DocumentReference appointmentRef = appointmentsCollection.document();
+
+        db.runTransaction(transaction -> {
+            DocumentSnapshot slotSnap = transaction.get(slotRef);
+            Boolean available = slotSnap.getBoolean("available");
+            if (available == null || !available) {
+                throw new RuntimeException("SLOT_TAKEN");
+            }
+
+            transaction.update(slotRef, "available", false);
+
+            Appointment appointment = new Appointment();
+            appointment.setId(appointmentRef.getId());
+            appointment.setStudentId(studentId);
+            appointment.setCounselorId(counselorId);
+            appointment.setSlotId(slot.getId());
+            appointment.setDate(slot.getDate());
+            appointment.setTime(slot.getTime());
+            appointment.setStatus("CONFIRMED");
+            transaction.set(appointmentRef, appointment);
+
+            return appointmentRef.getId();
+
+        }).addOnSuccessListener(appointmentId -> callback.onSuccess(appointmentId))
           .addOnFailureListener(e -> {
               if (e.getMessage() != null && e.getMessage().contains("SLOT_TAKEN")) {
                   callback.onSlotTaken();
@@ -217,60 +292,13 @@ public class AppointmentRepository {
                                 .collection("slots")
                                 .document(slotId)
                                 .update("available", true)
-                                .addOnCompleteListener(task ->
-                                        offerSlotToNextWaitlistedStudent(counselorId, slotId, callback));
+                                .addOnSuccessListener(v -> callback.onSuccess())
+                                .addOnFailureListener(e -> callback.onSuccess());
                     } else {
                         callback.onSuccess();
                     }
                 })
                 .addOnFailureListener(callback::onFailure);
-    }
-
-    private void offerSlotToNextWaitlistedStudent(String counselorId, String slotId,
-                                                  OnStatusUpdateCallback callback) {
-        db.collection("Slots")
-                .document(counselorId)
-                .collection("slots")
-                .document(slotId)
-                .get()
-                .addOnSuccessListener(slotDoc -> {
-                    TimeSlot slot = slotDoc.toObject(TimeSlot.class);
-                    if (slot == null) {
-                        callback.onSuccess();
-                        return;
-                    }
-                    slot.setId(slotDoc.getId());
-                    WaitlistRepository waitlistRepository = new WaitlistRepository();
-                    waitlistRepository.getNextActiveEntry(counselorId,
-                            new WaitlistRepository.OnNextWaitlistCallback() {
-                                @Override
-                                public void onSuccess(WaitlistEntry entry) {
-                                    waitlistRepository.markOffered(entry, slot,
-                                            new WaitlistRepository.OnWaitlistSimpleCallback() {
-                                                @Override
-                                                public void onSuccess() {
-                                                    callback.onSuccess();
-                                                }
-
-                                                @Override
-                                                public void onFailure(Exception e) {
-                                                    callback.onSuccess();
-                                                }
-                                            });
-                                }
-
-                                @Override
-                                public void onEmpty() {
-                                    callback.onSuccess();
-                                }
-
-                                @Override
-                                public void onFailure(Exception e) {
-                                    callback.onSuccess();
-                                }
-                            });
-                })
-                .addOnFailureListener(e -> callback.onSuccess());
     }
 
     // -------------------------------------------------------------------------

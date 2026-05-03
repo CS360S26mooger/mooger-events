@@ -21,7 +21,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -113,7 +112,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
         // Placeholder action buttons (Phase 4)
         holder.joinButton.setOnClickListener(v ->
-                Toast.makeText(context, R.string.action_video_placeholder, Toast.LENGTH_SHORT).show());
+                AppToast.show(context, R.string.action_video_placeholder, AppToast.LENGTH_SHORT));
         holder.crisisButton.setOnClickListener(v -> showCrisisDialog(apt));
         holder.profileButton.setOnClickListener(v -> openStudentProfile(apt));
         holder.notesButton.setOnClickListener(v -> showNoteDialog(apt));
@@ -190,14 +189,14 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                         apt.setNoShowFollowUpRequired(true);
                         apt.setNoShowFollowUpStatus("PENDING");
                         applyStatusBadge(holder, "NO_SHOW");
-                        Toast.makeText(context, context.getString(R.string.no_show_followup_created),
-                                Toast.LENGTH_SHORT).show();
+                        AppToast.show(context, context.getString(R.string.no_show_followup_created),
+                                AppToast.LENGTH_SHORT);
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(context, R.string.error_update_status,
-                                Toast.LENGTH_SHORT).show();
+                        AppToast.show(context, R.string.error_update_status,
+                                AppToast.LENGTH_SHORT);
                     }
                 });
     }
@@ -212,7 +211,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     private void showCrisisDialog(Appointment appointment) {
         if (!(context instanceof FragmentActivity)) {
-            Toast.makeText(context, R.string.crisis_escalation_error, Toast.LENGTH_SHORT).show();
+            AppToast.show(context, R.string.crisis_escalation_error, AppToast.LENGTH_SHORT);
             return;
         }
         CrisisEscalationDialogFragment
@@ -255,7 +254,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                           EditText noteEdit, AlertDialog dialog) {
         String text = noteEdit.getText() == null ? "" : noteEdit.getText().toString().trim();
         if (text.isEmpty()) {
-            Toast.makeText(context, R.string.note_text_required, Toast.LENGTH_SHORT).show();
+            AppToast.show(context, R.string.note_text_required, AppToast.LENGTH_SHORT);
             return;
         }
         SessionNote note = new SessionNote(
@@ -267,13 +266,13 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         new SessionNoteRepository().saveNote(note, new SessionNoteRepository.OnNoteActionCallback() {
             @Override
             public void onSuccess(String noteId) {
-                Toast.makeText(context, R.string.note_saved, Toast.LENGTH_SHORT).show();
+                AppToast.show(context, R.string.note_saved, AppToast.LENGTH_SHORT);
                 dialog.dismiss();
             }
 
             @Override
             public void onFailure(Exception e) {
-                Toast.makeText(context, R.string.note_save_error, Toast.LENGTH_LONG).show();
+                AppToast.show(context, R.string.note_save_error, AppToast.LENGTH_LONG);
             }
         });
     }

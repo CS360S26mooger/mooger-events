@@ -21,7 +21,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -227,9 +226,9 @@ public class CounselorListActivity extends AppCompatActivity {
             @Override
             public void onFailure(Exception e) {
                 progressBar.setVisibility(View.GONE);
-                Toast.makeText(CounselorListActivity.this,
+                AppToast.show(CounselorListActivity.this,
                         getString(R.string.error_loading_counselors),
-                        Toast.LENGTH_LONG).show();
+                        AppToast.LENGTH_LONG);
             }
         });
     }

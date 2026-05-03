@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -154,9 +153,9 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Exception e) {
                         // Profile may not exist yet (first-time setup); chips stay unchecked.
-                        Toast.makeText(CounselorProfileEditActivity.this,
+                        AppToast.show(CounselorProfileEditActivity.this,
                                 getString(R.string.error_loading_profile),
-                                Toast.LENGTH_SHORT).show();
+                                AppToast.LENGTH_SHORT);
                     }
                 });
     }
@@ -218,9 +217,9 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Exception e) {
-                        Toast.makeText(CounselorProfileEditActivity.this,
+                        AppToast.show(CounselorProfileEditActivity.this,
                                 getString(R.string.error_loading_counselors),
-                                Toast.LENGTH_SHORT).show();
+                                AppToast.LENGTH_SHORT);
                     }
                 });
     }
@@ -275,18 +274,18 @@ public class CounselorProfileEditActivity extends AppCompatActivity {
                 new CounselorRepository.OnUpdateCallback() {
                     @Override
                     public void onSuccess() {
-                        Toast.makeText(CounselorProfileEditActivity.this,
+                        AppToast.show(CounselorProfileEditActivity.this,
                                 getString(R.string.success_profile_saved),
-                                Toast.LENGTH_SHORT).show();
+                                AppToast.LENGTH_SHORT);
                         finish();
                     }
 
                     @Override
                     public void onFailure(Exception e) {
                         buttonSaveProfile.setEnabled(true);
-                        Toast.makeText(CounselorProfileEditActivity.this,
+                        AppToast.show(CounselorProfileEditActivity.this,
                                 getString(R.string.error_saving_profile),
-                                Toast.LENGTH_LONG).show();
+                                AppToast.LENGTH_LONG);
                     }
                 });
     }

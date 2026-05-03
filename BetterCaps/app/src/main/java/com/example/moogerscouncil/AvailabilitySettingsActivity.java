@@ -2,7 +2,6 @@ package com.example.moogerscouncil;
 
 import android.os.Bundle;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -71,16 +70,16 @@ public class AvailabilitySettingsActivity extends AppCompatActivity {
         repository.saveSettings(settings, new AvailabilitySettingsRepository.OnSettingsSavedCallback() {
             @Override
             public void onSuccess() {
-                Toast.makeText(AvailabilitySettingsActivity.this,
+                AppToast.show(AvailabilitySettingsActivity.this,
                         R.string.settings_saved,
-                        Toast.LENGTH_SHORT).show();
+                        AppToast.LENGTH_SHORT);
             }
 
             @Override
             public void onFailure(Exception e) {
-                Toast.makeText(AvailabilitySettingsActivity.this,
+                AppToast.show(AvailabilitySettingsActivity.this,
                         R.string.settings_save_error,
-                        Toast.LENGTH_LONG).show();
+                        AppToast.LENGTH_LONG);
             }
         });
     }

@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -59,9 +58,9 @@ public class SessionHistoryActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Exception e) {
                         textEmpty.setVisibility(View.VISIBLE);
-                        Toast.makeText(SessionHistoryActivity.this,
+                        AppToast.show(SessionHistoryActivity.this,
                                 R.string.error_loading_appointments,
-                                Toast.LENGTH_LONG).show();
+                                AppToast.LENGTH_LONG);
                     }
                 });
     }

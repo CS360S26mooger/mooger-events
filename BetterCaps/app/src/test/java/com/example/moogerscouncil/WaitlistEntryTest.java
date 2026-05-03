@@ -32,16 +32,21 @@ public class WaitlistEntryTest {
     }
 
     @Test
-    public void statusCanMoveThroughOperationalStates() {
+    public void statusCanMoveThroughNewOperationalStates() {
         WaitlistEntry entry = new WaitlistEntry();
 
-        entry.setStatus(WaitlistEntry.STATUS_OFFERED);
-        assertEquals(WaitlistEntry.STATUS_OFFERED, entry.getStatus());
-
-        entry.setStatus(WaitlistEntry.STATUS_BOOKED);
-        assertEquals(WaitlistEntry.STATUS_BOOKED, entry.getStatus());
+        entry.setStatus(WaitlistEntry.STATUS_RESOLVED);
+        assertEquals(WaitlistEntry.STATUS_RESOLVED, entry.getStatus());
 
         entry.setStatus(WaitlistEntry.STATUS_CANCELLED);
         assertEquals(WaitlistEntry.STATUS_CANCELLED, entry.getStatus());
+    }
+
+    @Test
+    public void legacyStatusConstantsStillPresent() {
+        // Backward compat: adapters map these to RESOLVED/CANCELLED for display.
+        assertEquals("OFFERED", WaitlistEntry.STATUS_OFFERED);
+        assertEquals("BOOKED", WaitlistEntry.STATUS_BOOKED);
+        assertEquals("EXPIRED", WaitlistEntry.STATUS_EXPIRED);
     }
 }

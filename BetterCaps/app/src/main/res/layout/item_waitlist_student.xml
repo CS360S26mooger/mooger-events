@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:layout_marginBottom="12dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="#FFFFFF">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Status pill + counselor name row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="10dp">
+
+            <TextView
+                android:id="@+id/textWaitlistCounselorName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="#1A1A2E" />
+
+            <TextView
+                android:id="@+id/textWaitlistStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:textColor="#8B6BAE"
+                android:background="@drawable/bg_tag_pastel"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp" />
+
+        </LinearLayout>
+
+        <!-- Dates -->
+        <TextView
+            android:id="@+id/textWaitlistDates"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textSize="13sp"
+            android:textColor="#555566" />
+
+        <!-- Time window -->
+        <TextView
+            android:id="@+id/textWaitlistTimeWindow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textSize="13sp"
+            android:textColor="#555566" />
+
+        <!-- Note (hidden when empty) -->
+        <TextView
+            android:id="@+id/textWaitlistNote"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textSize="13sp"
+            android:textColor="#7A6A8A"
+            android:fontFamily="sans-serif-medium"
+            android:visibility="gone" />
+
+        <!-- Requested at -->
+        <TextView
+            android:id="@+id/textWaitlistRequestedAt"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="10dp"
+            android:textSize="12sp"
+            android:textColor="#AAAAAA" />
+
+        <!-- Cancel button — only shown for ACTIVE entries -->
+        <Button
+            android:id="@+id/buttonCancelWaitlist"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="@string/waitlist_cancel_button"
+            android:textSize="12sp"
+            android:textColor="#C0392B"
+            android:backgroundTint="#FFF0F0"
+            app:cornerRadius="8dp" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

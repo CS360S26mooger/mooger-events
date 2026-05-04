@@ -91,8 +91,8 @@ public class SessionNoteActivity extends AppCompatActivity {
                 .setOnClickListener(v -> saveNote());
 
         // Pre-load any existing note for this appointment (upsert support)
-        if (appointmentId != null) {
-            new SessionNoteRepository().getNoteForAppointment(appointmentId,
+        if (appointmentId != null && counselorId != null && studentId != null) {
+            new SessionNoteRepository().getNoteForAppointment(counselorId, studentId, appointmentId,
                     new SessionNoteRepository.OnSingleNoteCallback() {
                         @Override
                         public void onSuccess(SessionNote note) {
@@ -140,7 +140,7 @@ public class SessionNoteActivity extends AppCompatActivity {
 
     private void deleteNote() {
         if (existingNoteId == null) return;
-        new SessionNoteRepository().deleteNote(existingNoteId,
+        new SessionNoteRepository().deleteNote(counselorId, studentId, existingNoteId,
                 new SessionNoteRepository.OnNoteActionCallback() {
                     @Override
                     public void onSuccess(String noteId) {
@@ -244,7 +244,7 @@ public class SessionNoteActivity extends AppCompatActivity {
         };
 
         if (existingNoteId != null) {
-            repo.updateNote(existingNoteId, combined, selectedTemplateKey, cb);
+            repo.updateNote(counselorId, studentId, existingNoteId, combined, selectedTemplateKey, cb);
         } else {
             SessionNote note = new SessionNote(
                     appointmentId, counselorId, studentId, selectedTemplateKey, combined);

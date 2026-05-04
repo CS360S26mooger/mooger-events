@@ -355,6 +355,12 @@
     <string name="error_saving_reminder_settings">Could not save reminder settings.</string>
     <string name="returning_student_badge">Returning Student</string>
     <string name="messages">Messages</string>
+    <string name="mark_attended">Mark as Attended</string>
+    <string name="attended">Attended</string>
+    <string name="mark_attended_confirm_title">Mark as Attended?</string>
+    <string name="mark_attended_confirm_body">Confirm that you attended this session — this will record the appointment as completed.</string>
+    <string name="appointment_marked_attended">Marked as attended</string>
+    <string name="error_marking_attended">Could not mark as attended, please try again</string>
     <string name="messages_new">Messages • New</string>
     <string name="new_message_received">New message received.</string>
     <string name="message_thread_title">Pre-session Messages</string>
@@ -369,4 +375,44 @@
     <string name="message_sender_student">Student</string>
     <string name="message_sender_unknown">Sender</string>
     <string name="error_required">Required</string>
+    <!-- Admin dashboard — reminder queue status -->
+    <plurals name="reminder_pending_count">
+        <item quantity="one">%1$d reminder pending delivery</item>
+        <item quantity="other">%1$d reminders pending delivery</item>
+    </plurals>
+    <string name="reminder_pending_loading">Checking pending reminders…</string>
+    <string name="reminder_pending_unknown">Could not load pending count.</string>
+    <string name="reminder_records_up_to_date">All reminders are already up to date.</string>
+    <!-- In-app reminder notification channel -->
+    <string name="reminder_notification_channel_name">Session Reminders</string>
+    <string name="reminder_notification_channel_desc">Upcoming counseling session reminders</string>
+    <string name="reminder_notification_title">BetterCaps Reminder</string>
+
+    <!-- Sprint 11: Manage Session -->
+    <string name="manage_session_title">Manage Session</string>
+    <string name="session_actions_title">SESSION ACTIONS</string>
+    <string name="mark_no_show">Mark No-Show</string>
+    <string name="view_student_profile">View Student Profile</string>
+    <string name="crisis_escalation_filed">Escalation Filed</string>
+    <string name="loading_name">Loading…</string>
+
+    <!-- Sprint 11: Crisis dialog redesign -->
+    <string name="crisis_contacts_label">EMERGENCY CONTACTS</string>
+    <string name="crisis_notes_label">NOTES</string>
+    <string name="campus_security_label">📞 Campus Security — 042-35608000</string>
+    <string name="crisis_line_label">📞 Crisis Line — 0311-7786264</string>
+    <string name="call_action">Call</string>
+
+    <!-- Sprint 11: Admin tabs -->
+    <string name="tab_reminders">Reminders</string>
+    <string name="tab_crisis_alerts">Crisis Alerts</string>
+    <string name="crisis_alerts_empty">No unresolved crisis escalations</string>
+    <string name="crisis_alerts_load_error">Could not load crisis alerts</string>
+    <string name="crisis_alert_counselor_loading">Counselor: loading…</string>
+    <string name="crisis_alert_student_loading">Student: loading…</string>
+    <string name="crisis_alert_counselor">Counselor: %1$s</string>
+    <string name="crisis_alert_student">Student: %1$s</string>
+    <string name="mark_resolved">Mark Resolved</string>
+    <string name="crisis_resolve_success">Escalation marked resolved</string>
+    <string name="crisis_resolve_error">Could not resolve escalation</string>
 </resources>

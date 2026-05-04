@@ -112,6 +112,10 @@ public class CounselorDashboardActivity extends AppCompatActivity {
         // FirebaseAuth.getCurrentUser().getUid() as the counselorId field.
         counselorId = mAuth.getCurrentUser().getUid();
 
+        // Purge expired unbooked slots from Firestore on dashboard entry —
+        // event-driven cleanup, no background timer.
+        availabilityRepository.purgeExpiredUnbookedSlots(counselorId);
+
         // Resolve the Firestore document ID for this counselor.
         // Counselors are pre-created in the Firebase console, so their document ID may differ
         // from their Auth UID. We match on the 'uid' field (stamped on first login) or, if

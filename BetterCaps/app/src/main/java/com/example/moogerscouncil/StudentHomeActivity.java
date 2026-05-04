@@ -2,8 +2,17 @@ package com.example.moogerscouncil;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
+import android.Manifest;
 import android.app.Dialog;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -72,6 +81,9 @@ public class StudentHomeActivity extends AppCompatActivity {
     private TextView textWaitlistStatusSubtitle;
     private ListenerRegistration studentAppointmentListener;
     private MaterialButton buttonUpcomingMessages;
+    private ReminderRepository reminderRepository;
+    private static final String REMINDER_CHANNEL_ID = "betterCAPS_reminders";
+    private static final int NOTIF_BASE_ID = 5000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +97,8 @@ public class StudentHomeActivity extends AppCompatActivity {
         secureMessageRepository = new SecureMessageRepository();
         intakeAssessmentRepository = new IntakeAssessmentRepository();
         waitlistRepository = new WaitlistRepository();
+        reminderRepository = new ReminderRepository();
+        createReminderNotificationChannel();
 
         counselorNameText     = findViewById(R.id.upcomingCounselorName);
         counselorRoleText     = findViewById(R.id.upcomingCounselorRole);
@@ -446,18 +460,21 @@ public class StudentHomeActivity extends AppCompatActivity {
         buttonUpcomingMessages.setText(R.string.messages);
         buttonUpcomingMessages.setOnClickListener(v -> {
             Intent intent = new Intent(StudentHomeActivity.this, MessageThreadActivity.class);
-            intent.putExtra(MessageThreadActivity.EXTRA_APPOINTMENT_ID, appointment.getId());
             intent.putExtra(MessageThreadActivity.EXTRA_STUDENT_ID, appointment.getStudentId());
             intent.putExtra(MessageThreadActivity.EXTRA_COUNSELOR_ID, appointment.getCounselorId());
+            intent.putExtra(MessageThreadActivity.EXTRA_SESSION_DATE, appointment.getDate());
+            intent.putExtra(MessageThreadActivity.EXTRA_SESSION_TIME, appointment.getTime());
             intent.putExtra(MessageThreadActivity.EXTRA_OTHER_NAME,
                     counselorNameText.getText() == null ? "" : counselorNameText.getText().toString());
             startActivity(intent);
         });
 
         String currentUid = mAuth.getCurrentUser() == null ? "" : mAuth.getCurrentUser().getUid();
-        secureMessageRepository.hasUnreadMessagesForAppointment(
-                appointment.getId(),
-                currentUid,
+        String readerRole = UserRole.STUDENT;
+        secureMessageRepository.hasUnreadInThread(
+                appointment.getCounselorId(),
+                appointment.getStudentId(),
+                readerRole,
                 new SecureMessageRepository.OnUnreadStatusCallback() {
                     @Override
                     public void onResult(boolean hasUnread) {
@@ -709,6 +726,11 @@ public class StudentHomeActivity extends AppCompatActivity {
 
             if (primaryKey == null) continue;
 
+            // Purge expired unbooked slots for this counselor on every login —
+            // event-driven cleanup, no background timer.
+            repo.purgeExpiredUnbookedSlots(primaryKey);
+            if (fallbackKey != null) repo.purgeExpiredUnbookedSlots(fallbackKey);
+
             // Skip counselors whose slots are already cached under the primary key
             if (SessionCache.getInstance().getSlots(primaryKey) != null) continue;
 
@@ -958,8 +980,91 @@ public class StudentHomeActivity extends AppCompatActivity {
             fetchUpcomingSession();
             if (!feedbackDismissed) checkForPendingFeedback();
             loadIntakeAndWaitlistSummary(mAuth.getCurrentUser().getUid());
+            checkAndDeliverReminders(mAuth.getCurrentUser().getUid());
         }
     }
+
+    // ── In-app reminder delivery ───────────────────────────────────────────────
+
+    /**
+     * Creates the notification channel once (no-op on re-calls; required on API 26+).
+     * Safe to call on every onCreate.
+     */
+    private void createReminderNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel(
+                    REMINDER_CHANNEL_ID,
+                    getString(R.string.reminder_notification_channel_name),
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription(getString(R.string.reminder_notification_channel_desc));
+            NotificationManager nm = getSystemService(NotificationManager.class);
+            if (nm != null) nm.createNotificationChannel(channel);
+        }
+    }
+
+    /**
+     * Queries Firestore for reminder records that are due and not yet delivered.
+     * Fires one local notification per record, then the repository batch-marks them
+     * delivered so they never fire again. On Android 13+, requests POST_NOTIFICATIONS
+     * permission if not already granted before attempting to notify.
+     */
+    private void checkAndDeliverReminders(String studentId) {
+        reminderRepository.getDueRemindersForStudent(studentId,
+                new ReminderRepository.OnRemindersLoadedCallback() {
+                    @Override
+                    public void onSuccess(List<ReminderRecord> records) {
+                        if (records.isEmpty()) return;
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            if (ContextCompat.checkSelfPermission(StudentHomeActivity.this,
+                                    Manifest.permission.POST_NOTIFICATIONS)
+                                    != PackageManager.PERMISSION_GRANTED) {
+                                ActivityCompat.requestPermissions(
+                                        StudentHomeActivity.this,
+                                        new String[]{Manifest.permission.POST_NOTIFICATIONS},
+                                        0);
+                                // Deliver in-app banner only — notification will fire next
+                                // open after the user grants the permission.
+                                showReminderBanner(records.get(records.size() - 1));
+                                return;
+                            }
+                        }
+                        for (int i = 0; i < records.size(); i++) {
+                            fireReminderNotification(records.get(i), NOTIF_BASE_ID + i);
+                        }
+                        showReminderBanner(records.get(records.size() - 1));
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) { /* silent — reminders are best-effort */ }
+                });
+    }
+
+    private void fireReminderNotification(ReminderRecord record, int notifId) {
+        String msg = record.getMessageText();
+        if (msg == null || msg.isEmpty()) return;
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this, REMINDER_CHANNEL_ID)
+                        .setSmallIcon(R.drawable.ic_nav_calendar)
+                        .setContentTitle(getString(R.string.reminder_notification_title))
+                        .setContentText(msg)
+                        .setStyle(new NotificationCompat.BigTextStyle().bigText(msg))
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setAutoCancel(true);
+        NotificationManagerCompat nm = NotificationManagerCompat.from(this);
+        nm.notify(notifId, builder.build());
+    }
+
+    /**
+     * Shows the most recent due reminder as a dismissible in-app toast so the student
+     * sees it even if they denied the notification permission.
+     */
+    private void showReminderBanner(ReminderRecord record) {
+        if (record.getMessageText() != null && !record.getMessageText().isEmpty()) {
+            AppToast.show(this, record.getMessageText(), AppToast.LENGTH_LONG);
+        }
+    }
+
+    // ──────────────────────────────────────────────────────────────────────────
 
     @Override
     protected void onDestroy() {

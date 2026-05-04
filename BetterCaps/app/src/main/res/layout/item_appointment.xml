@@ -13,215 +13,118 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         android:padding="16dp">
 
-        <!-- Top row: pastel pink avatar + counselor/student name -->
+        <!-- Pastel pink avatar -->
+        <ImageView
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:src="@drawable/ic_student"
+            android:tint="#C96B8E"
+            android:background="@drawable/circle_bg"
+            android:backgroundTint="#F5E6F0"
+            android:padding="10dp"
+            android:layout_marginEnd="12dp"
+            android:contentDescription="Profile" />
+
+        <!-- Student info block -->
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="14dp">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:src="@drawable/ic_student"
-                android:tint="#C96B8E"
-                android:background="@drawable/circle_bg"
-                android:backgroundTint="#F5E6F0"
-                android:padding="10dp"
-                android:layout_marginEnd="12dp"
-                android:contentDescription="Profile" />
-
-            <TextView
-                android:id="@+id/studentName"
-                android:layout_width="0dp"
+            <!-- Name row with returning badge -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Counselor Name"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="#1A1A2E" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="6dp">
 
-            <TextView
-                android:id="@+id/returningStudentBadge"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/studentName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Student Name"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    android:textColor="#1A1A2E" />
+
+                <TextView
+                    android:id="@+id/returningStudentBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/returning_student_badge"
+                    android:textSize="10sp"
+                    android:textStyle="bold"
+                    android:textColor="#8B6BAE"
+                    android:background="@drawable/bg_tag_pastel"
+                    android:paddingHorizontal="7dp"
+                    android:paddingVertical="3dp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <!-- Date · time · status pill -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/returning_student_badge"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:textColor="#8B6BAE"
-                android:background="@drawable/bg_tag_pastel"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:visibility="gone" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
+                <TextView
+                    android:id="@+id/sessionDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Mon, Apr 26"
+                    android:textSize="12sp"
+                    android:textColor="#8A8A9A"
+                    android:drawableStart="@drawable/ic_nav_calendar"
+                    android:drawableTint="#AAAAAA"
+                    android:drawablePadding="3dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginEnd="10dp" />
+
+                <TextView
+                    android:id="@+id/sessionTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="10:00"
+                    android:textSize="12sp"
+                    android:textColor="#8B6BAE"
+                    android:drawableStart="@drawable/ic_nav_history"
+                    android:drawableTint="#8B6BAE"
+                    android:drawablePadding="3dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginEnd="10dp" />
+
+                <TextView
+                    android:id="@+id/sessionTopic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirmed"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="#5E35B1"
+                    android:background="@drawable/bg_tag_pastel"
+                    android:paddingHorizontal="8dp"
+                    android:paddingVertical="3dp" />
+
+            </LinearLayout>
         </LinearLayout>
 
-        <!-- Bottom chin: date · time · status pill -->
-        <LinearLayout
-            android:layout_width="match_parent"
+        <!-- Trailing chevron — hints the card is tappable -->
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="6dp">
-
-            <TextView
-                android:id="@+id/sessionDate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Mon, Apr 26"
-                android:textSize="12sp"
-                android:textColor="#8A8A9A"
-                android:drawableStart="@drawable/ic_nav_calendar"
-                android:drawableTint="#AAAAAA"
-                android:drawablePadding="4dp"
-                android:gravity="center_vertical" />
-
-            <TextView
-                android:id="@+id/sessionTime"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="10:00"
-                android:textSize="12sp"
-                android:textColor="#8B6BAE"
-                android:drawableStart="@drawable/ic_nav_history"
-                android:drawableTint="#8B6BAE"
-                android:drawablePadding="4dp"
-                android:gravity="center_vertical" />
-
-            <TextView
-                android:id="@+id/sessionTopic"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Upcoming"
-                android:textSize="11sp"
-                android:textStyle="bold"
-                android:textColor="#5E35B1"
-                android:background="@drawable/bg_tag_pastel"
-                android:paddingHorizontal="10dp"
-                android:paddingVertical="4dp" />
-
-        </LinearLayout>
-
-        <!-- Counselor-facing action buttons — hidden for students via StudentAppointmentAdapter -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/profileButton"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                android:text="Profile"
-                android:textSize="12sp"
-                android:textAllCaps="false"
-                android:textColor="#555566"
-                app:icon="@drawable/ic_student"
-                app:iconTint="#555566"
-                app:iconSize="16dp"
-                app:iconGravity="textStart"
-                app:strokeColor="#E8E8F0"
-                app:strokeWidth="1dp"
-                app:cornerRadius="10dp"
-                android:backgroundTint="#F2F4F8" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/notesButton"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_marginStart="6dp"
-                android:text="Notes"
-                android:textSize="12sp"
-                android:textAllCaps="false"
-                android:textColor="#C96B8E"
-                app:icon="@drawable/ic_document"
-                app:iconTint="#C96B8E"
-                app:iconSize="16dp"
-                app:iconGravity="textStart"
-                app:strokeColor="#F8D7E3"
-                app:strokeWidth="1dp"
-                app:cornerRadius="10dp"
-                android:backgroundTint="#FFF0F5" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="8dp">
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/noShowButton"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_marginEnd="6dp"
-                android:text="No-Show"
-                android:textSize="11sp"
-                android:textAllCaps="false"
-                android:textColor="#E8761A"
-                app:icon="@drawable/ic_sleeping"
-                app:iconTint="#E8761A"
-                app:iconSize="16dp"
-                app:iconGravity="textStart"
-                app:strokeColor="#F5B87A"
-                app:strokeWidth="1dp"
-                app:cornerRadius="10dp"
-                android:backgroundTint="#FFF3E8" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/crisisButton"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="0dp"
-                android:layout_height="40dp"
-                android:layout_weight="1"
-                android:layout_marginStart="6dp"
-                android:text="Crisis"
-                android:textSize="11sp"
-                android:textAllCaps="false"
-                android:textColor="#C0392B"
-                app:icon="@drawable/ic_warning"
-                app:iconTint="#C0392B"
-                app:iconSize="16dp"
-                app:iconGravity="textStart"
-                app:strokeColor="#F5C0C0"
-                app:strokeWidth="1dp"
-                app:cornerRadius="10dp"
-                android:backgroundTint="#FFF0F0" />
-
-        </LinearLayout>
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnMessage"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="@string/messages"
-            android:textSize="12sp"
-            android:textAllCaps="false"
-            android:textColor="#3D5AF1"
-            app:icon="@drawable/ic_chat"
-            app:iconTint="#3D5AF1"
-            app:iconSize="16dp"
-            app:iconGravity="textStart"
-            app:strokeColor="#CAD3FF"
-            app:strokeWidth="1dp"
-            app:cornerRadius="10dp"
-            android:backgroundTint="#F1F4FF" />
+            android:text="›"
+            android:textSize="22sp"
+            android:textColor="#CCCCCC"
+            android:layout_marginStart="8dp" />
 
     </LinearLayout>
 

@@ -9,9 +9,6 @@
       <SelectionState runConfigName="Tests in 'com.example.moogerscouncil'">
         <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
-      <SelectionState runConfigName="AvailabilitySettingsFlowTest">
-        <option name="selectionMode" value="DROPDOWN" />
-      </SelectionState>
     </selectionStates>
   </component>
 </project>

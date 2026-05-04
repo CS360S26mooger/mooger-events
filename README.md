@@ -244,6 +244,8 @@ Core Objectives:
 | **US-46** | **As a counselor**, I want to change my display name from the Edit Profile screen so that students see the name I prefer in the directory, appointment cards, and dashboard. | Medium | 2 | Low | Done | Sprint 12 |
 | **US-47** | **As a counselor**, I want expired unbooked slots to be automatically hidden from my availability management screen so that only current and booked slots are visible, keeping my schedule view clean. | Medium | 2 | Low | Done | Sprint 12 |
 | **US-48** | **As a student**, I want my upcoming session card to automatically disappear once the appointment time has passed so that I only see sessions that are still ahead of me. | Medium | 2 | Low | Done | Sprint 12 |
+| **US-49** | **As a student**, I want a "Mark as Attended" toggle on my past CONFIRMED sessions so that I can confirm I attended the appointment, with the change reflected on the counselor side as a COMPLETED status. | High | 3 | Low | Done | Sprint 12 |
+| **US-50** | **As a counselor**, I want expired unbooked slots to be automatically purged from the database on every login so that the schedule stays clean without me having to delete stale slots manually and without a wasteful background timer. | Medium | 3 | Low | Done | Sprint 12 |
 ---
 
 ## Object-Oriented Analysis (CRC Cards)

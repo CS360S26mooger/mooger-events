@@ -1,3 +1,13 @@
+/*
+ * MessageThreadActivity.java
+ * Role: Displays the full secure message thread between a counselor and student.
+ *       Messages from all past sessions are shown in chronological order with
+ *       session-date dividers inserted by SecureMessageAdapter.
+ *       Real-time updates via Firestore snapshot listener on the thread sub-collection.
+ *
+ * Design pattern: Observer (Firestore real-time listener); Repository (data layer).
+ * Part of the BetterCAPS counseling platform — Sprint 11 messaging architecture.
+ */
 package com.example.moogerscouncil;
 
 import android.os.Bundle;
@@ -18,17 +28,20 @@ import com.google.firebase.firestore.ListenerRegistration;
 import java.util.List;
 
 /**
- * Appointment-linked secure message thread for pre-session communication.
+ * Thread-based secure message view for pre-session and cross-session communication.
+ * Shows all messages between a counselor-student pair, grouped by session date.
  */
 public class MessageThreadActivity extends AppCompatActivity {
-    public static final String EXTRA_APPOINTMENT_ID = "APPOINTMENT_ID";
     public static final String EXTRA_STUDENT_ID = "STUDENT_ID";
     public static final String EXTRA_COUNSELOR_ID = "COUNSELOR_ID";
+    public static final String EXTRA_SESSION_DATE = "SESSION_DATE";
+    public static final String EXTRA_SESSION_TIME = "SESSION_TIME";
     public static final String EXTRA_OTHER_NAME = "OTHER_NAME";
 
-    private String appointmentId;
     private String studentId;
     private String counselorId;
+    private String sessionDate;
+    private String sessionTime;
     private String currentUid;
     private String senderRole;
 
@@ -49,9 +62,10 @@ public class MessageThreadActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_message_thread);
 
-        appointmentId = getIntent().getStringExtra(EXTRA_APPOINTMENT_ID);
-        studentId = getIntent().getStringExtra(EXTRA_STUDENT_ID);
+        studentId   = getIntent().getStringExtra(EXTRA_STUDENT_ID);
         counselorId = getIntent().getStringExtra(EXTRA_COUNSELOR_ID);
+        sessionDate = getIntent().getStringExtra(EXTRA_SESSION_DATE);
+        sessionTime = getIntent().getStringExtra(EXTRA_SESSION_TIME);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         currentUid = user == null ? "" : user.getUid();
@@ -63,10 +77,10 @@ public class MessageThreadActivity extends AppCompatActivity {
                 ? getString(R.string.message_thread_title)
                 : getString(R.string.message_thread_title_with_name, otherName));
 
-        recyclerMessages = findViewById(R.id.recyclerMessages);
-        editMessage = findViewById(R.id.editMessage);
-        btnSendMessage = findViewById(R.id.btnSendMessage);
-        progressMessages = findViewById(R.id.progressMessages);
+        recyclerMessages  = findViewById(R.id.recyclerMessages);
+        editMessage       = findViewById(R.id.editMessage);
+        btnSendMessage    = findViewById(R.id.btnSendMessage);
+        progressMessages  = findViewById(R.id.progressMessages);
         textEmptyMessages = findViewById(R.id.textEmptyMessages);
 
         messageRepository = new SecureMessageRepository();
@@ -89,13 +103,14 @@ public class MessageThreadActivity extends AppCompatActivity {
     }
 
     private void subscribeToMessages() {
-        if (appointmentId == null || appointmentId.isEmpty()) {
+        if (counselorId == null || studentId == null
+                || counselorId.isEmpty() || studentId.isEmpty()) {
             textEmptyMessages.setVisibility(View.VISIBLE);
             textEmptyMessages.setText(R.string.error_loading_messages);
             return;
         }
         progressMessages.setVisibility(View.VISIBLE);
-        messageListener = messageRepository.listenForMessagesForAppointment(appointmentId,
+        messageListener = messageRepository.listenToThread(counselorId, studentId,
                 new SecureMessageRepository.OnMessagesLoadedCallback() {
                     @Override
                     public void onSuccess(List<SecureMessage> messages) {
@@ -104,7 +119,7 @@ public class MessageThreadActivity extends AppCompatActivity {
                         adapter.setMessages(messages);
                         textEmptyMessages.setVisibility(messages.isEmpty() ? View.VISIBLE : View.GONE);
                         if (!messages.isEmpty()) {
-                            recyclerMessages.scrollToPosition(messages.size() - 1);
+                            recyclerMessages.scrollToPosition(adapter.getItemCount() - 1);
                         }
                         markRead();
                     }
@@ -114,8 +129,7 @@ public class MessageThreadActivity extends AppCompatActivity {
                         progressMessages.setVisibility(View.GONE);
                         textEmptyMessages.setVisibility(View.VISIBLE);
                         AppToast.show(MessageThreadActivity.this,
-                                R.string.error_loading_messages,
-                                AppToast.LENGTH_LONG);
+                                R.string.error_loading_messages, AppToast.LENGTH_LONG);
                     }
                 });
     }
@@ -138,8 +152,8 @@ public class MessageThreadActivity extends AppCompatActivity {
     }
 
     private void markRead() {
-        if (currentUid == null || currentUid.isEmpty()) return;
-        messageRepository.markMessagesRead(appointmentId, currentUid,
+        if (counselorId == null || studentId == null) return;
+        messageRepository.markThreadRead(counselorId, studentId, senderRole,
                 new SecureMessageRepository.OnMessageActionCallback() {
                     @Override public void onSuccess() {}
                     @Override public void onFailure(Exception e) {}
@@ -153,30 +167,25 @@ public class MessageThreadActivity extends AppCompatActivity {
             editMessage.setError(getString(R.string.error_required));
             return;
         }
-        String receiverId = UserRole.COUNSELOR.equals(senderRole) ? studentId : counselorId;
-        SecureMessage message = new SecureMessage(
-                appointmentId,
-                counselorId,
-                studentId,
-                currentUid,
-                receiverId,
-                senderRole,
-                text);
         btnSendMessage.setEnabled(false);
-        messageRepository.sendMessage(message, new SecureMessageRepository.OnMessageActionCallback() {
-            @Override
-            public void onSuccess() {
-                btnSendMessage.setEnabled(true);
-                editMessage.setText("");
-            }
+        messageRepository.sendMessage(
+                counselorId, studentId,
+                sessionDate != null ? sessionDate : "",
+                sessionTime != null ? sessionTime : "",
+                currentUid, senderRole, text,
+                new SecureMessageRepository.OnMessageActionCallback() {
+                    @Override
+                    public void onSuccess() {
+                        btnSendMessage.setEnabled(true);
+                        editMessage.setText("");
+                    }
 
-            @Override
-            public void onFailure(Exception e) {
-                btnSendMessage.setEnabled(true);
-                AppToast.show(MessageThreadActivity.this,
-                        R.string.error_sending_message,
-                        AppToast.LENGTH_LONG);
-            }
-        });
+                    @Override
+                    public void onFailure(Exception e) {
+                        btnSendMessage.setEnabled(true);
+                        AppToast.show(MessageThreadActivity.this,
+                                R.string.error_sending_message, AppToast.LENGTH_LONG);
+                    }
+                });
     }
 }

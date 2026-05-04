@@ -1,112 +1,281 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/dialog_rounded_bg">
 
+    <!-- Header strip — pastel pink -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:background="#FFF0F5"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="16dp">
+
+        <ImageView
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:src="@drawable/ic_warning"
+            android:tint="#C96B8E"
+            android:layout_marginEnd="10dp"
+            android:contentDescription="Crisis" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/crisis_escalation_title"
-            android:textColor="#1A1A2E"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/crisis_severity_label"
+            android:textSize="17sp"
             android:textStyle="bold"
             android:textColor="#1A1A2E" />
 
-        <RadioGroup
-            android:id="@+id/radioSeverityGroup"
+    </LinearLayout>
+
+    <!-- Scrollable form content -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:scrollbars="none">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:checkedButton="@id/radioSeverityModerate">
+            android:orientation="vertical"
+            android:paddingHorizontal="20dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp">
 
-            <RadioButton
-                android:id="@+id/radioSeverityModerate"
+            <!-- SEVERITY section -->
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/crisis_severity_moderate" />
+                android:text="@string/crisis_severity_label"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#8A8A9A"
+                android:layout_marginBottom="8dp" />
 
-            <RadioButton
-                android:id="@+id/radioSeverityHigh"
+            <RadioGroup
+                android:id="@+id/radioSeverityGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/crisis_severity_high" />
+                android:orientation="horizontal"
+                android:checkedButton="@id/radioSeverityModerate"
+                android:layout_marginBottom="16dp">
 
-            <RadioButton
-                android:id="@+id/radioSeverityImmediate"
+                <RadioButton
+                    android:id="@+id/radioSeverityModerate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/crisis_severity_moderate"
+                    android:textSize="13sp"
+                    android:buttonTint="#C96B8E" />
+
+                <RadioButton
+                    android:id="@+id/radioSeverityHigh"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/crisis_severity_high"
+                    android:textSize="13sp"
+                    android:buttonTint="#E8761A" />
+
+                <RadioButton
+                    android:id="@+id/radioSeverityImmediate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/crisis_severity_immediate"
+                    android:textSize="13sp"
+                    android:buttonTint="#D32F2F" />
+
+            </RadioGroup>
+
+            <!-- ACTION TAKEN section -->
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/crisis_severity_immediate" />
-        </RadioGroup>
+                android:text="@string/crisis_action_label"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#8A8A9A"
+                android:layout_marginBottom="8dp" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/crisis_action_label"
-            android:textStyle="bold"
-            android:textColor="#1A1A2E"
-            android:layout_marginTop="10dp" />
-
-        <RadioGroup
-            android:id="@+id/radioActionGroup"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:checkedButton="@id/radioActionSafety">
-
-            <RadioButton
-                android:id="@+id/radioActionSecurity"
+            <RadioGroup
+                android:id="@+id/radioActionGroup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/crisis_action_security" />
+                android:checkedButton="@id/radioActionSafety"
+                android:layout_marginBottom="16dp">
 
-            <RadioButton
-                android:id="@+id/radioActionCaps"
+                <RadioButton
+                    android:id="@+id/radioActionSafety"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/crisis_action_safety_plan"
+                    android:textSize="13sp"
+                    android:buttonTint="#C96B8E" />
+
+                <RadioButton
+                    android:id="@+id/radioActionSecurity"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/crisis_action_security"
+                    android:textSize="13sp"
+                    android:buttonTint="#C96B8E" />
+
+                <RadioButton
+                    android:id="@+id/radioActionCaps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/crisis_action_caps"
+                    android:textSize="13sp"
+                    android:buttonTint="#C96B8E" />
+
+                <RadioButton
+                    android:id="@+id/radioActionOther"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/crisis_action_other"
+                    android:textSize="13sp"
+                    android:buttonTint="#C96B8E" />
+
+            </RadioGroup>
+
+            <!-- EMERGENCY CONTACTS section -->
+            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/crisis_action_caps" />
+                android:text="@string/crisis_contacts_label"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#8A8A9A"
+                android:layout_marginBottom="8dp" />
 
-            <RadioButton
-                android:id="@+id/radioActionSafety"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/crisis_action_safety_plan" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
 
-            <RadioButton
-                android:id="@+id/radioActionOther"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/campus_security_label"
+                    android:textSize="12sp"
+                    android:textColor="#555566" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCallSecurity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:text="@string/call_action"
+                    android:textSize="12sp"
+                    android:textAllCaps="false"
+                    android:backgroundTint="#FFF0F5"
+                    android:textColor="#C96B8E"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:strokeColor="#F8D7E3"
+                    app:cornerRadius="10dp" />
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/crisis_action_other" />
-        </RadioGroup>
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="16dp">
 
-        <EditText
-            android:id="@+id/editCrisisNotes"
-            android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:layout_marginTop="12dp"
-            android:gravity="top|start"
-            android:inputType="textMultiLine|textCapSentences"
-            android:hint="@string/crisis_notes_hint"
-            android:background="@drawable/edittext_bg"
-            android:padding="12dp" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/crisis_line_label"
+                    android:textSize="12sp"
+                    android:textColor="#555566" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnCallCrisisLine"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:text="@string/call_action"
+                    android:textSize="12sp"
+                    android:textAllCaps="false"
+                    android:backgroundTint="#FFF0F5"
+                    android:textColor="#C96B8E"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:strokeColor="#F8D7E3"
+                    app:cornerRadius="10dp" />
+
+            </LinearLayout>
+
+            <!-- NOTES section -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/crisis_notes_label"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:textColor="#8A8A9A"
+                android:layout_marginBottom="8dp" />
+
+            <EditText
+                android:id="@+id/editCrisisNotes"
+                android:layout_width="match_parent"
+                android:layout_height="96dp"
+                android:gravity="top|start"
+                android:inputType="textMultiLine|textCapSentences"
+                android:hint="@string/crisis_notes_hint"
+                android:background="@drawable/edittext_bg"
+                android:padding="12dp"
+                android:layout_marginBottom="4dp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <!-- Footer buttons — always visible, outside the scroll area -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingHorizontal="20dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp">
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonCallSecurity"
-            android:layout_width="match_parent"
+            android:id="@+id/btnCrisisCancel"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="0dp"
             android:layout_height="48dp"
-            android:layout_marginTop="12dp"
-            android:text="@string/call_campus_security"
+            android:layout_weight="1"
+            android:layout_marginEnd="8dp"
+            android:text="@string/button_cancel"
             android:textAllCaps="false"
-            android:backgroundTint="#C0392B" />
+            android:textColor="#555566"
+            app:strokeColor="#E8E8F0"
+            app:cornerRadius="12dp" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSaveEscalation"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:text="@string/save_escalation"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#C96B8E"
+            app:cornerRadius="12dp" />
+
     </LinearLayout>
-</ScrollView>
+
+</LinearLayout>

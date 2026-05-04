@@ -34,17 +34,17 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 public class NotesUpsertFlowTest {
 
     @Test
-    public void notesDialogOpensFromStudentProfile() {
+    public void notesActivityOpensFromStudentProfile() {
         try (ActivityScenario<StudentProfileActivity> scenario =
                      ActivityScenario.launch(makeProfileIntent())) {
             onView(withId(R.id.buttonAddSessionNote)).perform(click());
-            // Styled dialog title should appear
+            // Title in the top bar should appear
             onView(withText(R.string.session_notes_title)).check(matches(isDisplayed()));
         }
     }
 
     @Test
-    public void notesDialogShowsTemplateChipGroup() {
+    public void notesActivityShowsTemplateChipGroup() {
         try (ActivityScenario<StudentProfileActivity> scenario =
                      ActivityScenario.launch(makeProfileIntent())) {
             onView(withId(R.id.buttonAddSessionNote)).perform(click());
@@ -53,20 +53,21 @@ public class NotesUpsertFlowTest {
     }
 
     @Test
-    public void notesDialogShowsTextInputField() {
+    public void notesActivityShowsSectionFields() {
         try (ActivityScenario<StudentProfileActivity> scenario =
                      ActivityScenario.launch(makeProfileIntent())) {
             onView(withId(R.id.buttonAddSessionNote)).perform(click());
-            onView(withId(R.id.editSessionNote)).check(matches(isDisplayed()));
+            onView(withId(R.id.editNoteConcern)).check(matches(isDisplayed()));
+            onView(withId(R.id.editNoteSummary)).check(matches(isDisplayed()));
         }
     }
 
     @Test
-    public void notesDialogShowsSaveButton() {
+    public void notesActivityShowsSaveButton() {
         try (ActivityScenario<StudentProfileActivity> scenario =
                      ActivityScenario.launch(makeProfileIntent())) {
             onView(withId(R.id.buttonAddSessionNote)).perform(click());
-            onView(withText(R.string.save_note)).check(matches(isDisplayed()));
+            onView(withId(R.id.buttonSaveNote)).check(matches(isDisplayed()));
         }
     }
 

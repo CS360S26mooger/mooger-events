@@ -19,6 +19,7 @@ import androidx.cardview.widget.CardView;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.ListenerRegistration;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -56,6 +57,7 @@ public class StudentHomeActivity extends AppCompatActivity {
     // Feedback
     private FeedbackRepository feedbackRepository;
     private AppointmentRepository appointmentRepository;
+    private SecureMessageRepository secureMessageRepository;
     private IntakeAssessmentRepository intakeAssessmentRepository;
     private WaitlistRepository waitlistRepository;
     private CardView cardFeedbackPrompt;
@@ -68,6 +70,8 @@ public class StudentHomeActivity extends AppCompatActivity {
     private TextView textLatestMatchSubtitle;
     private CardView cardWaitlistStatus;
     private TextView textWaitlistStatusSubtitle;
+    private ListenerRegistration studentAppointmentListener;
+    private MaterialButton buttonUpcomingMessages;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,7 @@ public class StudentHomeActivity extends AppCompatActivity {
         userRepository = new UserRepository();
         feedbackRepository = new FeedbackRepository();
         appointmentRepository = new AppointmentRepository();
+        secureMessageRepository = new SecureMessageRepository();
         intakeAssessmentRepository = new IntakeAssessmentRepository();
         waitlistRepository = new WaitlistRepository();
 
@@ -100,6 +105,7 @@ public class StudentHomeActivity extends AppCompatActivity {
         textLatestMatchSubtitle  = findViewById(R.id.textLatestMatchSubtitle);
         cardWaitlistStatus       = findViewById(R.id.cardWaitlistStatus);
         textWaitlistStatusSubtitle = findViewById(R.id.textWaitlistStatusSubtitle);
+        buttonUpcomingMessages   = findViewById(R.id.buttonUpcomingMessages);
 
         FirebaseUser user = mAuth.getCurrentUser();
         if (user == null) {
@@ -297,20 +303,25 @@ public class StudentHomeActivity extends AppCompatActivity {
         List<Appointment> cached = SessionCache.getInstance().getStudentAppointments(studentId);
         if (cached != null) {
             resolveUpcoming(cached, today);
+        }
+
+        if (studentAppointmentListener != null) {
             return;
         }
 
-        appointmentRepository.getAppointmentsForStudent(studentId,
+        studentAppointmentListener = appointmentRepository.listenForStudentAppointments(studentId,
                 new AppointmentRepository.OnAppointmentsLoadedCallback() {
                     @Override
                     public void onSuccess(List<Appointment> appointments) {
                         SessionCache.getInstance().putStudentAppointments(studentId, appointments);
-                        resolveUpcoming(appointments, today);
+                        String currentToday = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                                .format(new Date());
+                        resolveUpcoming(appointments, currentToday);
                     }
 
                     @Override
                     public void onFailure(Exception e) {
-                        clearSessionCard();
+                        if (cached == null) clearSessionCard();
                     }
                 });
     }
@@ -325,13 +336,14 @@ public class StudentHomeActivity extends AppCompatActivity {
             if (a.getDate() == null) continue;
             int dateCompare = a.getDate().compareTo(today);
             if (dateCompare < 0) continue;
-            if (dateCompare == 0 && a.getTime() != null && a.getTime().compareTo(nowTime) < 0) {
+            String normalizedTime = normalizeAppointmentTime(a.getTime());
+            if (dateCompare == 0 && normalizedTime != null && normalizedTime.compareTo(nowTime) < 0) {
                 continue;
             }
             if (next == null || a.getDate().compareTo(next.getDate()) < 0
                     || (a.getDate().equals(next.getDate())
-                        && a.getTime() != null && next.getTime() != null
-                        && a.getTime().compareTo(next.getTime()) < 0)) {
+                        && normalizedTime != null && normalizeAppointmentTime(next.getTime()) != null
+                        && normalizedTime.compareTo(normalizeAppointmentTime(next.getTime())) < 0)) {
                 next = a;
             }
         }
@@ -353,6 +365,7 @@ public class StudentHomeActivity extends AppCompatActivity {
         upcomingSessionTime.setText(appointment.getTime());
         sessionTimeRow.setVisibility(View.VISIBLE);
         sliderContainer.setVisibility(View.VISIBLE);
+        configureUpcomingMessagesButton(appointment);
 
         // Counselor name — check cache, then the already-loaded list, then Firestore.
         // cId is the Auth UID stored in the appointment. For old manually-created counselors
@@ -425,6 +438,39 @@ public class StudentHomeActivity extends AppCompatActivity {
         counselorRoleText.setText("Book an appointment below");
         sessionTimeRow.setVisibility(View.GONE);
         sliderContainer.setVisibility(View.GONE);
+        buttonUpcomingMessages.setVisibility(View.GONE);
+    }
+
+    private void configureUpcomingMessagesButton(Appointment appointment) {
+        buttonUpcomingMessages.setVisibility(View.VISIBLE);
+        buttonUpcomingMessages.setText(R.string.messages);
+        buttonUpcomingMessages.setOnClickListener(v -> {
+            Intent intent = new Intent(StudentHomeActivity.this, MessageThreadActivity.class);
+            intent.putExtra(MessageThreadActivity.EXTRA_APPOINTMENT_ID, appointment.getId());
+            intent.putExtra(MessageThreadActivity.EXTRA_STUDENT_ID, appointment.getStudentId());
+            intent.putExtra(MessageThreadActivity.EXTRA_COUNSELOR_ID, appointment.getCounselorId());
+            intent.putExtra(MessageThreadActivity.EXTRA_OTHER_NAME,
+                    counselorNameText.getText() == null ? "" : counselorNameText.getText().toString());
+            startActivity(intent);
+        });
+
+        String currentUid = mAuth.getCurrentUser() == null ? "" : mAuth.getCurrentUser().getUid();
+        secureMessageRepository.hasUnreadMessagesForAppointment(
+                appointment.getId(),
+                currentUid,
+                new SecureMessageRepository.OnUnreadStatusCallback() {
+                    @Override
+                    public void onResult(boolean hasUnread) {
+                        buttonUpcomingMessages.setText(hasUnread
+                                ? getString(R.string.messages_new)
+                                : getString(R.string.messages));
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        buttonUpcomingMessages.setText(R.string.messages);
+                    }
+                });
     }
 
     private String formatAppointmentDate(String raw) {
@@ -433,6 +479,25 @@ public class StudentHomeActivity extends AppCompatActivity {
             return new SimpleDateFormat("EEE, MMM d", Locale.getDefault()).format(d);
         } catch (Exception e) {
             return raw;
+        }
+    }
+
+    private String normalizeAppointmentTime(String raw) {
+        if (raw == null || raw.trim().isEmpty()) return null;
+        String trimmed = raw.trim();
+        if (trimmed.matches("\\d{1,2}:\\d{2}")) {
+            String[] parts = trimmed.split(":");
+            return String.format(java.util.Locale.US, "%02d:%02d",
+                    Integer.parseInt(parts[0]), Integer.parseInt(parts[1]));
+        }
+        try {
+            java.text.SimpleDateFormat input =
+                    new java.text.SimpleDateFormat("h:mm a", java.util.Locale.US);
+            input.setLenient(false);
+            return new java.text.SimpleDateFormat("HH:mm", java.util.Locale.US)
+                    .format(input.parse(trimmed));
+        } catch (Exception e) {
+            return trimmed;
         }
     }
 
@@ -703,6 +768,10 @@ public class StudentHomeActivity extends AppCompatActivity {
                     startActivity(new Intent(StudentHomeActivity.this,
                             CounselorDashboardActivity.class));
                     finish();
+                } else if (UserRole.ADMIN.equals(role)) {
+                    startActivity(new Intent(StudentHomeActivity.this,
+                            AdminDashboardActivity.class));
+                    finish();
                 }
             }
 
@@ -889,6 +958,15 @@ public class StudentHomeActivity extends AppCompatActivity {
             fetchUpcomingSession();
             if (!feedbackDismissed) checkForPendingFeedback();
             loadIntakeAndWaitlistSummary(mAuth.getCurrentUser().getUid());
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (studentAppointmentListener != null) {
+            studentAppointmentListener.remove();
+            studentAppointmentListener = null;
         }
     }
 

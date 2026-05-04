@@ -31,6 +31,8 @@ import androidx.core.view.ViewCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
+
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
@@ -53,6 +55,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     private final Context context;
     private final UserRepository userRepository;
     private final AppointmentRepository appointmentRepository;
+    private final SecureMessageRepository secureMessageRepository;
 
     /**
      * Creates a new adapter.
@@ -65,6 +68,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         this.appointments = appointments;
         this.userRepository = new UserRepository();
         this.appointmentRepository = new AppointmentRepository();
+        this.secureMessageRepository = new SecureMessageRepository();
     }
 
     /**
@@ -109,10 +113,18 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         String status = apt.getStatus();
         boolean isActive = "CONFIRMED".equals(status);
         boolean isCancelled = "CANCELLED".equals(status);
+        boolean isNoShow = "NO_SHOW".equals(status);
         holder.noShowButton.setVisibility(isActive ? View.VISIBLE : View.GONE);
         holder.notesButton.setVisibility(isCancelled ? View.GONE : View.VISIBLE);
         holder.crisisButton.setVisibility(
                 isCancelled || "COMPLETED".equals(status) ? View.GONE : View.VISIBLE);
+        boolean canMessage = !isCancelled && !isNoShow && apt.getId() != null
+                && apt.getStudentId() != null && apt.getCounselorId() != null;
+        holder.messageButton.setVisibility(canMessage ? View.VISIBLE : View.GONE);
+        holder.messageButton.setText(R.string.messages);
+        if (canMessage) {
+            updateUnreadMessageLabel(apt, holder);
+        }
 
         holder.noShowButton.setOnClickListener(v -> {
             if (!isNoShowWindowOpen(apt.getDate(), apt.getTime())) {
@@ -124,6 +136,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         holder.crisisButton.setOnClickListener(v -> showCrisisDialog(apt));
         holder.profileButton.setOnClickListener(v -> openStudentProfile(apt));
         holder.notesButton.setOnClickListener(v -> showNoteDialog(apt));
+        holder.messageButton.setOnClickListener(v -> openMessageThread(apt, holder));
     }
 
     /**
@@ -273,6 +286,38 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         context.startActivity(intent);
     }
 
+    private void openMessageThread(Appointment appointment, ViewHolder holder) {
+        Intent intent = new Intent(context, MessageThreadActivity.class);
+        intent.putExtra(MessageThreadActivity.EXTRA_APPOINTMENT_ID, appointment.getId());
+        intent.putExtra(MessageThreadActivity.EXTRA_STUDENT_ID, appointment.getStudentId());
+        intent.putExtra(MessageThreadActivity.EXTRA_COUNSELOR_ID, appointment.getCounselorId());
+        intent.putExtra(MessageThreadActivity.EXTRA_OTHER_NAME,
+                holder.studentName.getText() == null ? "" : holder.studentName.getText().toString());
+        context.startActivity(intent);
+    }
+
+    private void updateUnreadMessageLabel(Appointment appointment, ViewHolder holder) {
+        String currentUid = FirebaseAuth.getInstance().getCurrentUser() == null
+                ? "" : FirebaseAuth.getInstance().getCurrentUser().getUid();
+        secureMessageRepository.hasUnreadMessagesForAppointment(
+                appointment.getId(),
+                currentUid,
+                new SecureMessageRepository.OnUnreadStatusCallback() {
+                    @Override
+                    public void onResult(boolean hasUnread) {
+                        if (holder.getBindingAdapterPosition() == RecyclerView.NO_POSITION) return;
+                        holder.messageButton.setText(hasUnread
+                                ? context.getString(R.string.messages_new)
+                                : context.getString(R.string.messages));
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        holder.messageButton.setText(R.string.messages);
+                    }
+                });
+    }
+
     private void showCrisisDialog(Appointment appointment) {
         if (!(context instanceof FragmentActivity)) {
             AppToast.show(context, R.string.crisis_escalation_error, AppToast.LENGTH_SHORT);
@@ -351,7 +396,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     /** ViewHolder for a single appointment card. */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView studentName, sessionTopic, sessionTime, sessionDate, returningBadge;
-        Button noShowButton, crisisButton, profileButton, notesButton;
+        Button noShowButton, crisisButton, profileButton, notesButton, messageButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -364,6 +409,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             crisisButton = itemView.findViewById(R.id.crisisButton);
             profileButton = itemView.findViewById(R.id.profileButton);
             notesButton = itemView.findViewById(R.id.notesButton);
+            messageButton = itemView.findViewById(R.id.btnMessage);
         }
     }
 }

@@ -2,27 +2,23 @@
  * StudentAppointmentAdapter.java
  * Role: RecyclerView adapter for displaying a student's appointment history.
  *       Shows counselor name (fetched via CounselorRepository), date, time,
- *       and a colour-coded status badge. Counselor-only action buttons are hidden.
+ *       and a colour-coded status badge. Cards are info-only; no action buttons.
  *
  * Design pattern: Adapter pattern (RecyclerView).
  * Part of the BetterCAPS counseling platform.
  */
 package com.example.moogerscouncil;
 
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -30,30 +26,24 @@ import java.util.Locale;
 
 /**
  * RecyclerView adapter for the student's appointment history screen.
- * Each card shows counselor name, date, time, and status.
- * Counselor-facing action buttons (Join, No-Show, Crisis) are hidden.
- *
- * <p>Counselor names are fetched via {@link CounselorRepository} — no direct
- * Firestore access from this adapter.</p>
+ * Each card shows counselor name, date, time, and status badge.
  */
 public class StudentAppointmentAdapter
         extends RecyclerView.Adapter<StudentAppointmentAdapter.ViewHolder> {
 
     private final List<Appointment> appointments;
     private final CounselorRepository counselorRepository;
-    private final SecureMessageRepository secureMessageRepository;
 
     public StudentAppointmentAdapter(List<Appointment> appointments) {
         this.appointments = appointments;
         this.counselorRepository = new CounselorRepository();
-        this.secureMessageRepository = new SecureMessageRepository();
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_appointment, parent, false);
+                .inflate(R.layout.item_student_appointment, parent, false);
         return new ViewHolder(view);
     }
 
@@ -64,95 +54,53 @@ public class StudentAppointmentAdapter
         holder.timeText.setText(normalizeTime(apt.getTime()));
         holder.dateText.setText(formatDate(apt.getDate()));
 
-        // Status pill — text, text colour, and pastel background tint
+        // Status pill
         String status = apt.getStatus() != null ? apt.getStatus() : "UNKNOWN";
         holder.statusText.setText(statusLabel(status));
         holder.statusText.setTextColor(statusColour(status));
         ViewCompat.setBackgroundTintList(holder.statusText,
                 ColorStateList.valueOf(statusBgColour(status)));
 
-        holder.counselorNameText.setText("Loading…");
+        // Returning badge — not applicable for student history view
+        holder.returningBadge.setVisibility(View.GONE);
 
+        // Counselor name async lookup
+        holder.counselorNameText.setText(R.string.loading_name);
         String counselorId = apt.getCounselorId();
         if (counselorId == null || counselorId.isEmpty()) {
-            holder.counselorNameText.setText("Counselor: Not Assigned");
+            holder.counselorNameText.setText(R.string.unknown_student);
+            return;
+        }
+        holder.itemView.setTag(counselorId);
+        Counselor cached = SessionCache.getInstance().getSingleCounselor(counselorId);
+        if (cached != null) {
+            holder.counselorNameText.setText(
+                    cached.getName() != null ? cached.getName() : "Your Counselor");
         } else {
-            // Tag the ViewHolder so recycled views don't show stale async results
-            holder.itemView.setTag(counselorId);
-
-            // Check session cache first — avoids a Firestore round-trip for every card
-            Counselor cached = SessionCache.getInstance().getSingleCounselor(counselorId);
-            if (cached != null) {
-                String name = cached.getName() != null ? cached.getName() : "Your Counselor";
-                holder.counselorNameText.setText(name);
-            } else {
-                counselorRepository.getCounselor(counselorId,
-                        new CounselorRepository.OnCounselorFetchedCallback() {
-                            @Override
-                            public void onSuccess(Counselor counselor) {
-                                // Guard: ViewHolder may have been recycled for a different row
-                                if (!counselorId.equals(holder.itemView.getTag())) return;
-                                SessionCache.getInstance().putSingleCounselor(counselorId, counselor);
-                                String name = counselor.getName() != null
-                                        ? counselor.getName() : "Your Counselor";
-                                holder.counselorNameText.setText(name);
-                            }
-
-                            @Override
-                            public void onFailure(Exception e) {
-                                if (!counselorId.equals(holder.itemView.getTag())) return;
-                                holder.counselorNameText.setText("Counselor: Unknown");
-                            }
-                        });
-            }
+            counselorRepository.getCounselor(counselorId,
+                    new CounselorRepository.OnCounselorFetchedCallback() {
+                        @Override
+                        public void onSuccess(Counselor counselor) {
+                            if (!counselorId.equals(holder.itemView.getTag())) return;
+                            SessionCache.getInstance().putSingleCounselor(counselorId, counselor);
+                            holder.counselorNameText.setText(
+                                    counselor.getName() != null ? counselor.getName() : "Your Counselor");
+                        }
+                        @Override
+                        public void onFailure(Exception e) {
+                            if (!counselorId.equals(holder.itemView.getTag())) return;
+                            holder.counselorNameText.setText("Counselor: Unknown");
+                        }
+                    });
         }
-
-        boolean canOpenMessages = apt.getId() != null && !apt.getId().isEmpty()
-                && apt.getStudentId() != null && apt.getCounselorId() != null
-                && ("CONFIRMED".equals(apt.getStatus()) || "COMPLETED".equals(apt.getStatus()));
-        holder.messageButton.setVisibility(canOpenMessages ? View.VISIBLE : View.GONE);
-        holder.messageButton.setText(R.string.messages);
-        if (canOpenMessages) {
-            updateUnreadMessageLabel(apt, holder);
-        }
-        holder.messageButton.setOnClickListener(v -> {
-            Intent intent = new Intent(holder.itemView.getContext(), MessageThreadActivity.class);
-            intent.putExtra(MessageThreadActivity.EXTRA_APPOINTMENT_ID, apt.getId());
-            intent.putExtra(MessageThreadActivity.EXTRA_STUDENT_ID, apt.getStudentId());
-            intent.putExtra(MessageThreadActivity.EXTRA_COUNSELOR_ID, apt.getCounselorId());
-            intent.putExtra(MessageThreadActivity.EXTRA_OTHER_NAME,
-                    holder.counselorNameText.getText() == null
-                            ? "" : holder.counselorNameText.getText().toString());
-            holder.itemView.getContext().startActivity(intent);
-        });
-    }
-
-    private void updateUnreadMessageLabel(Appointment appointment, ViewHolder holder) {
-        String currentUid = FirebaseAuth.getInstance().getCurrentUser() == null
-                ? "" : FirebaseAuth.getInstance().getCurrentUser().getUid();
-        secureMessageRepository.hasUnreadMessagesForAppointment(
-                appointment.getId(),
-                currentUid,
-                new SecureMessageRepository.OnUnreadStatusCallback() {
-                    @Override
-                    public void onResult(boolean hasUnread) {
-                        if (holder.getBindingAdapterPosition() == RecyclerView.NO_POSITION) return;
-                        holder.messageButton.setText(hasUnread
-                                ? holder.itemView.getContext().getString(R.string.messages_new)
-                                : holder.itemView.getContext().getString(R.string.messages));
-                    }
-
-                    @Override
-                    public void onFailure(Exception e) {
-                        holder.messageButton.setText(R.string.messages);
-                    }
-                });
     }
 
     @Override
     public int getItemCount() {
         return appointments.size();
     }
+
+    // ── Formatting helpers ────────────────────────────────────────────────────
 
     private static String formatDate(String raw) {
         if (raw == null || raw.isEmpty()) return "—";
@@ -181,41 +129,38 @@ public class StudentAppointmentAdapter
 
     private String statusLabel(String status) {
         switch (status) {
-            case "COMPLETED":  return "Completed";
-            case "CONFIRMED":  return "Upcoming";
-            case "CANCELLED":  return "Cancelled";
-            case "NO_SHOW":    return "No Show";
-            default:           return status;
+            case "COMPLETED": return "Completed";
+            case "CONFIRMED": return "Upcoming";
+            case "CANCELLED": return "Cancelled";
+            case "NO_SHOW":   return "No Show";
+            default:          return status;
         }
     }
 
     private int statusColour(String status) {
         switch (status) {
-            case "COMPLETED":  return 0xFF388E3C;
-            case "CONFIRMED":  return 0xFF3D5AF1;
+            case "COMPLETED": return 0xFF388E3C;
+            case "CONFIRMED": return 0xFF3D5AF1;
             case "CANCELLED":
-            case "NO_SHOW":    return 0xFFD32F2F;
-            default:           return 0xFF8A8A9A;
+            case "NO_SHOW":   return 0xFFD32F2F;
+            default:          return 0xFF8A8A9A;
         }
     }
 
     private int statusBgColour(String status) {
         switch (status) {
-            case "COMPLETED":  return Color.parseColor("#E8F5E9");
-            case "CONFIRMED":  return Color.parseColor("#EDE7F6");
+            case "COMPLETED": return Color.parseColor("#E8F5E9");
+            case "CONFIRMED": return Color.parseColor("#EDE7F6");
             case "CANCELLED":
-            case "NO_SHOW":    return Color.parseColor("#FFEBEE");
-            default:           return Color.parseColor("#F2F4F8");
+            case "NO_SHOW":   return Color.parseColor("#FFEBEE");
+            default:          return Color.parseColor("#F2F4F8");
         }
     }
 
-    /**
-     * ViewHolder for a single appointment history card.
-     * Hides all counselor-only action buttons on construction.
-     */
+    // ── ViewHolder ────────────────────────────────────────────────────────────
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView timeText, dateText, counselorNameText, statusText;
-        Button messageButton;
+        TextView timeText, dateText, counselorNameText, statusText, returningBadge;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -223,19 +168,7 @@ public class StudentAppointmentAdapter
             dateText          = itemView.findViewById(R.id.sessionDate);
             counselorNameText = itemView.findViewById(R.id.studentName);
             statusText        = itemView.findViewById(R.id.sessionTopic);
-            messageButton     = itemView.findViewById(R.id.btnMessage);
-
-            // Hide counselor-only action buttons
-            hideIfPresent(itemView, R.id.noShowButton);
-            hideIfPresent(itemView, R.id.crisisButton);
-            hideIfPresent(itemView, R.id.profileButton);
-            hideIfPresent(itemView, R.id.notesButton);
-            hideIfPresent(itemView, R.id.returningStudentBadge);
-        }
-
-        private void hideIfPresent(View root, int id) {
-            View v = root.findViewById(id);
-            if (v != null) v.setVisibility(View.GONE);
+            returningBadge    = itemView.findViewById(R.id.returningStudentBadge);
         }
     }
 }

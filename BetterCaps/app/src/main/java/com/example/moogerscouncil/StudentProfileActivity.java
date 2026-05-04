@@ -173,7 +173,7 @@ public class StudentProfileActivity extends AppCompatActivity {
 
     /** Loads ALL session notes for this student across all appointments, sorted newest first. */
     private void loadSessionNotes() {
-        new SessionNoteRepository().getNotesForStudent(studentId,
+        new SessionNoteRepository().getNotesForCounselorStudent(counselorId, studentId,
                 new SessionNoteRepository.OnNotesLoadedCallback() {
                     @Override
                     public void onSuccess(List<SessionNote> notes) {

@@ -197,6 +197,37 @@ public class AvailabilityRepository {
         });
     }
 
+    /**
+     * Purges expired unbooked slots for a counselor from Firestore.
+     * A slot is purged if its date is strictly before today AND its
+     * {@code available} field is true — i.e. nobody booked it before
+     * the day passed. Booked slots (available=false) are kept because
+     * the counselor still needs them for notes/no-show actions.
+     *
+     * <p>Fire-and-forget: runs as a single {@link WriteBatch} commit.
+     * Called on dashboard entry to keep the database tidy without a
+     * background timer.</p>
+     *
+     * @param counselorId Firebase Auth UID of the counselor whose slots to purge.
+     */
+    public void purgeExpiredUnbookedSlots(String counselorId) {
+        if (counselorId == null || counselorId.isEmpty()) return;
+        String today = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
+                .format(new java.util.Date());
+        slotsFor(counselorId)
+                .whereEqualTo("available", true)
+                .whereLessThan("date", today)
+                .get()
+                .addOnSuccessListener(snapshot -> {
+                    if (snapshot.isEmpty()) return;
+                    WriteBatch batch = db.batch();
+                    for (com.google.firebase.firestore.DocumentSnapshot doc : snapshot.getDocuments()) {
+                        batch.delete(doc.getReference());
+                    }
+                    batch.commit();
+                });
+    }
+
     // -------------------------------------------------------------------------
     // Write operations
     // -------------------------------------------------------------------------

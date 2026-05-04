@@ -144,6 +144,31 @@ public class IntakeMatcherTest {
                 > IntakeMatcher.scoreCounselor(noBio, assessment));
     }
 
+    @Test
+    public void recCountBeatsBioWhenSpecializationsMatch() {
+        // Both counselors have the same specialization tag, so the rec count
+        // (lower wins) must take priority over the bio bonus.
+        IntakeAssessment assessment = new IntakeAssessment();
+        assessment.setRecommendedSpecializations(
+                Arrays.asList(SpecializationTags.ANXIETY));
+
+        Counselor popular = counselor("popular", false, SpecializationTags.ANXIETY);
+        popular.setName("Popular");
+        popular.setBio("I specialize in General Anxiety and have years of experience");
+
+        Counselor newcomer = counselor("newcomer", false, SpecializationTags.ANXIETY);
+        newcomer.setName("Newcomer");
+        // No bio — would lose on bio bonus alone
+
+        Map<String, Integer> counts = new HashMap<>();
+        counts.put("popular", 47);
+        counts.put("newcomer", 0);
+
+        Counselor result = IntakeMatcher.findBestCounselor(
+                Arrays.asList(popular, newcomer), assessment, counts);
+        assertSame(newcomer, result);
+    }
+
     private Counselor counselor(String id, boolean onLeave, String tag) {
         Counselor counselor = new Counselor();
         counselor.setId(id);

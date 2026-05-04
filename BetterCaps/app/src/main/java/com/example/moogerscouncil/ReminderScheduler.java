@@ -98,7 +98,10 @@ public class ReminderScheduler {
 
     static boolean shouldCreateReminder(long nowMs, long appointmentStartMs, long offsetMs) {
         long scheduledMs = appointmentStartMs - offsetMs;
-        return nowMs >= scheduledMs && nowMs <= scheduledMs + WINDOW_MS;
+        // Valid window: from the scheduled reminder time up until the session itself starts.
+        // This means "we are inside the reminder period" — idempotency is handled by
+        // createReminderRecordIfMissing, so multiple admin button taps won't duplicate.
+        return nowMs >= scheduledMs && nowMs < appointmentStartMs;
     }
 
     private void createRecord(Appointment appointment, String type, String message,

@@ -9,16 +9,20 @@
  */
 package com.example.moogerscouncil;
 
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.view.ViewCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -37,10 +41,12 @@ public class StudentAppointmentAdapter
 
     private final List<Appointment> appointments;
     private final CounselorRepository counselorRepository;
+    private final SecureMessageRepository secureMessageRepository;
 
     public StudentAppointmentAdapter(List<Appointment> appointments) {
         this.appointments = appointments;
         this.counselorRepository = new CounselorRepository();
+        this.secureMessageRepository = new SecureMessageRepository();
     }
 
     @NonNull
@@ -100,6 +106,47 @@ public class StudentAppointmentAdapter
                         });
             }
         }
+
+        boolean canOpenMessages = apt.getId() != null && !apt.getId().isEmpty()
+                && apt.getStudentId() != null && apt.getCounselorId() != null
+                && ("CONFIRMED".equals(apt.getStatus()) || "COMPLETED".equals(apt.getStatus()));
+        holder.messageButton.setVisibility(canOpenMessages ? View.VISIBLE : View.GONE);
+        holder.messageButton.setText(R.string.messages);
+        if (canOpenMessages) {
+            updateUnreadMessageLabel(apt, holder);
+        }
+        holder.messageButton.setOnClickListener(v -> {
+            Intent intent = new Intent(holder.itemView.getContext(), MessageThreadActivity.class);
+            intent.putExtra(MessageThreadActivity.EXTRA_APPOINTMENT_ID, apt.getId());
+            intent.putExtra(MessageThreadActivity.EXTRA_STUDENT_ID, apt.getStudentId());
+            intent.putExtra(MessageThreadActivity.EXTRA_COUNSELOR_ID, apt.getCounselorId());
+            intent.putExtra(MessageThreadActivity.EXTRA_OTHER_NAME,
+                    holder.counselorNameText.getText() == null
+                            ? "" : holder.counselorNameText.getText().toString());
+            holder.itemView.getContext().startActivity(intent);
+        });
+    }
+
+    private void updateUnreadMessageLabel(Appointment appointment, ViewHolder holder) {
+        String currentUid = FirebaseAuth.getInstance().getCurrentUser() == null
+                ? "" : FirebaseAuth.getInstance().getCurrentUser().getUid();
+        secureMessageRepository.hasUnreadMessagesForAppointment(
+                appointment.getId(),
+                currentUid,
+                new SecureMessageRepository.OnUnreadStatusCallback() {
+                    @Override
+                    public void onResult(boolean hasUnread) {
+                        if (holder.getBindingAdapterPosition() == RecyclerView.NO_POSITION) return;
+                        holder.messageButton.setText(hasUnread
+                                ? holder.itemView.getContext().getString(R.string.messages_new)
+                                : holder.itemView.getContext().getString(R.string.messages));
+                    }
+
+                    @Override
+                    public void onFailure(Exception e) {
+                        holder.messageButton.setText(R.string.messages);
+                    }
+                });
     }
 
     @Override
@@ -168,6 +215,7 @@ public class StudentAppointmentAdapter
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView timeText, dateText, counselorNameText, statusText;
+        Button messageButton;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -175,12 +223,14 @@ public class StudentAppointmentAdapter
             dateText          = itemView.findViewById(R.id.sessionDate);
             counselorNameText = itemView.findViewById(R.id.studentName);
             statusText        = itemView.findViewById(R.id.sessionTopic);
+            messageButton     = itemView.findViewById(R.id.btnMessage);
 
             // Hide counselor-only action buttons
             hideIfPresent(itemView, R.id.noShowButton);
             hideIfPresent(itemView, R.id.crisisButton);
             hideIfPresent(itemView, R.id.profileButton);
             hideIfPresent(itemView, R.id.notesButton);
+            hideIfPresent(itemView, R.id.returningStudentBadge);
         }
 
         private void hideIfPresent(View root, int id) {

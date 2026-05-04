@@ -56,6 +56,8 @@ public class PrivacyPolicyActivity extends AppCompatActivity {
         Intent intent;
         if (UserRole.COUNSELOR.equals(role)) {
             intent = new Intent(this, CounselorDashboardActivity.class);
+        } else if (UserRole.ADMIN.equals(role)) {
+            intent = new Intent(this, AdminDashboardActivity.class);
         } else {
             intent = new Intent(this, StudentHomeActivity.class);
         }

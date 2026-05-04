@@ -516,6 +516,25 @@
 
                     </LinearLayout>
 
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/buttonUpcomingMessages"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="42dp"
+                        android:layout_marginBottom="12dp"
+                        android:text="@string/messages"
+                        android:textAllCaps="false"
+                        android:textColor="#3D5AF1"
+                        android:visibility="gone"
+                        app:cornerRadius="10dp"
+                        app:icon="@drawable/ic_chat"
+                        app:iconGravity="textStart"
+                        app:iconSize="16dp"
+                        app:iconTint="#3D5AF1"
+                        app:strokeColor="#CAD3FF"
+                        app:strokeWidth="1dp"
+                        android:backgroundTint="#F1F4FF" />
+
                     <!-- Slide to Cancel -->
                     <FrameLayout
                         android:id="@+id/sliderContainer"

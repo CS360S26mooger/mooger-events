@@ -535,4 +535,32 @@ public class AppointmentRepository {
                 })
                 .addOnFailureListener(callback::onFailure);
     }
+
+    /**
+     * Loads upcoming CONFIRMED appointments for prototype reminder record generation.
+     * Filters by date client-side to avoid requiring additional Firestore indexes.
+     */
+    public void getUpcomingConfirmedAppointments(OnAppointmentsLoadedCallback callback) {
+        String today = new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US)
+                .format(new java.util.Date());
+        appointmentsCollection
+                .whereEqualTo("status", "CONFIRMED")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    List<Appointment> all = querySnapshot.toObjects(Appointment.class);
+                    List<Appointment> upcoming = new java.util.ArrayList<>();
+                    for (int i = 0; i < all.size(); i++) {
+                        Appointment appointment = all.get(i);
+                        appointment.setId(querySnapshot.getDocuments().get(i).getId());
+                        if (appointment.getDate() != null
+                                && appointment.getDate().compareTo(today) >= 0) {
+                            upcoming.add(appointment);
+                        }
+                    }
+                    Collections.sort(upcoming, (a, b) ->
+                            String.valueOf(a.getDate()).compareTo(String.valueOf(b.getDate())));
+                    callback.onSuccess(upcoming);
+                })
+                .addOnFailureListener(callback::onFailure);
+    }
 }

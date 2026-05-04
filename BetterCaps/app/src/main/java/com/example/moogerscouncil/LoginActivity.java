@@ -137,8 +137,10 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent;
                 if (UserRole.COUNSELOR.equals(role)) {
                     intent = new Intent(LoginActivity.this, CounselorDashboardActivity.class);
+                } else if (UserRole.ADMIN.equals(role)) {
+                    intent = new Intent(LoginActivity.this, AdminDashboardActivity.class);
                 } else {
-                    // Covers "student", "admin", and any unexpected value.
+                    // Covers "student" and any unexpected value.
                     intent = new Intent(LoginActivity.this, StudentHomeActivity.class);
                 }
                 startActivity(intent);

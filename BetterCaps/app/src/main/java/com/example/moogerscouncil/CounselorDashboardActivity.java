@@ -304,6 +304,7 @@ public class CounselorDashboardActivity extends AppCompatActivity {
         List<Appointment> cached = SessionCache.getInstance().getCounselorAppointments(counselorId);
         boolean hadCache = cached != null;
         if (hadCache) {
+            ReturningStudentHelper.markReturningStudents(cached);
             masterAppointments = cached;
             int selectedTab = tabLayout.getSelectedTabPosition();
             filterByTab(selectedTab < 0 ? 0 : selectedTab);
@@ -321,6 +322,7 @@ public class CounselorDashboardActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(List<Appointment> appointments) {
                         progressBar.setVisibility(View.GONE);
+                        ReturningStudentHelper.markReturningStudents(appointments);
 
                         // Skip the first callback if we already rendered from SessionCache —
                         // it's the same data from Firestore's offline cache and causes a

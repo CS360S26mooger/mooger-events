@@ -119,9 +119,17 @@ loadScripts(document, 'script');</script>
 <div class="block">Three-way callback for the booking transaction.</div>
 </div>
 <div class="col-first even-row-color"><code>static interface&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="AppointmentRepository.OnStatusUpdateCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">AppointmentRepository.OnStatusUpdateCallback</a></code></div>
-<div class="col-last even-row-color">
+<div class="col-second even-row-color"><code><a href="AppointmentRepository.OnDateCheckCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">AppointmentRepository.OnDateCheckCallback</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static interface&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="AppointmentRepository.OnStatusUpdateCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">AppointmentRepository.OnStatusUpdateCallback</a></code></div>
+<div class="col-last odd-row-color">
 <div class="block">Callback for appointment status update operations.</div>
+</div>
+<div class="col-first even-row-color"><code>static interface&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="AppointmentRepository.OnWaitlistBookingCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">AppointmentRepository.OnWaitlistBookingCallback</a></code></div>
+<div class="col-last even-row-color">
+<div class="block">Callback for waitlist-triggered booking.</div>
 </div>
 </div>
 </section>
@@ -161,24 +169,39 @@ loadScripts(document, 'script');</script>
 <div class="block">Atomically books a time slot for a student.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#cancelAppointment(java.lang.String,java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnStatusUpdateCallback)" class="member-name-link">cancelAppointment</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appointmentId,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;slotId,
- <a href="AppointmentRepository.OnStatusUpdateCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnStatusUpdateCallback</a>&nbsp;callback)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#bookAppointmentForWaitlist(java.lang.String,java.lang.String,com.example.moogerscouncil.TimeSlot,com.example.moogerscouncil.AppointmentRepository.OnWaitlistBookingCallback)" class="member-name-link">bookAppointmentForWaitlist</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="TimeSlot.html" title="class in com.example.moogerscouncil">TimeSlot</a>&nbsp;slot,
+ <a href="AppointmentRepository.OnWaitlistBookingCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnWaitlistBookingCallback</a>&nbsp;callback)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Cancels an appointment by setting its status to CANCELLED and
- restoring the linked slot's availability so another student can book it.</div>
+<div class="block">Atomically books a time slot on behalf of a waitlisted student.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAppointmentsForCounselor(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)" class="member-name-link">getAppointmentsForCounselor</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
- <a href="AppointmentRepository.OnAppointmentsLoadedCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnAppointmentsLoadedCallback</a>&nbsp;callback)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#cancelAppointment(java.lang.String,java.lang.String,java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnStatusUpdateCallback)" class="member-name-link">cancelAppointment</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appointmentId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;slotId,
+ <a href="AppointmentRepository.OnStatusUpdateCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnStatusUpdateCallback</a>&nbsp;callback)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Fetches all appointments for a given counselor, ordered by date ascending.</div>
+<div class="block">Cancels an appointment by setting its status to CANCELLED and restoring
+ the linked slot's availability so another student can book it.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAppointmentsForStudent(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)" class="member-name-link">getAppointmentsForStudent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAppointmentsForCounselor(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)" class="member-name-link">getAppointmentsForCounselor</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
  <a href="AppointmentRepository.OnAppointmentsLoadedCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnAppointmentsLoadedCallback</a>&nbsp;callback)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Fetches all appointments for a given counselor, ordered by date ascending.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAppointmentsForStudent(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)" class="member-name-link">getAppointmentsForStudent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
+ <a href="AppointmentRepository.OnAppointmentsLoadedCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnAppointmentsLoadedCallback</a>&nbsp;callback)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Fetches all appointments for a given student, ordered by date ascending.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAppointmentsForStudentHistory(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)" class="member-name-link">getAppointmentsForStudentHistory</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
+ <a href="AppointmentRepository.OnAppointmentsLoadedCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnAppointmentsLoadedCallback</a>&nbsp;callback)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Fetches all appointments for a student, newest first, for counselor history view.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAppointmentsForStudentOnDate(java.lang.String,java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)" class="member-name-link">getAppointmentsForStudentOnDate</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
@@ -195,10 +218,40 @@ loadScripts(document, 'script');</script>
  feedback submitted.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateAppointmentStatus(java.lang.String,java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnStatusUpdateCallback)" class="member-name-link">updateAppointmentStatus</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appointmentId,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newStatus,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUpcomingConfirmedAppointments(com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)" class="member-name-link">getUpcomingConfirmedAppointments</a><wbr>(<a href="AppointmentRepository.OnAppointmentsLoadedCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnAppointmentsLoadedCallback</a>&nbsp;callback)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Loads upcoming CONFIRMED appointments for prototype reminder record generation.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasConfirmedBookingOnDate(java.lang.String,java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnDateCheckCallback)" class="member-name-link">hasConfirmedBookingOnDate</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
+ <a href="AppointmentRepository.OnDateCheckCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnDateCheckCallback</a>&nbsp;callback)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Checks whether a student already has a CONFIRMED appointment on the given date.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.google.firebase.firestore.ListenerRegistration</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#listenForCounselorAppointments(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)" class="member-name-link">listenForCounselorAppointments</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="AppointmentRepository.OnAppointmentsLoadedCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnAppointmentsLoadedCallback</a>&nbsp;callback)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Subscribes to real-time updates for a counselor's appointments.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>com.google.firebase.firestore.ListenerRegistration</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#listenForStudentAppointments(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)" class="member-name-link">listenForStudentAppointments</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
+ <a href="AppointmentRepository.OnAppointmentsLoadedCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnAppointmentsLoadedCallback</a>&nbsp;callback)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Subscribes to real-time updates for a student's appointments.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#markNoShowWithFollowUp(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnStatusUpdateCallback)" class="member-name-link">markNoShowWithFollowUp</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appointmentId,
  <a href="AppointmentRepository.OnStatusUpdateCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnStatusUpdateCallback</a>&nbsp;callback)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Marks an appointment as no-show and creates a pending follow-up flag.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateAppointmentStatus(java.lang.String,java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnStatusUpdateCallback)" class="member-name-link">updateAppointmentStatus</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appointmentId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;newStatus,
+ <a href="AppointmentRepository.OnStatusUpdateCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnStatusUpdateCallback</a>&nbsp;callback)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Updates the status of an existing appointment.</div>
 </div>
 </div>
@@ -234,6 +287,17 @@ loadScripts(document, 'script');</script>
 <h2>Method Details</h2>
 <ul class="member-list">
 <li>
+<section class="detail" id="hasConfirmedBookingOnDate(java.lang.String,java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnDateCheckCallback)">
+<h3>hasConfirmedBookingOnDate</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">hasConfirmedBookingOnDate</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
+ <a href="AppointmentRepository.OnDateCheckCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnDateCheckCallback</a>&nbsp;callback)</span></div>
+<div class="block">Checks whether a student already has a CONFIRMED appointment on the given date.
+ Uses a two-field query (studentId + date) to avoid needing a composite index,
+ then filters for CONFIRMED status client-side.</div>
+</section>
+</li>
+<li>
 <section class="detail" id="bookAppointment(java.lang.String,java.lang.String,com.example.moogerscouncil.TimeSlot,com.example.moogerscouncil.AppointmentRepository.OnBookingCallback)">
 <h3>bookAppointment</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">bookAppointment</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
@@ -261,6 +325,28 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="bookAppointmentForWaitlist(java.lang.String,java.lang.String,com.example.moogerscouncil.TimeSlot,com.example.moogerscouncil.AppointmentRepository.OnWaitlistBookingCallback)">
+<h3>bookAppointmentForWaitlist</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">bookAppointmentForWaitlist</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="TimeSlot.html" title="class in com.example.moogerscouncil">TimeSlot</a>&nbsp;slot,
+ <a href="AppointmentRepository.OnWaitlistBookingCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnWaitlistBookingCallback</a>&nbsp;callback)</span></div>
+<div class="block">Atomically books a time slot on behalf of a waitlisted student.
+
+ <p>Identical transaction logic to <a href="#bookAppointment(java.lang.String,java.lang.String,com.example.moogerscouncil.TimeSlot,com.example.moogerscouncil.AppointmentRepository.OnBookingCallback)"><code>bookAppointment(java.lang.String, java.lang.String, com.example.moogerscouncil.TimeSlot, com.example.moogerscouncil.AppointmentRepository.OnBookingCallback)</code></a> but accepts the
+ student UID directly (no Firebase Auth context required) and returns the
+ generated appointment ID so the caller can call
+ <a href="WaitlistRepository.html#resolveEntry(java.lang.String,java.lang.String,java.lang.String,com.example.moogerscouncil.WaitlistRepository.OnWaitlistSimpleCallback)"><code>WaitlistRepository.resolveEntry(java.lang.String, java.lang.String, java.lang.String, com.example.moogerscouncil.WaitlistRepository.OnWaitlistSimpleCallback)</code></a> atomically.</p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>studentId</code> - The waitlisted student's UID.</dd>
+<dd><code>counselorId</code> - The counselor being booked.</dd>
+<dd><code>slot</code> - The <a href="TimeSlot.html" title="class in com.example.moogerscouncil"><code>TimeSlot</code></a> to book (must have a valid ID).</dd>
+<dd><code>callback</code> - Three-way callback: success with appointmentId, slot-taken, or failure.</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="updateAppointmentStatus(java.lang.String,java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnStatusUpdateCallback)">
 <h3>updateAppointmentStatus</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">updateAppointmentStatus</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appointmentId,
@@ -277,13 +363,27 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="cancelAppointment(java.lang.String,java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnStatusUpdateCallback)">
+<section class="detail" id="markNoShowWithFollowUp(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnStatusUpdateCallback)">
+<h3>markNoShowWithFollowUp</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">markNoShowWithFollowUp</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appointmentId,
+ <a href="AppointmentRepository.OnStatusUpdateCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnStatusUpdateCallback</a>&nbsp;callback)</span></div>
+<div class="block">Marks an appointment as no-show and creates a pending follow-up flag.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>appointmentId</code> - The Firestore appointment document ID.</dd>
+<dd><code>callback</code> - Success/failure callback.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="cancelAppointment(java.lang.String,java.lang.String,java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnStatusUpdateCallback)">
 <h3>cancelAppointment</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">cancelAppointment</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;appointmentId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;slotId,
  <a href="AppointmentRepository.OnStatusUpdateCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnStatusUpdateCallback</a>&nbsp;callback)</span></div>
-<div class="block">Cancels an appointment by setting its status to CANCELLED and
- restoring the linked slot's availability so another student can book it.
+<div class="block">Cancels an appointment by setting its status to CANCELLED and restoring
+ the linked slot's availability so another student can book it.
 
  <p>The slot restore is best-effort — if the slot document does not exist
  (e.g. demo data) the appointment is still marked CANCELLED and
@@ -291,6 +391,7 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>appointmentId</code> - The Firestore document ID of the appointment.</dd>
+<dd><code>counselorId</code> - The counselor's Auth UID (needed to locate the slot path).</dd>
 <dd><code>slotId</code> - The Firestore document ID of the linked slot.</dd>
 <dd><code>callback</code> - Success/failure callback.</dd>
 </dl>
@@ -311,6 +412,37 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="listenForCounselorAppointments(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)">
+<h3>listenForCounselorAppointments</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">com.google.firebase.firestore.ListenerRegistration</span>&nbsp;<span class="element-name">listenForCounselorAppointments</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="AppointmentRepository.OnAppointmentsLoadedCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnAppointmentsLoadedCallback</a>&nbsp;callback)</span></div>
+<div class="block">Subscribes to real-time updates for a counselor's appointments.
+ Firestore pushes changes automatically — no polling needed.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>counselorId</code> - The counselor's Auth UID.</dd>
+<dd><code>callback</code> - Called on every change (initial load + subsequent mutations).</dd>
+<dt>Returns:</dt>
+<dd>A ListenerRegistration — call .remove() in onDestroy to unsubscribe.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="listenForStudentAppointments(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)">
+<h3>listenForStudentAppointments</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">com.google.firebase.firestore.ListenerRegistration</span>&nbsp;<span class="element-name">listenForStudentAppointments</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
+ <a href="AppointmentRepository.OnAppointmentsLoadedCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnAppointmentsLoadedCallback</a>&nbsp;callback)</span></div>
+<div class="block">Subscribes to real-time updates for a student's appointments.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>studentId</code> - The student's Auth UID.</dd>
+<dd><code>callback</code> - Called on every change.</dd>
+<dt>Returns:</dt>
+<dd>A ListenerRegistration — call .remove() in onDestroy to unsubscribe.</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="getAppointmentsForStudent(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)">
 <h3>getAppointmentsForStudent</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">getAppointmentsForStudent</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
@@ -322,6 +454,14 @@ loadScripts(document, 'script');</script>
 <dd><code>studentId</code> - The student's UID.</dd>
 <dd><code>callback</code> - Receives the appointment list on success.</dd>
 </dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getAppointmentsForStudentHistory(java.lang.String,com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)">
+<h3>getAppointmentsForStudentHistory</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">getAppointmentsForStudentHistory</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
+ <a href="AppointmentRepository.OnAppointmentsLoadedCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnAppointmentsLoadedCallback</a>&nbsp;callback)</span></div>
+<div class="block">Fetches all appointments for a student, newest first, for counselor history view.</div>
 </section>
 </li>
 <li>
@@ -348,6 +488,14 @@ loadScripts(document, 'script');</script>
 <div class="block">Fetches completed appointments for a student that don't yet have
  feedback submitted. Filters by status in memory after a single
  studentId query — avoids requiring a composite Firestore index.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getUpcomingConfirmedAppointments(com.example.moogerscouncil.AppointmentRepository.OnAppointmentsLoadedCallback)">
+<h3>getUpcomingConfirmedAppointments</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">getUpcomingConfirmedAppointments</span><wbr><span class="parameters">(<a href="AppointmentRepository.OnAppointmentsLoadedCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnAppointmentsLoadedCallback</a>&nbsp;callback)</span></div>
+<div class="block">Loads upcoming CONFIRMED appointments for prototype reminder record generation.
+ Filters by date client-side to avoid requiring additional Firestore indexes.</div>
 </section>
 </li>
 </ul>

@@ -76,6 +76,12 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Class</div>
 <div class="table-header col-last">Description</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="AddSlotActivity.html" title="class in com.example.moogerscouncil">AddSlotActivity</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="AdminDashboardActivity.html" title="class in com.example.moogerscouncil">AdminDashboardActivity</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Admin dashboard for managing reminder configuration and monitoring escalations.</div>
+</div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Represents a confirmed appointment between a student and counselor.</div>
@@ -100,92 +106,170 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
 <div class="block">Three-way callback for the booking transaction.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab1"><a href="AppointmentRepository.OnStatusUpdateCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnStatusUpdateCallback</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="AppointmentRepository.OnDateCheckCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnDateCheckCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="AppointmentRepository.OnStatusUpdateCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnStatusUpdateCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
 <div class="block">Callback for appointment status update operations.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="AvailabilityRepository.html" title="class in com.example.moogerscouncil">AvailabilityRepository</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">Repository for the Firestore 'slots' collection.</div>
-</div>
-<div class="col-first even-row-color class-summary class-summary-tab1"><a href="AvailabilityRepository.OnSlotActionCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="AppointmentRepository.OnWaitlistBookingCallback.html" title="interface in com.example.moogerscouncil">AppointmentRepository.OnWaitlistBookingCallback</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab1">
-<div class="block">Callback for slot write operations (add / remove).</div>
+<div class="block">Callback for waitlist-triggered booking.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="AppToast.html" title="class in com.example.moogerscouncil">AppToast</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Branded in-app notification that overlays the current Activity window.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="AvailabilityRepository.html" title="class in com.example.moogerscouncil">AvailabilityRepository</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Repository for slot documents stored under Slots/{counselorId}/slots.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="AvailabilityRepository.OnAvailabilityCheckCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnAvailabilityCheckCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="AvailabilityRepository.OnBufferCheckCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnBufferCheckCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="AvailabilityRepository.OnSlotActionCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="AvailabilityRepository.OnSlotCreatedCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotCreatedCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">Callback for slot creation operations that need to return the created slot.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab1"><a href="AvailabilityRepository.OnSlotsLoadedCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotsLoadedCallback</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab1">
-<div class="block">Callback for operations that return a list of time slots.</div>
-</div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="AvailabilitySchedule.html" title="class in com.example.moogerscouncil">AvailabilitySchedule</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Local (non-Firestore) model that groups <a href="TimeSlot.html" title="class in com.example.moogerscouncil"><code>TimeSlot</code></a> objects by date
  for a single counselor.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="AvailabilitySetupActivity.html" title="class in com.example.moogerscouncil">AvailabilitySetupActivity</a></div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="AvailabilitySettings.html" title="class in com.example.moogerscouncil">AvailabilitySettings</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">Screen where a counselor can view their existing time slots, add new ones
- via date/time pickers, and swipe-to-delete available slots.</div>
+<div class="block">Stores counselor-level scheduling preferences such as buffer time.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="BookingActivity.html" title="class in com.example.moogerscouncil">BookingActivity</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="AvailabilitySettingsActivity.html" title="class in com.example.moogerscouncil">AvailabilitySettingsActivity</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Counselor-facing scheduling preferences screen for buffer time and calendar export.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="AvailabilitySettingsRepository.html" title="class in com.example.moogerscouncil">AvailabilitySettingsRepository</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Repository for counselor availability settings.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="AvailabilitySettingsRepository.OnSettingsLoadedCallback.html" title="interface in com.example.moogerscouncil">AvailabilitySettingsRepository.OnSettingsLoadedCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="AvailabilitySettingsRepository.OnSettingsSavedCallback.html" title="interface in com.example.moogerscouncil">AvailabilitySettingsRepository.OnSettingsSavedCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="AvailabilitySetupActivity.html" title="class in com.example.moogerscouncil">AvailabilitySetupActivity</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="BookingActivity.html" title="class in com.example.moogerscouncil">BookingActivity</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Booking screen for students.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="BookingConfirmationFragment.html" title="class in com.example.moogerscouncil">BookingConfirmationFragment</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="BookingConfirmationFragment.html" title="class in com.example.moogerscouncil">BookingConfirmationFragment</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Bottom sheet that shows a booking summary before the student confirms.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab1"><a href="BookingConfirmationFragment.OnConfirmListener.html" title="interface in com.example.moogerscouncil">BookingConfirmationFragment.OnConfirmListener</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="BookingConfirmationFragment.OnConfirmListener.html" title="interface in com.example.moogerscouncil">BookingConfirmationFragment.OnConfirmListener</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
 <div class="block">Callback fired when the student taps "Confirm Booking".</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CalendarActivity.html" title="class in com.example.moogerscouncil">CalendarActivity</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">Calendar screen for students showing appointments on a selected date.</div>
-</div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="BufferTimeValidator.html" title="class in com.example.moogerscouncil">BufferTimeValidator</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Validates counselor slot spacing using a 60-minute default session length
+ plus the counselor's configured buffer.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CalendarActivity.html" title="class in com.example.moogerscouncil">CalendarActivity</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="CalendarSyncHelper.html" title="class in com.example.moogerscouncil">CalendarSyncHelper</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Helper for prototype-level external calendar integration.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Represents a counselor profile in the BetterCAPS system.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CounselorAdapter.html" title="class in com.example.moogerscouncil">CounselorAdapter</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="CounselorAdapter.html" title="class in com.example.moogerscouncil">CounselorAdapter</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">RecyclerView adapter for the counselor directory list.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="CounselorAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">CounselorAdapter.ViewHolder</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CounselorAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">CounselorAdapter.ViewHolder</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">ViewHolder for a single counselor card.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CounselorDashboardActivity.html" title="class in com.example.moogerscouncil">CounselorDashboardActivity</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="CounselorDashboardActivity.html" title="class in com.example.moogerscouncil">CounselorDashboardActivity</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Dashboard for logged-in counselors.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="CounselorListActivity.html" title="class in com.example.moogerscouncil">CounselorListActivity</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CounselorListActivity.html" title="class in com.example.moogerscouncil">CounselorListActivity</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Displays a searchable, filterable directory of all counselors.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CounselorProfileActivity.html" title="class in com.example.moogerscouncil">CounselorProfileActivity</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="CounselorProfileActivity.html" title="class in com.example.moogerscouncil">CounselorProfileActivity</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Full counselor profile view for students.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="CounselorProfileEditActivity.html" title="class in com.example.moogerscouncil">CounselorProfileEditActivity</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CounselorProfileEditActivity.html" title="class in com.example.moogerscouncil">CounselorProfileEditActivity</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Activity for counselors to edit their own profile.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CounselorRepository.html" title="class in com.example.moogerscouncil">CounselorRepository</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="CounselorRepository.html" title="class in com.example.moogerscouncil">CounselorRepository</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Repository for the Firestore 'counselors' collection.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab1"><a href="CounselorRepository.OnCounselorFetchedCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnCounselorFetchedCallback</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="CounselorRepository.OnCounselorFetchedCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnCounselorFetchedCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
 <div class="block">Callback for operations that return a single counselor.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="CounselorRepository.OnCounselorsLoadedCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnCounselorsLoadedCallback</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab1">
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="CounselorRepository.OnCounselorsLoadedCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnCounselorsLoadedCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
 <div class="block">Callback for operations that return a list of counselors.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab1"><a href="CounselorRepository.OnUpdateCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnUpdateCallback</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="CounselorRepository.OnUpdateCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnUpdateCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
 <div class="block">Callback for write operations (update / set).</div>
 </div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="CounselorWaitlistActivity.html" title="class in com.example.moogerscouncil">CounselorWaitlistActivity</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Displays the counselor's active waitlist entries sorted FIFO (earliest request first).</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CounselorWaitlistAdapter.html" title="class in com.example.moogerscouncil">CounselorWaitlistAdapter</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Binds FIFO-ordered <a href="WaitlistEntry.html" title="class in com.example.moogerscouncil"><code>WaitlistEntry</code></a> objects to <code>item_waitlist_counselor</code> rows.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="CounselorWaitlistAdapter.OnCreateSlotClickListener.html" title="interface in com.example.moogerscouncil">CounselorWaitlistAdapter.OnCreateSlotClickListener</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">Callback for the "Create Slot for Student" button.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CrisisAlertAdapter.html" title="class in com.example.moogerscouncil">CrisisAlertAdapter</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Adapter for the admin Crisis Alerts tab.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="CrisisEscalation.html" title="class in com.example.moogerscouncil">CrisisEscalation</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Records a counselor-triggered crisis escalation workflow.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CrisisEscalationDialogFragment.html" title="class in com.example.moogerscouncil">CrisisEscalationDialogFragment</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Full-screen custom crisis escalation dialog matching the app's pastel pink design language.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="CrisisEscalationDialogFragment.OnEscalationSavedListener.html" title="interface in com.example.moogerscouncil">CrisisEscalationDialogFragment.OnEscalationSavedListener</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">Callback interface for the host activity to receive the escalation ID after a successful save.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CrisisEscalationRepository.html" title="class in com.example.moogerscouncil">CrisisEscalationRepository</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Repository for counselor-triggered crisis escalation records.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="CrisisEscalationRepository.OnCrisisActionCallback.html" title="interface in com.example.moogerscouncil">CrisisEscalationRepository.OnCrisisActionCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="CrisisEscalationRepository.OnEscalationsLoadedCallback.html" title="interface in com.example.moogerscouncil">CrisisEscalationRepository.OnEscalationsLoadedCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="CrisisEscalationRepository.OnResolveCallback.html" title="interface in com.example.moogerscouncil">CrisisEscalationRepository.OnResolveCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="CustomCalendarView.html" title="class in com.example.moogerscouncil">CustomCalendarView</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Fully custom calendar widget.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="CustomCalendarView.OnDateClickListener.html" title="interface in com.example.moogerscouncil">CustomCalendarView.OnDateClickListener</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="EmergencyDialogFragment.html" title="class in com.example.moogerscouncil">EmergencyDialogFragment</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Emergency contact dialog accessible from the student home screen.</div>
@@ -206,12 +290,34 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Represents an anonymous post-session feedback submission.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="HistoryActivity.html" title="class in com.example.moogerscouncil">HistoryActivity</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="GenerateSlotsActivity.html" title="class in com.example.moogerscouncil">GenerateSlotsActivity</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="HistoryActivity.html" title="class in com.example.moogerscouncil">HistoryActivity</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Displays the student's past and upcoming appointments in date order.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="HomeActivity.html" title="class in com.example.moogerscouncil">HomeActivity</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="HomeActivity.html" title="class in com.example.moogerscouncil">HomeActivity</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="IntakeAssessment.html" title="class in com.example.moogerscouncil">IntakeAssessment</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Represents a student's completed intake questionnaire.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="IntakeAssessmentRepository.html" title="class in com.example.moogerscouncil">IntakeAssessmentRepository</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Repository for Firestore intake assessment operations.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="IntakeAssessmentRepository.OnAssessmentLoadedCallback.html" title="interface in com.example.moogerscouncil">IntakeAssessmentRepository.OnAssessmentLoadedCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="IntakeAssessmentRepository.OnAssessmentSavedCallback.html" title="interface in com.example.moogerscouncil">IntakeAssessmentRepository.OnAssessmentSavedCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="IntakeAssessmentRepository.OnAssessmentsLoadedCallback.html" title="interface in com.example.moogerscouncil">IntakeAssessmentRepository.OnAssessmentsLoadedCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="IntakeAssessmentRepository.OnRecCountsLoadedCallback.html" title="interface in com.example.moogerscouncil">IntakeAssessmentRepository.OnRecCountsLoadedCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="IntakeMatcher.html" title="class in com.example.moogerscouncil">IntakeMatcher</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Scores counselors against a student's intake assessment.</div>
+</div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="LoginActivity.html" title="class in com.example.moogerscouncil">LoginActivity</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Login screen.</div>
@@ -219,6 +325,22 @@ loadScripts(document, 'script');</script>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="MainActivity.html" title="class in com.example.moogerscouncil">MainActivity</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Main entry point of the app.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ManageSessionActivity.html" title="class in com.example.moogerscouncil">ManageSessionActivity</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">All-in-one session management hub for a single counselor appointment.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="MessageThreadActivity.html" title="class in com.example.moogerscouncil">MessageThreadActivity</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Thread-based secure message view for pre-session and cross-session communication.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="NoteTemplate.html" title="class in com.example.moogerscouncil">NoteTemplate</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Quick-insert session note templates for counselor documentation.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="PastSessionsActivity.html" title="class in com.example.moogerscouncil">PastSessionsActivity</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Shows past booked sessions for the logged-in counselor.</div>
 </div>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="PrivacyPolicyActivity.html" title="class in com.example.moogerscouncil">PrivacyPolicyActivity</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
@@ -234,47 +356,139 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Registration screen.</div>
 </div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="ReminderRecord.html" title="class in com.example.moogerscouncil">ReminderRecord</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">In-app reminder record stored at reminderRecords/{appointmentId}_{reminderType}.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ReminderRepository.html" title="class in com.example.moogerscouncil">ReminderRepository</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Repository for admin reminder configuration and generated reminder records.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="ReminderRepository.OnCountCallback.html" title="interface in com.example.moogerscouncil">ReminderRepository.OnCountCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="ReminderRepository.OnReminderActionCallback.html" title="interface in com.example.moogerscouncil">ReminderRepository.OnReminderActionCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="ReminderRepository.OnReminderRecordCallback.html" title="interface in com.example.moogerscouncil">ReminderRepository.OnReminderRecordCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="ReminderRepository.OnRemindersLoadedCallback.html" title="interface in com.example.moogerscouncil">ReminderRepository.OnRemindersLoadedCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="ReminderRepository.OnSettingsLoadedCallback.html" title="interface in com.example.moogerscouncil">ReminderRepository.OnSettingsLoadedCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ReminderScheduler.html" title="class in com.example.moogerscouncil">ReminderScheduler</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Prototype-safe reminder scheduler.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="ReminderScheduler.OnSchedulerCallback.html" title="interface in com.example.moogerscouncil">ReminderScheduler.OnSchedulerCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ReminderSettings.html" title="class in com.example.moogerscouncil">ReminderSettings</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Global reminder configuration controlled by an admin.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="ReminderSettingsActivity.html" title="class in com.example.moogerscouncil">ReminderSettingsActivity</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Admin form for editing global 24-hour and 1-hour reminder settings.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="ReturningStudentHelper.html" title="class in com.example.moogerscouncil">ReturningStudentHelper</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Computes whether an appointment belongs to a student who has prior session history.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="SecureMessage.html" title="class in com.example.moogerscouncil">SecureMessage</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Thread-keyed in-app message for secure pre-session and cross-session communication.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="SecureMessageAdapter.html" title="class in com.example.moogerscouncil">SecureMessageAdapter</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Adapter for the full counselor-student message thread.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="SecureMessageRepository.html" title="class in com.example.moogerscouncil">SecureMessageRepository</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Repository for thread-based secure in-app messages.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="SecureMessageRepository.OnMessageActionCallback.html" title="interface in com.example.moogerscouncil">SecureMessageRepository.OnMessageActionCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="SecureMessageRepository.OnMessagesLoadedCallback.html" title="interface in com.example.moogerscouncil">SecureMessageRepository.OnMessagesLoadedCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="SecureMessageRepository.OnUnreadStatusCallback.html" title="interface in com.example.moogerscouncil">SecureMessageRepository.OnUnreadStatusCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
 <div class="col-first odd-row-color class-summary class-summary-tab2"><a href="SessionCache.html" title="class in com.example.moogerscouncil">SessionCache</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">Application-scoped in-memory cache for frequently accessed Firestore data.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="SpecializationTags.html" title="class in com.example.moogerscouncil">SpecializationTags</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="SessionHistoryActivity.html" title="class in com.example.moogerscouncil">SessionHistoryActivity</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Counselor-facing chronological appointment history for one student.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="SessionNote.html" title="class in com.example.moogerscouncil">SessionNote</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Represents a counselor's private note for one appointment/session.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="SessionNoteActivity.html" title="class in com.example.moogerscouncil">SessionNoteActivity</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Full-screen session note editor.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="SessionNoteHistoryAdapter.html" title="class in com.example.moogerscouncil">SessionNoteHistoryAdapter</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Displays a student's session note history as timestamped cards.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="SessionNoteHistoryAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">SessionNoteHistoryAdapter.ViewHolder</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="SessionNoteRepository.html" title="class in com.example.moogerscouncil">SessionNoteRepository</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Repository for all Firestore operations on session notes.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="SessionNoteRepository.OnNoteActionCallback.html" title="interface in com.example.moogerscouncil">SessionNoteRepository.OnNoteActionCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="SessionNoteRepository.OnNotesLoadedCallback.html" title="interface in com.example.moogerscouncil">SessionNoteRepository.OnNotesLoadedCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="SessionNoteRepository.OnSingleNoteCallback.html" title="interface in com.example.moogerscouncil">SessionNoteRepository.OnSingleNoteCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="SpecializationTags.html" title="class in com.example.moogerscouncil">SpecializationTags</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">String constants for counselor specialization tags.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="Student.html" title="class in com.example.moogerscouncil">Student</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="Student.html" title="class in com.example.moogerscouncil">Student</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Represents a registered student user in the BetterCAPS system.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="StudentAppointmentAdapter.html" title="class in com.example.moogerscouncil">StudentAppointmentAdapter</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="StudentAppointmentAdapter.html" title="class in com.example.moogerscouncil">StudentAppointmentAdapter</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">RecyclerView adapter for the student's appointment history screen.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="StudentAppointmentAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">StudentAppointmentAdapter.ViewHolder</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="StudentAppointmentAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">StudentAppointmentAdapter.ViewHolder</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="StudentHomeActivity.html" title="class in com.example.moogerscouncil">StudentHomeActivity</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
-<div class="block">ViewHolder for a single appointment history card.</div>
-</div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="StudentHomeActivity.html" title="class in com.example.moogerscouncil">StudentHomeActivity</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Student home dashboard shown after successful login or registration.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="TimeSlot.html" title="class in com.example.moogerscouncil">TimeSlot</a></div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="StudentProfileActivity.html" title="class in com.example.moogerscouncil">StudentProfileActivity</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Counselor-facing student profile.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="StudentWaitlistActivity.html" title="class in com.example.moogerscouncil">StudentWaitlistActivity</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Shows the student's active waitlist requests only.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="TimeSlot.html" title="class in com.example.moogerscouncil">TimeSlot</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Represents a bookable time slot for a counseling session.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="TimeSlotAdapter.html" title="class in com.example.moogerscouncil">TimeSlotAdapter</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">&nbsp;</div>
-<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="TimeSlotAdapter.OnBookClickListener.html" title="interface in com.example.moogerscouncil">TimeSlotAdapter.OnBookClickListener</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab1">&nbsp;</div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="TimeSlotAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">TimeSlotAdapter.ViewHolder</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">&nbsp;</div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="UserRepository.html" title="class in com.example.moogerscouncil">UserRepository</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="TimeSlotAdapter.html" title="class in com.example.moogerscouncil">TimeSlotAdapter</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="TimeSlotAdapter.OnBookClickListener.html" title="interface in com.example.moogerscouncil">TimeSlotAdapter.OnBookClickListener</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">&nbsp;</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="TimeSlotAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">TimeSlotAdapter.ViewHolder</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">&nbsp;</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="UserRepository.html" title="class in com.example.moogerscouncil">UserRepository</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Repository for the Firestore 'users' collection.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab1"><a href="UserRepository.OnRoleFetchedCallback.html" title="interface in com.example.moogerscouncil">UserRepository.OnRoleFetchedCallback</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="UserRepository.OnRoleFetchedCallback.html" title="interface in com.example.moogerscouncil">UserRepository.OnRoleFetchedCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
 <div class="block">Callback for role-only fetch operations used for post-login routing.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="UserRepository.OnStudentFetchedCallback.html" title="interface in com.example.moogerscouncil">UserRepository.OnStudentFetchedCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">Callback for student document lookups by UID.</div>
 </div>
 <div class="col-first odd-row-color class-summary class-summary-tab1"><a href="UserRepository.OnUserCreatedCallback.html" title="interface in com.example.moogerscouncil">UserRepository.OnUserCreatedCallback</a></div>
 <div class="col-last odd-row-color class-summary class-summary-tab1">
@@ -291,6 +505,50 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color class-summary class-summary-tab2"><a href="UserRole.html" title="class in com.example.moogerscouncil">UserRole</a></div>
 <div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">String constants for user roles stored in Firestore.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="WaitlistAdapter.html" title="class in com.example.moogerscouncil">WaitlistAdapter</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Adapter that binds <a href="WaitlistEntry.html" title="class in com.example.moogerscouncil"><code>WaitlistEntry</code></a> objects to <code>item_waitlist_student</code> rows.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="WaitlistAdapter.OnCancelClickListener.html" title="interface in com.example.moogerscouncil">WaitlistAdapter.OnCancelClickListener</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">Callback interface for cancel button taps.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="WaitlistEntry.html" title="class in com.example.moogerscouncil">WaitlistEntry</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Represents a student's waitlist request for a specific counselor.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="WaitlistMatcher.html" title="class in com.example.moogerscouncil">WaitlistMatcher</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Determines which waitlist entries match a newly-created slot.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="WaitlistOffer.html" title="class in com.example.moogerscouncil">WaitlistOffer</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Represents a slot offered to a waitlisted student.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="WaitlistRepository.html" title="class in com.example.moogerscouncil">WaitlistRepository</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="block">Repository for the Firestore 'waitlist' collection.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="WaitlistRepository.OnWaitlistActionCallback.html" title="interface in com.example.moogerscouncil">WaitlistRepository.OnWaitlistActionCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
+<div class="block">Three-way callback for join operations that may detect duplicate active entries.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="WaitlistRepository.OnWaitlistCountCallback.html" title="interface in com.example.moogerscouncil">WaitlistRepository.OnWaitlistCountCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">Callback for operations that return a count.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab1"><a href="WaitlistRepository.OnWaitlistLoadedCallback.html" title="interface in com.example.moogerscouncil">WaitlistRepository.OnWaitlistLoadedCallback</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab1">
+<div class="block">Callback for operations that load a list of waitlist entries.</div>
+</div>
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="WaitlistRepository.OnWaitlistSimpleCallback.html" title="interface in com.example.moogerscouncil">WaitlistRepository.OnWaitlistSimpleCallback</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">Simple success/failure callback for single-document mutations.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="WaitlistRequestActivity.html" title="class in com.example.moogerscouncil">WaitlistRequestActivity</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="block">Student preference form for joining a counselor's waitlist.</div>
 </div>
 </div>
 </div>

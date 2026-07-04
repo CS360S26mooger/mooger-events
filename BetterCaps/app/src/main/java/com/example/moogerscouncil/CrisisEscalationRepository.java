@@ -9,9 +9,10 @@
  */
 package com.example.moogerscouncil;
 
+import android.util.Log;
+
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -77,9 +78,10 @@ public class CrisisEscalationRepository {
      * @param callback Delivers the escalation list or error.
      */
     public void getUnresolvedEscalations(OnEscalationsLoadedCallback callback) {
+        // No server-side orderBy — combining whereEqualTo + orderBy on a different field
+        // requires a composite Firestore index that may not exist. Sort client-side instead.
         crisisCollection
                 .whereEqualTo("resolved", false)
-                .orderBy("createdAt", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(snapshot -> {
                     List<CrisisEscalation> list = new ArrayList<>();
@@ -90,9 +92,18 @@ public class CrisisEscalationRepository {
                             list.add(e);
                         }
                     });
+                    list.sort((a, b) -> {
+                        if (a.getCreatedAt() == null && b.getCreatedAt() == null) return 0;
+                        if (a.getCreatedAt() == null) return 1;
+                        if (b.getCreatedAt() == null) return -1;
+                        return b.getCreatedAt().compareTo(a.getCreatedAt());
+                    });
                     callback.onSuccess(list);
                 })
-                .addOnFailureListener(callback::onFailure);
+                .addOnFailureListener(e -> {
+                    Log.e("CrisisRepo", "getUnresolvedEscalations failed", e);
+                    callback.onFailure(e);
+                });
     }
 
     /**

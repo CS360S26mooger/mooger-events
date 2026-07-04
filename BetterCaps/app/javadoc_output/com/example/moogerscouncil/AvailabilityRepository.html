@@ -90,12 +90,12 @@ loadScripts(document, 'script');</script>
 <hr>
 <div class="type-signature"><span class="modifiers">public class </span><span class="element-name type-name-label">AvailabilityRepository</span>
 <span class="extends-implements">extends <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a></span></div>
-<div class="block">Repository for the Firestore 'slots' collection.
- All reads and writes to time slot documents flow through this class.
+<div class="block">Repository for slot documents stored under Slots/{counselorId}/slots.
 
- <p>Used by <a href="BookingActivity.html" title="class in com.example.moogerscouncil"><code>BookingActivity</code></a> (fetch available slots),
- <a href="CounselorDashboardActivity.html" title="class in com.example.moogerscouncil"><code>CounselorDashboardActivity</code></a> (add slots), and
- <a href="AvailabilitySetupActivity.html" title="class in com.example.moogerscouncil"><code>AvailabilitySetupActivity</code></a> (manage slots).</p></div>
+ <p>Structure: <code>Slots/{counselorAuthUID}/slots/{slotDocId}</code></p>
+
+ <p>Each counselor's slots live under their own branch keyed by Auth UID.
+ Reads are a direct path lookup — no collection-wide scan or composite index needed.</p></div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -109,15 +109,22 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Class</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color"><code>static interface&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="AvailabilityRepository.OnSlotActionCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a></code></div>
-<div class="col-last even-row-color">
-<div class="block">Callback for slot write operations (add / remove).</div>
-</div>
+<div class="col-second even-row-color"><code><a href="AvailabilityRepository.OnAvailabilityCheckCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnAvailabilityCheckCallback</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 <div class="col-first odd-row-color"><code>static interface&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="AvailabilityRepository.OnSlotsLoadedCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotsLoadedCallback</a></code></div>
+<div class="col-second odd-row-color"><code><a href="AvailabilityRepository.OnBufferCheckCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnBufferCheckCallback</a></code></div>
+<div class="col-last odd-row-color">&nbsp;</div>
+<div class="col-first even-row-color"><code>static interface&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="AvailabilityRepository.OnSlotActionCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
+<div class="col-first odd-row-color"><code>static interface&nbsp;</code></div>
+<div class="col-second odd-row-color"><code><a href="AvailabilityRepository.OnSlotCreatedCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotCreatedCallback</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Callback for operations that return a list of time slots.</div>
+<div class="block">Callback for slot creation operations that need to return the created slot.</div>
 </div>
+<div class="col-first even-row-color"><code>static interface&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="AvailabilityRepository.OnSlotsLoadedCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotsLoadedCallback</a></code></div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -130,9 +137,7 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-first">Constructor</div>
 <div class="table-header col-last">Description</div>
 <div class="col-constructor-name even-row-color"><code><a href="#%3Cinit%3E()" class="member-name-link">AvailabilityRepository</a>()</code></div>
-<div class="col-last even-row-color">
-<div class="block">Initialises the repository with a reference to the 'slots' collection.</div>
-</div>
+<div class="col-last even-row-color">&nbsp;</div>
 </div>
 </section>
 </li>
@@ -153,25 +158,77 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;time,
  <a href="AvailabilityRepository.OnSlotActionCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a>&nbsp;callback)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Adds a new time slot for a counselor with <code>available = true</code>.</div>
+<div class="block">Adds a new slot under <code>Slots/{counselorId}/slots</code>.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addSlotAndReturn(java.lang.String,java.lang.String,java.lang.String,com.example.moogerscouncil.AvailabilityRepository.OnSlotCreatedCallback)" class="member-name-link">addSlotAndReturn</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;time,
+ <a href="AvailabilityRepository.OnSlotCreatedCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotCreatedCallback</a>&nbsp;callback)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Adds a new slot and returns the created <a href="TimeSlot.html" title="class in com.example.moogerscouncil"><code>TimeSlot</code></a> (with its Firestore ID) via
+ callback.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addSlotsBatch(java.lang.String,java.lang.String,java.util.List,com.example.moogerscouncil.AvailabilityRepository.OnSlotActionCallback)" class="member-name-link">addSlotsBatch</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;times,
+ <a href="AvailabilityRepository.OnSlotActionCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a>&nbsp;callback)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Creates multiple slots for one date using a single Firestore WriteBatch.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#addSlotsBatchMultiDay(java.lang.String,java.util.Map,com.example.moogerscouncil.AvailabilityRepository.OnSlotActionCallback)" class="member-name-link">addSlotsBatchMultiDay</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&gt;&nbsp;slotsPerDate,
+ <a href="AvailabilityRepository.OnSlotActionCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a>&nbsp;callback)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Creates slots for multiple dates in a single Firestore WriteBatch.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#canAddSlotWithBuffer(java.lang.String,java.lang.String,java.lang.String,int,com.example.moogerscouncil.AvailabilityRepository.OnBufferCheckCallback)" class="member-name-link">canAddSlotWithBuffer</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;time,
+ int&nbsp;bufferMinutes,
+ <a href="AvailabilityRepository.OnBufferCheckCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnBufferCheckCallback</a>&nbsp;callback)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Checks whether a new slot would violate the counselor's buffer settings.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAvailableSlotsForCounselor(java.lang.String,com.example.moogerscouncil.AvailabilityRepository.OnSlotsLoadedCallback)" class="member-name-link">getAvailableSlotsForCounselor</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
  <a href="AvailabilityRepository.OnSlotsLoadedCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotsLoadedCallback</a>&nbsp;callback)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Fetches only available slots for a given counselor.</div>
+<div class="block">Fetches only available slots for a counselor.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSlotsForCounselor(java.lang.String,com.example.moogerscouncil.AvailabilityRepository.OnSlotsLoadedCallback)" class="member-name-link">getSlotsForCounselor</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
  <a href="AvailabilityRepository.OnSlotsLoadedCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotsLoadedCallback</a>&nbsp;callback)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Fetches all time slots (available and unavailable) for a given counselor.</div>
+<div class="block">Fetches all time slots (available and booked) for a counselor.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeSlot(java.lang.String,com.example.moogerscouncil.AvailabilityRepository.OnSlotActionCallback)" class="member-name-link">removeSlot</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;slotId,
- <a href="AvailabilityRepository.OnSlotActionCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a>&nbsp;callback)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSlotsForDate(java.lang.String,java.lang.String,com.example.moogerscouncil.AvailabilityRepository.OnSlotsLoadedCallback)" class="member-name-link">getSlotsForDate</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
+ <a href="AvailabilityRepository.OnSlotsLoadedCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotsLoadedCallback</a>&nbsp;callback)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Removes a time slot document from Firestore.</div>
+<div class="block">Fetches slots for one counselor on one date.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#hasAvailableSlots(java.lang.String,com.example.moogerscouncil.AvailabilityRepository.OnAvailabilityCheckCallback)" class="member-name-link">hasAvailableSlots</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="AvailabilityRepository.OnAvailabilityCheckCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnAvailabilityCheckCallback</a>&nbsp;callback)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Checks whether at least one available slot exists for the counselor.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#purgeExpiredUnbookedSlots(java.lang.String)" class="member-name-link">purgeExpiredUnbookedSlots</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Purges expired unbooked slots for a counselor from Firestore.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#removeSlot(java.lang.String,java.lang.String,com.example.moogerscouncil.AvailabilityRepository.OnSlotActionCallback)" class="member-name-link">removeSlot</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;slotId,
+ <a href="AvailabilityRepository.OnSlotActionCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a>&nbsp;callback)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Deletes a slot document from <code>Slots/{counselorId}/slots/{slotId}</code>.</div>
 </div>
 </div>
 </div>
@@ -194,7 +251,6 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="&lt;init&gt;()">
 <h3>AvailabilityRepository</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="element-name">AvailabilityRepository</span>()</div>
-<div class="block">Initialises the repository with a reference to the 'slots' collection.</div>
 </section>
 </li>
 </ul>
@@ -210,12 +266,11 @@ loadScripts(document, 'script');</script>
 <h3>getSlotsForCounselor</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">getSlotsForCounselor</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
  <a href="AvailabilityRepository.OnSlotsLoadedCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotsLoadedCallback</a>&nbsp;callback)</span></div>
-<div class="block">Fetches all time slots (available and unavailable) for a given counselor.
- Used by <a href="AvailabilitySetupActivity.html" title="class in com.example.moogerscouncil"><code>AvailabilitySetupActivity</code></a> to display the full slot list
- and by <a href="AvailabilitySchedule.html#fromSlots(java.lang.String,java.util.List)"><code>AvailabilitySchedule.fromSlots(java.lang.String, java.util.List&lt;com.example.moogerscouncil.TimeSlot&gt;)</code></a> which filters internally.</div>
+<div class="block">Fetches all time slots (available and booked) for a counselor.
+ Used by <a href="AvailabilitySetupActivity.html" title="class in com.example.moogerscouncil"><code>AvailabilitySetupActivity</code></a> to show the full slot list.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>counselorId</code> - The counselor whose slots to fetch.</dd>
+<dd><code>counselorId</code> - Firebase Auth UID of the counselor.</dd>
 <dd><code>callback</code> - Receives the full slot list on success.</dd>
 </dl>
 </section>
@@ -225,16 +280,66 @@ loadScripts(document, 'script');</script>
 <h3>getAvailableSlotsForCounselor</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">getAvailableSlotsForCounselor</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
  <a href="AvailabilityRepository.OnSlotsLoadedCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotsLoadedCallback</a>&nbsp;callback)</span></div>
-<div class="block">Fetches only available slots for a given counselor.
- Used by <a href="BookingActivity.html" title="class in com.example.moogerscouncil"><code>BookingActivity</code></a> where unavailable slots must never be shown.
-
- <p>Filters by counselorId only (single-field index, no composite index required),
- then removes booked slots in memory — consistent with how other repositories
- in this project avoid composite Firestore index requirements.</p></div>
+<div class="block">Fetches only available slots for a counselor.
+ Used by <a href="BookingActivity.html" title="class in com.example.moogerscouncil"><code>BookingActivity</code></a>; all results are cached in
+ <a href="AvailabilitySchedule.html" title="class in com.example.moogerscouncil"><code>AvailabilitySchedule</code></a> so the calendar needs no further Firestore reads.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>counselorId</code> - The counselor whose available slots to fetch.</dd>
-<dd><code>callback</code> - Receives the available slot list on success.</dd>
+<dd><code>counselorId</code> - Firebase Auth UID of the counselor.</dd>
+<dd><code>callback</code> - Receives the available-only slot list on success.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getSlotsForDate(java.lang.String,java.lang.String,com.example.moogerscouncil.AvailabilityRepository.OnSlotsLoadedCallback)">
+<h3>getSlotsForDate</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">getSlotsForDate</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
+ <a href="AvailabilityRepository.OnSlotsLoadedCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotsLoadedCallback</a>&nbsp;callback)</span></div>
+<div class="block">Fetches slots for one counselor on one date.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="canAddSlotWithBuffer(java.lang.String,java.lang.String,java.lang.String,int,com.example.moogerscouncil.AvailabilityRepository.OnBufferCheckCallback)">
+<h3>canAddSlotWithBuffer</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">canAddSlotWithBuffer</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;time,
+ int&nbsp;bufferMinutes,
+ <a href="AvailabilityRepository.OnBufferCheckCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnBufferCheckCallback</a>&nbsp;callback)</span></div>
+<div class="block">Checks whether a new slot would violate the counselor's buffer settings.
+ Rule: 60-minute session length plus configured buffer minutes.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="hasAvailableSlots(java.lang.String,com.example.moogerscouncil.AvailabilityRepository.OnAvailabilityCheckCallback)">
+<h3>hasAvailableSlots</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">hasAvailableSlots</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="AvailabilityRepository.OnAvailabilityCheckCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnAvailabilityCheckCallback</a>&nbsp;callback)</span></div>
+<div class="block">Checks whether at least one available slot exists for the counselor.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>counselorId</code> - Firebase Auth UID or legacy slot-path key.</dd>
+<dd><code>callback</code> - Receives true when one or more available slots exist.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="purgeExpiredUnbookedSlots(java.lang.String)">
+<h3>purgeExpiredUnbookedSlots</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">purgeExpiredUnbookedSlots</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId)</span></div>
+<div class="block">Purges expired unbooked slots for a counselor from Firestore.
+ A slot is purged if its date is strictly before today AND its
+ <code>available</code> field is true — i.e. nobody booked it before
+ the day passed. Booked slots (available=false) are kept because
+ the counselor still needs them for notes/no-show actions.
+
+ <p>Fire-and-forget: runs as a single <code>WriteBatch</code> commit.
+ Called on dashboard entry to keep the database tidy without a
+ background timer.</p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>counselorId</code> - Firebase Auth UID of the counselor whose slots to purge.</dd>
 </dl>
 </section>
 </li>
@@ -245,10 +350,12 @@ loadScripts(document, 'script');</script>
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;time,
  <a href="AvailabilityRepository.OnSlotActionCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a>&nbsp;callback)</span></div>
-<div class="block">Adds a new time slot for a counselor with <code>available = true</code>.</div>
+<div class="block">Adds a new slot under <code>Slots/{counselorId}/slots</code>.
+ Firestore creates the parent document implicitly on first write — no
+ separate initialisation step is needed.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>counselorId</code> - The counselor this slot belongs to.</dd>
+<dd><code>counselorId</code> - Firebase Auth UID of the counselor.</dd>
 <dd><code>date</code> - Date in "yyyy-MM-dd" format.</dd>
 <dd><code>time</code> - Time in "HH:mm" format.</dd>
 <dd><code>callback</code> - Success/failure callback.</dd>
@@ -256,15 +363,69 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
-<section class="detail" id="removeSlot(java.lang.String,com.example.moogerscouncil.AvailabilityRepository.OnSlotActionCallback)">
-<h3>removeSlot</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeSlot</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;slotId,
- <a href="AvailabilityRepository.OnSlotActionCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a>&nbsp;callback)</span></div>
-<div class="block">Removes a time slot document from Firestore.
- Used by <a href="AvailabilitySetupActivity.html" title="class in com.example.moogerscouncil"><code>AvailabilitySetupActivity</code></a> when a counselor swipes to delete.</div>
+<section class="detail" id="addSlotAndReturn(java.lang.String,java.lang.String,java.lang.String,com.example.moogerscouncil.AvailabilityRepository.OnSlotCreatedCallback)">
+<h3>addSlotAndReturn</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addSlotAndReturn</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;time,
+ <a href="AvailabilityRepository.OnSlotCreatedCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotCreatedCallback</a>&nbsp;callback)</span></div>
+<div class="block">Adds a new slot and returns the created <a href="TimeSlot.html" title="class in com.example.moogerscouncil"><code>TimeSlot</code></a> (with its Firestore ID) via
+ callback. Use this variant when the caller needs the slot object — e.g. the
+ waitlist auto-resolution hook in <a href="AvailabilitySetupActivity.html" title="class in com.example.moogerscouncil"><code>AvailabilitySetupActivity</code></a>.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>slotId</code> - The Firestore document ID of the slot to delete.</dd>
+<dd><code>counselorId</code> - Firebase Auth UID of the counselor.</dd>
+<dd><code>date</code> - Date in "yyyy-MM-dd" format.</dd>
+<dd><code>time</code> - Time in "HH:mm" format.</dd>
+<dd><code>callback</code> - Receives the created slot on success.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="addSlotsBatch(java.lang.String,java.lang.String,java.util.List,com.example.moogerscouncil.AvailabilityRepository.OnSlotActionCallback)">
+<h3>addSlotsBatch</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addSlotsBatch</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&nbsp;times,
+ <a href="AvailabilityRepository.OnSlotActionCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a>&nbsp;callback)</span></div>
+<div class="block">Creates multiple slots for one date using a single Firestore WriteBatch.
+ Used by <a href="GenerateSlotsActivity.html" title="class in com.example.moogerscouncil"><code>GenerateSlotsActivity</code></a> for bulk slot generation.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>counselorId</code> - Firebase Auth UID of the counselor.</dd>
+<dd><code>date</code> - Date in "yyyy-MM-dd" format.</dd>
+<dd><code>times</code> - List of times in "HH:mm" format.</dd>
+<dd><code>callback</code> - Success/failure callback.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="addSlotsBatchMultiDay(java.lang.String,java.util.Map,com.example.moogerscouncil.AvailabilityRepository.OnSlotActionCallback)">
+<h3>addSlotsBatchMultiDay</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">addSlotsBatchMultiDay</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Map.html" title="class or interface in java.util" class="external-link">Map</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>,<wbr><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&gt;&gt;&nbsp;slotsPerDate,
+ <a href="AvailabilityRepository.OnSlotActionCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a>&nbsp;callback)</span></div>
+<div class="block">Creates slots for multiple dates in a single Firestore WriteBatch.
+ Used by <a href="GenerateSlotsActivity.html" title="class in com.example.moogerscouncil"><code>GenerateSlotsActivity</code></a> for multi-day bulk generation.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>counselorId</code> - Firebase Auth UID of the counselor.</dd>
+<dd><code>slotsPerDate</code> - Map of "yyyy-MM-dd" date → list of "HH:mm" times.</dd>
+<dd><code>callback</code> - Success/failure callback.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="removeSlot(java.lang.String,java.lang.String,com.example.moogerscouncil.AvailabilityRepository.OnSlotActionCallback)">
+<h3>removeSlot</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">removeSlot</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;slotId,
+ <a href="AvailabilityRepository.OnSlotActionCallback.html" title="interface in com.example.moogerscouncil">AvailabilityRepository.OnSlotActionCallback</a>&nbsp;callback)</span></div>
+<div class="block">Deletes a slot document from <code>Slots/{counselorId}/slots/{slotId}</code>.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>counselorId</code> - Firebase Auth UID of the counselor who owns the slot.</dd>
+<dd><code>slotId</code> - Firestore document ID of the slot to delete.</dd>
 <dd><code>callback</code> - Success/failure callback.</dd>
 </dl>
 </section>

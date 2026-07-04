@@ -1,5 +1,5 @@
-# BetterCAPS — Phase 3 Development Cycle
-### Complete Sprint History and Implementation Record
+# BetterCAPS — Phase 4 Final Deliverable
+### Complete Development Cycle · Sprints 1–11
 
 ---
 
@@ -11,46 +11,57 @@
 4. [Firestore Data Model](#4-firestore-data-model)
 5. [Sprint 1 — Registration and Authentication (US-22)](#5-sprint-1--registration-and-authentication-us-22)
 6. [Sprint 2 — Counselor Directory and Specialization Tags (US-23, US-06)](#6-sprint-2--counselor-directory-and-specialization-tags-us-23-us-06)
-7. [Sprint 3 — Booking Flow, Dashboard, Emergency Button (US-01, US-05/US-10, US-20)](#7-sprint-3--booking-flow-dashboard-emergency-button-us-01-us-0510-us-20)
+7. [Sprint 3 — Booking Flow, Dashboard, Emergency Button (US-01, US-05/10, US-20)](#7-sprint-3--booking-flow-dashboard-emergency-button-us-01-us-0510-us-20)
 8. [Sprint 4 — On-Leave Status and Anonymous Feedback (US-19, US-21)](#8-sprint-4--on-leave-status-and-anonymous-feedback-us-19-us-21)
-9. [Sprint 4.5 — Integration Refinements (US-03, US-04, Homepage Wiring)](#9-sprint-45--integration-refinements-us-03-us-04-homepage-wiring)
-10. [Final Class Inventory](#10-final-class-inventory)
-11. [Test Coverage Summary](#11-test-coverage-summary)
-12. [User Story Traceability Matrix](#12-user-story-traceability-matrix)
-13. [Retrospective — Lessons Across Sprints](#13-retrospective--lessons-across-sprints)
+9. [Sprint 4.5 — Integration Refinements (US-02, US-03, US-04 partial)](#9-sprint-45--integration-refinements-us-02-us-03-us-04-partial)
+10. [Sprint 5 — Intake Matching and Waitlist Foundation (US-04, US-24)](#10-sprint-5--intake-matching-and-waitlist-foundation-us-04-us-24)
+11. [Sprint 6 — Counselor Workflow: Notes, Crisis, Student Profile (US-12–15, US-25)](#11-sprint-6--counselor-workflow-notes-crisis-student-profile-us-12-15-us-25)
+12. [Sprint 7 — Buffer Time and Calendar Sync (US-08, US-09)](#12-sprint-7--buffer-time-and-calendar-sync-us-08-us-09)
+13. [Sprint 8 — Waitlist Hardening: Preference Requests and Auto-Resolution](#13-sprint-8--waitlist-hardening-preference-requests-and-auto-resolution)
+14. [Sprint 9 — Dashboard Overhaul, Notes Hardening, No-Show Safeguards](#14-sprint-9--dashboard-overhaul-notes-hardening-no-show-safeguards)
+15. [Sprint 9.5 — Rolling Hardening: Cache, Slot Overhaul, Real-Time Listeners](#15-sprint-95--rolling-hardening-cache-slot-overhaul-real-time-listeners)
+16. [Sprint 10 — Admin Reminders, Secure Messaging, Returning Student (US-16, US-17, US-18)](#16-sprint-10--admin-reminders-secure-messaging-returning-student-us-16-us-17-us-18)
+17. [Sprint 11 — Messaging Thread Architecture, Counselor UX Declutter, Crisis Admin](#17-sprint-11--messaging-thread-architecture-counselor-ux-declutter-crisis-admin)
+18. [Final Class Inventory](#18-final-class-inventory)
+19. [Test Coverage Summary](#19-test-coverage-summary)
+20. [User Story Traceability Matrix](#20-user-story-traceability-matrix)
+21. [Retrospective — Lessons Across Sprints](#21-retrospective--lessons-across-sprints)
 
 ---
 
 ## 1. Project Overview
 
-**BetterCAPS** is a university counseling appointment platform built as an Android application with Firebase (Authentication + Firestore) as the backend. The app serves three user roles — Students, Counselors, and Administrators — and implements the core student-counselor appointment lifecycle: registration, counselor discovery, booking, session management, and post-session feedback.
+**BetterCAPS** is a university counseling appointment platform built as an Android application with Firebase (Authentication + Firestore) as the backend. The app serves three user roles — Students, Counselors, and Administrators — and implements the complete student-counselor appointment lifecycle: registration, counselor discovery, intake matching, booking, session management, waitlisting, secure messaging, admin oversight, and post-session feedback.
 
-Phase 3 represents the **half-way checkpoint**, delivering a working prototype that covers approximately half of the 25+ user stories in the product backlog. The TA builds and runs the app directly from the repository — it must compile and function without manual intervention.
+The project was completed across 11 sprints (plus a 9.5 hardening sprint), progressing from a stub codebase to a fully functional, production-ready Android application. This document is the Phase 4 final deliverable — a complete record of every architectural decision, sprint outcome, and design tradeoff made throughout the project.
 
-### Phase 3 Definition of Done
+### Final Deliverable — Achieved Outcomes
 
-- A user can register, log in, browse counselors, and successfully book an appointment — all persisted in Firestore.
-- A counselor can log in, see their appointments on a tabbed dashboard, and manage their availability.
-- An emergency contact button is accessible from the home screen at all times.
-- Counselors can toggle on-leave status with referral routing.
-- Students can submit anonymous post-session feedback.
-- All implemented features have corresponding unit and UI tests.
-- Every model class has Javadoc documentation.
+- Students can register, log in, complete an intake quiz, browse and filter counselors, book appointments, manage a waitlist, exchange secure messages, and view session history.
+- Counselors can log in, view a real-time dashboard, manage availability with buffer-time validation, generate bulk slots, access session notes, file crisis escalations, and view past sessions.
+- Admins can configure appointment reminders and review unresolved crisis escalations.
+- An emergency contact button is accessible from the student home screen at all times.
+- All implemented features have corresponding unit and/or UI tests.
+- Every model class is documented with Javadoc.
+- All user-visible strings are externalized to `strings.xml` — no hardcoded UI text.
 
-### Stories Implemented in Phase 3
+### User Stories Implemented
 
-| Tier | Stories | Points | Sprint |
-|---|---|---|---|
-| **Core** | US-22 (Registration + Auth) | 8 | Sprint 1 |
-| **Core** | US-23 (Counselor Directory), US-06 (Specialization Tags) | 8 + 5 | Sprint 2 |
-| **Core** | US-01 (Booking Flow) | 13 | Sprint 3 |
-| **Core** | US-05/US-10 (Counselor Dashboard) | 8 | Sprint 3 |
-| **Core** | US-20 (Emergency Button) | 3 | Sprint 3 |
-| **Secondary** | US-19 (On-Leave Status) | 5 | Sprint 4 |
-| **Secondary** | US-21 (Anonymous Feedback) | 5 | Sprint 4 |
-| **Integration** | US-03 (Slide-to-Cancel), US-04 (Quiz), Homepage Wiring | — | Sprint 4.5 |
-
-**Total story points delivered:** 55
+| Tier | Stories | Sprint |
+|---|---|---|
+| **Core** | US-22 Registration + Auth | 1 |
+| **Core** | US-23 Counselor Directory, US-06 Specialization Tags | 2 |
+| **Core** | US-01 Booking, US-05/10 Dashboard, US-20 Emergency | 3 |
+| **Secondary** | US-19 On-Leave Status, US-21 Anonymous Feedback | 4 |
+| **Integration** | US-02 Discreet Mode, US-03 Slide-to-Cancel, US-04 (partial) | 4.5 |
+| **Feature** | US-04 Intake Matching (complete), US-24 Waitlist Foundation | 5 |
+| **Feature** | US-12 Session Notes, US-13 History, US-14 Student Profile, US-15 Crisis | 6 |
+| **Feature** | US-08 Buffer Time, US-09 Calendar Sync | 7 |
+| **Feature** | US-24 Waitlist Hardening (full lifecycle), US-25 Counselor Queue | 8 |
+| **Polish** | Dashboard overhaul, no-show safeguards, note upsert | 9 |
+| **Hardening** | Real-time listeners, slot management overhaul, booking guards | 9.5 |
+| **Feature** | US-16 Admin Reminders, US-17 Returning Student, US-18 Secure Messaging | 10 |
+| **Architecture** | Messaging thread redesign, appointment card declutter, crisis admin | 11 |
 
 ---
 
@@ -102,38 +113,41 @@ Stories moved through **Todo → In Progress → In Review → Done** on the Git
 ### Layered Architecture
 
 ```
-┌─────────────────────────────────────────┐
-│           UI Layer (Activities)          │
-│  LoginActivity, RegisterActivity,        │
-│  StudentHomeActivity, BookingActivity,   │
-│  CounselorDashboardActivity, ...         │
-└──────────────┬──────────────────────────┘
-               │ calls
-┌──────────────▼──────────────────────────┐
-│         Repository Layer                 │
-│  UserRepository, CounselorRepository,   │
-│  AppointmentRepository,                 │
-│  AvailabilityRepository,                │
-│  FeedbackRepository                     │
-└──────────────┬──────────────────────────┘
-               │ reads/writes
-┌──────────────▼──────────────────────────┐
-│         Firestore (Firebase)             │
-│  /users  /counselors  /slots             │
-│  /appointments  /feedback                │
-└─────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────┐
+│                    UI Layer (Activities)                   │
+│  LoginActivity, StudentHomeActivity, BookingActivity,     │
+│  CounselorDashboardActivity, ManageSessionActivity, ...   │
+└───────────────────────┬──────────────────────────────────┘
+                        │ calls
+┌───────────────────────▼──────────────────────────────────┐
+│                  Repository Layer                          │
+│  UserRepository, CounselorRepository,                     │
+│  AppointmentRepository, AvailabilityRepository,           │
+│  SessionNoteRepository, SecureMessageRepository, ...      │
+└───────────────────────┬──────────────────────────────────┘
+                        │ reads / writes
+┌───────────────────────▼──────────────────────────────────┐
+│                  Firestore (Firebase)                      │
+│  /users  /counselors  /slots  /appointments  /feedback    │
+│  /sessionNotes  /crisisEscalations  /waitlistEntries      │
+│  /reminderSettings  /reminderRecords                      │
+│  /messageThreads/{id}/messages                            │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ### Design Patterns Used
 
 | Pattern | Where Applied | Why |
 |---|---|---|
-| **Repository** | UserRepository, CounselorRepository, AppointmentRepository, AvailabilityRepository, FeedbackRepository | Isolates data layer from UI. Activities are hard to unit test because they depend on Android runtime. Repositories can be mocked. |
-| **Callback** | All repository methods use inner interface callbacks (e.g., `OnBookingCallback`) | Firestore operations are asynchronous. Callbacks decouple the caller from the async result. |
-| **Factory Method** | `AvailabilitySchedule.fromSlots()`, `EmergencyDialogFragment.newInstance()`, `BookingConfirmationFragment.newInstance()` | Encapsulates construction logic, enforces required parameters. |
-| **Adapter** | CounselorAdapter, AppointmentAdapter, StudentAppointmentAdapter, TimeSlotAdapter | Standard RecyclerView pattern for binding data to list views. |
-| **Value Object** | AvailabilitySchedule | Local, non-persisted data structure that groups TimeSlots by date for calendar rendering. |
-| **Constants Class** | UserRole, SpecializationTags | Single source of truth for string constants. Prevents typos across the codebase. |
+| **Repository** | All `*Repository` classes | Isolates data layer. Activities cannot be unit tested; repositories can be mocked. |
+| **Callback** | All repository methods use inner interface callbacks | Firestore is asynchronous. Callbacks decouple caller from the async result. |
+| **Factory Method** | `AvailabilitySchedule.fromSlots()`, `EmergencyDialogFragment.newInstance()`, `BookingConfirmationFragment.newInstance()` | Encapsulates construction, enforces required parameters. |
+| **Adapter** | All `*Adapter` classes | Standard RecyclerView pattern for binding data to list views. |
+| **Value Object** | `AvailabilitySchedule` | Local, non-persisted grouping of TimeSlots by date for calendar rendering. |
+| **Constants Class** | `UserRole`, `SpecializationTags` | Single source of truth for string constants. Prevents typos across the codebase. |
+| **Singleton** | `SessionCache` | Single in-memory cache instance to avoid redundant Firestore reads across activities. |
+| **Static Utility** | `IntakeMatcher`, `WaitlistMatcher`, `BufferTimeValidator`, `CalendarSyncHelper`, `ReturningStudentHelper`, `NoteTemplate`, `AppToast` | Stateless logic. No need for instantiation — all methods are static. |
+| **Snapshot Listener** | `CounselorDashboardActivity`, `MessageThreadActivity` | Real-time Firestore listeners push updates instead of polling on every resume. |
 
 ---
 
@@ -152,8 +166,8 @@ users/{uid}
 
 ### Collection: `counselors`
 ```
-counselors/{counselorId}
-  ├── uid: String               // matches users/{uid}
+counselors/{counselorId}        // counselorId == Auth UID (enforced by registration)
+  ├── uid: String
   ├── name: String
   ├── bio: String
   ├── specializations: List<String>
@@ -164,14 +178,15 @@ counselors/{counselorId}
   └── referralCounselorId: String
 ```
 
-### Collection: `slots`
+### Collection: `Slots` (hierarchical — changed in changes.md)
 ```
-slots/{slotId}
+Slots/{counselorAuthUID}/slots/{slotId}
   ├── counselorId: String
   ├── date: String              // "yyyy-MM-dd"
   ├── time: String              // "HH:mm"
   └── available: Boolean
 ```
+> **Note:** Originally `slots/{slotId}` (flat). Moved to hierarchical path to ensure counselor doc ID always equals their Auth UID.
 
 ### Collection: `appointments`
 ```
@@ -181,7 +196,9 @@ appointments/{appointmentId}
   ├── slotId: String
   ├── date: String
   ├── time: String
-  └── status: String            // "CONFIRMED" | "COMPLETED" | "CANCELLED" | "NO_SHOW"
+  ├── status: String            // "CONFIRMED" | "COMPLETED" | "CANCELLED" | "NO_SHOW"
+  ├── returningStudent: Boolean // computed by ReturningStudentHelper at booking time
+  └── crisisEscalationId: String
 ```
 
 ### Collection: `feedback`
@@ -191,512 +208,791 @@ feedback/{feedbackId}
   ├── rating: int               // 1–5
   ├── comment: String
   └── submittedAt: Timestamp
-  // NOTE: no studentId field — anonymity enforced at schema level
+  // NOTE: no studentId — anonymity enforced at schema level
 ```
 
-**Schema decision:** The original PLAN.md specified `timeSlots` as the collection name. During development, teammate Shahbaz implemented the booking flow using `slots`. Since live data was already persisted under `slots`, Sprint 3 standardized on this name across all repository code.
+### Collection: `waitlistEntries`
+```
+waitlistEntries/{entryId}
+  ├── studentId: String
+  ├── counselorId: String
+  ├── preferredDates: List<String>   // ISO dates the student prefers
+  ├── preferredStartTime: String     // "HH:mm"
+  ├── preferredEndTime: String       // "HH:mm"
+  ├── status: String                 // "ACTIVE" | "RESOLVED" | "CANCELLED"
+  ├── requestedAt: Timestamp         // FIFO ordering key
+  └── resolvedAppointmentId: String
+```
+
+### Collection: `sessionNotes`
+```
+sessionNotes/{noteId}
+  ├── appointmentId: String
+  ├── counselorId: String
+  ├── noteText: String
+  ├── templateKey: String
+  └── appointmentDate: String
+```
+
+### Collection: `crisisEscalations`
+```
+crisisEscalations/{escalationId}
+  ├── appointmentId: String
+  ├── counselorId: String
+  ├── studentId: String
+  ├── severity: String          // "MODERATE" | "HIGH" | "IMMEDIATE"
+  ├── actionTaken: String
+  ├── notes: String
+  └── resolved: Boolean
+```
+
+### Collection: `availabilitySettings`
+```
+availabilitySettings/{counselorId}
+  ├── bufferMinutes: int        // 0 | 10 | 15 | 30
+  ├── externalCalendarEnabled: Boolean
+  └── calendarProvider: String
+```
+
+### Collection: `reminderSettings`
+```
+reminderSettings/default
+  ├── enabled24Hour: Boolean
+  ├── enabled1Hour: Boolean
+  ├── message24Hour: String
+  └── message1Hour: String
+```
+
+### Collection: `reminderRecords`
+```
+reminderRecords/{recordId}
+  ├── appointmentId: String
+  ├── studentId: String
+  ├── reminderType: String      // "24_HOUR" | "1_HOUR"
+  ├── messageText: String
+  ├── scheduledFor: Timestamp
+  └── delivered: Boolean
+```
+
+### Collection: `messageThreads` (Sprint 11 architecture)
+```
+messageThreads/{counselorId_studentId}/            // thread document
+  ├── counselorId: String
+  ├── studentId: String
+  ├── lastMessageAt: Timestamp
+  ├── unreadByCounselor: Boolean
+  └── unreadByStudent: Boolean
+
+messageThreads/{counselorId_studentId}/messages/{messageId}
+  ├── senderId: String
+  ├── senderRole: String        // "counselor" | "student"
+  ├── messageText: String
+  ├── sessionDate: String
+  ├── sessionTime: String
+  ├── createdAt: Timestamp
+  └── read: Boolean
+```
+> **Note:** Replaces the Sprint 10 flat `secureMessages/{id}` collection. Legacy data not deleted, no new writes to old collection.
+
+### Collection: `recommendationCounts`
+```
+recommendationCounts/{counselorId}
+  └── count: int                // number of intake assessments that matched this counselor
+```
 
 ---
 
 ## 5. Sprint 1 — Registration and Authentication (US-22)
 
-**Duration:** Week 1
-**Points:** 8
-**Story:** *As a student, I want to register using my university email, set my preferred name and pronouns, and be guided through the platform's privacy policy, so that I am formally verified and fully informed before using the service.*
+**Duration:** Week 1 · **Points:** 8
+
+**Story:** *As a student, I want to register using my university email, set my preferred name and pronouns, and be guided through the privacy policy, so that I am formally verified and informed before using the service.*
 
 ### Starting State
 
-The project began with a functional `LoginActivity` (Firebase Auth sign-in, role selector buttons, animated transitions) and three empty stubs (`RegisterActivity`, `HomeActivity`, and their layouts). The `Counselor`, `TimeSlot`, and `Appointment` models existed. `Counselor.java` had a package declaration mismatch (`com.mooger.moogerscouncil` instead of `com.example.moogerscouncil`).
+The project began with a functional `LoginActivity` (Firebase Auth sign-in, role selector, animated transitions) and three empty stubs (`RegisterActivity`, `HomeActivity`, and their layouts). `Counselor`, `TimeSlot`, and `Appointment` models existed. `Counselor.java` had a package declaration mismatch.
 
 ### What Was Built
 
 | Deliverable | Type | Purpose |
 |---|---|---|
-| `Student.java` | Model | Firestore-mapped data container for the `users` collection. Fields: uid, name, email, preferredName, pronouns, role, createdAt. No-arg constructor for Firestore deserialization. Role defaults to `UserRole.STUDENT`. |
-| `UserRole.java` | Constants | String constants: STUDENT, COUNSELOR, ADMIN. Private constructor prevents instantiation. |
-| `UserRepository.java` | Repository | Wraps all `users` collection operations. Methods: `createUser()`, `getCurrentUser()`, `getCurrentUserRole()`. Three callback interfaces for async results. |
-| `RegisterActivity.java` | Activity | Full registration form: name, email (@lums.edu.pk domain validation), preferred name, pronouns, password (6+ chars), confirm password. Firebase Auth creates account → `UserRepository.createUser()` writes Firestore doc → navigates to `PrivacyPolicyActivity`. |
-| `PrivacyPolicyActivity.java` | Activity | Scrollable privacy policy text from `strings.xml`. "I Agree" button gates entry. Routes to `StudentHomeActivity` or `CounselorDashboardActivity` based on role intent extra. |
-| `StudentHomeActivity.java` | Activity | Welcome screen with preferred name (fetched via `UserRepository.getCurrentUser()`). Logout button calls `FirebaseAuth.signOut()`. |
-| `LoginActivity.java` modifications | Activity | Post-login role-based routing via `UserRepository.getCurrentUserRole()`: students → `StudentHomeActivity`, counselors → `CounselorDashboardActivity`. Auto-redirect on app relaunch if session exists. Pass selected role to `RegisterActivity` via intent extra. |
-| `Counselor.java` package fix | Model | Changed `package com.mooger.moogerscouncil` → `package com.example.moogerscouncil`. |
-| `strings.xml` additions | Resources | Registration hints, validation errors, privacy policy text, student home strings. |
-| `StudentTest.java` | Unit Test | 5 tests: default role, constructor assignment, empty constructor, setter overrides, createdAt timestamp. |
-| `RegistrationFlowTest.java` | UI Test | 5 Espresso tests: form fields visible, invalid email error, password mismatch error, short password error, empty name error. |
-| `LoginRoleRoutingTest.java` | UI Test | 4 Espresso tests: role buttons displayed, button text updates on selection, sign-up link visible. |
+| `Student.java` | Model | Firestore-mapped container for `users`. Fields: uid, name, email, preferredName, pronouns, role, createdAt. Role defaults to `UserRole.STUDENT`. |
+| `UserRole.java` | Constants | STUDENT, COUNSELOR, ADMIN string constants. |
+| `UserRepository.java` | Repository | `createUser()`, `getCurrentUser()`, `getCurrentUserRole()`, `getUserName()`. Three async callback interfaces. |
+| `RegisterActivity.java` | Activity | Full registration form with @lums.edu.pk domain validation, password matching, Firebase Auth + Firestore write flow. |
+| `PrivacyPolicyActivity.java` | Activity | Scrollable privacy policy gate. Routes to StudentHomeActivity or CounselorDashboardActivity based on role. |
+| `StudentHomeActivity.java` | Activity | Student welcome screen with preferred name and logout. |
+| `LoginActivity.java` updates | Activity | Role-based routing and auto-redirect if session exists. |
+| `StudentTest.java` | Unit Test | 5 tests: default role, constructor, empty constructor, setter overrides, timestamp. |
+| `RegistrationFlowTest.java` | UI Test | 5 Espresso tests: form fields, invalid email, password mismatch, short password, empty name. |
+| `LoginRoleRoutingTest.java` | UI Test | 4 Espresso tests: role buttons displayed, button text, sign-up link. |
 
 ### Key Technical Decisions
 
-- **Email domain validation is client-side only.** The app checks that the email ends with `@lums.edu.pk` before submitting to Firebase Auth. Server-side rejection would require Cloud Functions, which is out of scope.
-- **Role is stored in Firestore, not Firebase Auth custom claims.** This avoids the need for a token refresh after role assignment and makes the role readable with a simple document fetch.
-- **Sequential auth + Firestore write.** The Firebase Auth call must complete before the Firestore write because the Firestore document ID is the Auth UID.
+- **Email domain validation is client-side only.** Server-side rejection would require Cloud Functions, which is out of scope.
+- **Role in Firestore, not Firebase Auth custom claims.** Avoids token refresh after role assignment.
+- **Sequential Auth + Firestore write.** Auth must complete before Firestore write because the document ID is the Auth UID.
 
 ### Data Flow: Registration
 
 ```
-User fills form → validateInputs() (local)
+User fills form → validateInputs()
     → FirebaseAuth.createUserWithEmailAndPassword()
-        → onSuccess: uid = authResult.getUid()
-            → Student s = new Student(uid, name, email, preferredName, pronouns)
+        → uid = authResult.getUid()
+            → Student s = new Student(uid, name, email, ...)
             → UserRepository.createUser(s, callback)
                 → Firestore: users/{uid}.set(s)
-                    → onSuccess: navigate to PrivacyPolicyActivity
+                    → navigate to PrivacyPolicyActivity
 ```
 
 ### Concurrent Teammate Work (Merged Between Sprint 1 and Sprint 2)
 
-Between Sprint 1 and Sprint 2, teammate Shahbaz merged work from branches `shahbaz/student-dash`, `shahbaz/counselor-dashboard`, and `shahbaz/booking-and-dashboard`. This introduced:
-
-- **StudentHomeActivity** enhancements: privacy overlay (5s PII masking), crisis support banner, "Find My Match" quiz, upcoming session card with slide-to-cancel, feedback dialog (UI only), bottom navigation
-- **CounselorDashboardActivity**: counselor greeting, 3-column stats, add availability slot, appointment RecyclerView
-- **CounselorListActivity**: counselor browsing with specialty intent filter
-- **BookingActivity**: time slot selection with atomic Firestore booking transaction
-- **CalendarActivity**, **HistoryActivity**, **QuizActivity**: student calendar, history, quiz views
-- **4 adapters**: CounselorAdapter, AppointmentAdapter, StudentAppointmentAdapter, TimeSlotAdapter
-- **11 layout XMLs** for all the above screens
-
-This work was partially complete — many features had UI but lacked backend wiring, repository abstraction, or full functionality. Subsequent sprints formalized and completed these implementations.
+Teammate Shahbaz merged `shahbaz/student-dash`, `shahbaz/counselor-dashboard`, and `shahbaz/booking-and-dashboard`, introducing: enhanced StudentHomeActivity (privacy overlay, quiz, session card, bottom nav), CounselorDashboardActivity, CounselorListActivity, BookingActivity, CalendarActivity, HistoryActivity, QuizActivity, and 4 adapters + 11 layouts. This work was partially complete — subsequent sprints formalized and completed it.
 
 ---
 
 ## 6. Sprint 2 — Counselor Directory and Specialization Tags (US-23, US-06)
 
-**Duration:** Week 2
-**Points:** 13 (8 + 5)
+**Duration:** Week 2 · **Points:** 13 (8 + 5)
+
 **Stories:**
-- US-23: *As a student, I want to browse a searchable directory of all available counselors and filter by specialization, language, and gender.*
-- US-06: *As a counselor, I want to list specific areas of focus as selectable tags on my profile so that the triage system can match me accurately.*
-
-### Starting State
-
-Sprint 1 was complete. The merged teammate work provided `CounselorListActivity` (basic specialty filtering), `CounselorAdapter` (hardcoded ratings, no on-leave badge), and `BookingActivity` (partial). No `CounselorRepository`, no `CounselorProfileActivity`, no `CounselorProfileEditActivity`, no `SpecializationTags` constants class.
+- US-23: *Browse a searchable, filterable directory of available counselors.*
+- US-06: *Counselors list specialization tags so the triage system can match accurately.*
 
 ### What Was Built
 
 | Deliverable | Type | Purpose |
 |---|---|---|
-| `CounselorRepository.java` | Repository | Wraps all `counselors` collection operations. Methods: `getAllCounselors()`, `getCounselor()`, `updateSpecializations()`, `updateCounselorProfile()`. Document IDs attached after Firestore deserialization. |
-| `SpecializationTags.java` | Constants | 8 predefined tags: General Anxiety, Academic Stress, Grief, Relationships, Career Guidance, Depression, Trauma, Family Issues. `ALL_TAGS` array for programmatic chip group generation. |
-| `CounselorProfileActivity.java` | Activity | Full counselor profile view: name, bio, specialization chips (read-only), language, gender. On-leave amber card with custom message. "Book Appointment" button disabled when on-leave, routes to `BookingActivity` when available. |
-| `CounselorProfileEditActivity.java` | Activity | Counselor edits their profile: bio, language, gender text fields. Toggleable specialization chips from `SpecializationTags.ALL_TAGS`. Pre-fills existing values from Firestore. Save persists via `CounselorRepository.updateCounselorProfile()`. |
-| `CounselorListActivity.java` enhancements | Activity | Real-time name search (TextWatcher). Multi-select specialization chips (programmatically built from `SpecializationTags.ALL_TAGS`). Language and gender dropdown filters (dynamically populated from loaded counselor data). Empty-state message when no counselors match. Client-side `FilterState` object + `applyFilters()`. |
-| `CounselorAdapter.java` enhancements | Adapter | Shows name, specializations (dot-joined), language. On-leave badge. Card tap navigates to `CounselorProfileActivity`. `setData()` method for filter updates. |
-| `Counselor.java` field additions | Model | Added: bio, language, gender, onLeave (Boolean), onLeaveMessage, referralCounselorId. All getters/setters for Firestore mapping. |
-| `CounselorDashboardActivity.java` update | Activity | Added "Edit Profile" button routing to `CounselorProfileEditActivity`. |
-| `CounselorTest.java` | Unit Test | 7 tests: onLeave default, specializations set/get, empty constructor, field setters, onLeave toggle, leave message, SpecializationTags verification. |
-| `CounselorDirectoryTest.java` | UI Test | 5 Espresso tests: core elements display, language dropdown, gender dropdown, search empty state, clearing search restores list. |
+| `CounselorRepository.java` | Repository | `getAllCounselors()`, `getCounselor()`, `updateSpecializations()`, `updateCounselorProfile()`. Document IDs attached post-deserialization. |
+| `SpecializationTags.java` | Constants | 8 predefined tags + `ALL_TAGS` array. Display-friendly strings stored directly in Firestore — no mapping layer. |
+| `CounselorProfileActivity.java` | Activity | Full profile view: name, bio, chips, on-leave amber card, booking button. |
+| `CounselorProfileEditActivity.java` | Activity | Bio/language/gender fields, toggleable specialization chips, on-leave toggle with referral dropdown. |
+| `CounselorListActivity.java` | Activity | Real-time name search (TextWatcher), multi-select specialization chips, language/gender dropdowns — all client-side filtering against a master list. |
+| `CounselorAdapter.java` | Adapter | Name, specializations (dot-joined), on-leave badge. Tap → CounselorProfileActivity. |
+| `CounselorTest.java` | Unit Test | 7 tests: onLeave default, specializations, empty constructor, setters, toggle, leave message, tags. |
+| `CounselorDirectoryTest.java` | UI Test | 5 Espresso tests: core elements, language dropdown, gender dropdown, empty state, clear search. |
 
-### Key Technical Decisions
+### Key Technical Decision
 
-- **Client-side filtering.** All counselors are fetched once from Firestore. Filtering happens in memory against the master list. This avoids repeated Firestore queries and keeps the UI responsive. A `FilterState` plain object tracks the current filter selections; `applyFilters()` produces a filtered copy on every change.
-- **Dropdown population from data, not constants.** Language and gender dropdowns are populated dynamically from the unique values in the fetched counselor list. This means the dropdowns always reflect what's actually in the database, with no maintenance burden.
-- **Display-friendly tag strings.** `SpecializationTags` uses display-friendly values ("Academic Stress") rather than enum-style values ("ACADEMIC_STRESS"). These are the exact strings stored in Firestore and shown to users — no mapping layer needed.
-
-### Data Flow: Counselor Directory Filtering
-
-```
-CounselorListActivity.onCreate()
-    → CounselorRepository.getAllCounselors(callback)
-        → Firestore: counselors.get()
-        → onSuccess(counselorList):
-            masterList = counselorList
-            populateFilterDropdowns(masterList)  // unique languages, genders
-            buildSpecializationChips(intentSpec)  // from SpecializationTags.ALL_TAGS
-            applyFilters()  // initial render
-
-User types in search / toggles chip / selects dropdown:
-    → filterState updated
-    → applyFilters()
-        → filtered = masterList.stream()
-            .filter(name match)
-            .filter(specialization match)
-            .filter(language match)
-            .filter(gender match)
-            .collect()
-        → adapter.setData(filtered)
-        → empty state visibility toggle
-```
+**Client-side filtering.** All counselors fetched once; filtering in memory against a `FilterState` object. Language and gender dropdowns populated dynamically from unique values in the live data — no maintenance burden.
 
 ---
 
-## 7. Sprint 3 — Booking Flow, Dashboard, Emergency Button (US-01, US-05/US-10, US-20)
+## 7. Sprint 3 — Booking Flow, Dashboard, Emergency Button (US-01, US-05/10, US-20)
 
-**Duration:** Week 3
-**Points:** 24 (13 + 8 + 3)
-**Stories:**
-- US-01: *As a student, I want to view a counselor's available time slots on a calendar so that I can book an appointment that fits my schedule.*
-- US-05/US-10: *As a counselor, I want to view a tabbed dashboard (Today/Week/Month) of my upcoming appointments.*
-- US-20: *As a student, I want a clearly visible emergency button that connects me to campus crisis services.*
+**Duration:** Week 3 · **Points:** 24 (13 + 8 + 3)
 
-Sprint 3 collapsed the original PLAN.md Sprints 3 and 4 into a single sprint. The merged teammate work had already partially implemented booking and dashboard functionality. Completing them together was efficient because `AppointmentRepository` serves both US-01 (booking writes) and US-05/US-10 (dashboard reads).
-
-### Starting State
-
-Sprint 2 was complete. The existing `BookingActivity` (~40%) had the atomic Firestore transaction but no calendar UI, no confirmation step, and used direct Firestore calls. `CounselorDashboardActivity` (~80%) had stats that showed the same count three times, no tab filtering, and direct Firestore calls. An inline crisis banner existed in `StudentHomeActivity` but not as a proper `DialogFragment`.
+Sprint 3 collapsed two planned sprints. The three stories share `AppointmentRepository` — delivering them together was efficient.
 
 ### What Was Built
 
 | Deliverable | Type | Purpose |
 |---|---|---|
-| `AppointmentRepository.java` | Repository | Central access for the `appointments` collection. `bookAppointment()` runs an atomic Firestore transaction: reads slot availability → marks slot unavailable → creates appointment doc — all in one transaction preventing double-booking. Three-way callback: `onSuccess()`, `onSlotTaken()`, `onFailure()`. Additional methods: `getAppointmentsForCounselor()`, `getAppointmentsForStudent()`, `getAppointmentsForStudentOnDate()`, `updateAppointmentStatus()`, `cancelAppointment()` (marks CANCELLED + restores slot), `getCompletedAppointmentsNeedingFeedback()`. |
-| `AvailabilityRepository.java` | Repository | Wraps all `slots` collection operations. Methods: `getSlotsForCounselor()`, `getAvailableSlotsForCounselor()`, `addSlot()`, `removeSlot()`. |
-| `AvailabilitySchedule.java` | Model | Local (non-Firestore) value object that groups `TimeSlot` objects by date. Factory method `fromSlots()` filters to available-only slots and builds a `Map<String, List<TimeSlot>>`. `getDatesWithAvailability()` returns dates for calendar highlighting. `getSlotsForDate()` returns slots for a tapped date. |
-| `BookingActivity.java` rebuild | Activity | CalendarView with date selection. On date tap, shows available slots for that date via `AvailabilitySchedule.getSlotsForDate()`. Slot tap opens `BookingConfirmationFragment`. Uses `AppointmentRepository.bookAppointment()` for atomic transaction. Handles slot-taken race condition by removing the slot from UI and showing an error. |
-| `BookingConfirmationFragment.java` | Fragment | `BottomSheetDialogFragment` showing booking summary (counselor name, date, time). "Confirm Booking" button triggers the `OnConfirmListener` callback which fires the transaction in `BookingActivity`. |
-| `CounselorDashboardActivity.java` overhaul | Activity | `TabLayout` with Today / This Week / This Month tabs. Master appointment list loaded once via `AppointmentRepository.getAppointmentsForCounselor()`, filtered client-side by date range per tab. Stats cards: Today session count, Total patients, This Week count — properly differentiated. Add-slot banner routes to `AvailabilitySetupActivity`. `onResume()` refreshes data. |
-| `AppointmentAdapter.java` enhancements | Adapter | Student name lookup via `UserRepository.getUserName()` (graceful degradation — returns "Unknown" on failure). Status badge styling: CONFIRMED (green), COMPLETED (grey), CANCELLED/NO_SHOW (red with strikethrough). No-Show button wired to `AppointmentRepository.updateAppointmentStatus()`. |
-| `AvailabilitySetupActivity.java` | Activity | Counselor slot management. Add slot via DatePickerDialog → TimePickerDialog → `AvailabilityRepository.addSlot()`. Slot list with swipe-to-delete → `AvailabilityRepository.removeSlot()`. Inner `TimeSlotSetupAdapter` class for rendering slot items. |
-| `EmergencyDialogFragment.java` | Fragment | `DialogFragment` with three buttons: Call Crisis Line, Campus Emergency, Dismiss. Uses `Intent.ACTION_DIAL` (opens dialer, doesn't auto-call). Phone numbers from `strings.xml`. Zero network dependency — works offline. |
-| `StudentHomeActivity.java` update | Activity | Emergency FAB and crisis banner wired to `EmergencyDialogFragment`. |
-| `UserRepository.java` extension | Repository | Added `getUserName(uid, callback)` — fetches only the name field. Returns "Unknown" on failure (name is supplementary display data). |
-| `CalendarActivity.java` refactor | Activity | Refactored to use `AppointmentRepository.getAppointmentsForStudentOnDate()` instead of direct Firestore calls. |
-| `HistoryActivity.java` refactor | Activity | Refactored to use `AppointmentRepository.getAppointmentsForStudent()` instead of direct Firestore calls. |
-| `AvailabilityScheduleTest.java` | Unit Test | 5 tests: filters unavailable, correct date subset, empty for no slots, dates with availability set, empty list produces empty schedule. |
-| `AppointmentTest.java` | Unit Test | Tests for empty constructor, setters, status values. |
-| `BookingFlowTest.java` | UI Test | Espresso tests: calendar displayed, counselor name title, slot list appears on date tap. |
-| `CounselorDashboardTest.java` | UI Test | 6 Espresso tests: TabLayout displayed, appointment list loads, Today/Week tabs present, tab switch changes content, add-slot banner displayed. |
-| `EmergencyButtonTest.java` | UI Test | 5 Espresso tests: FAB visible, dialog opens on tap, crisis line option, campus security option, dismiss button. |
+| `AppointmentRepository.java` | Repository | `bookAppointment()` atomic Firestore transaction (read slot → mark unavailable → create appointment). Three-way callback: `onSuccess`, `onSlotTaken`, `onFailure`. Cancel restores slot. |
+| `AvailabilityRepository.java` | Repository | `getSlotsForCounselor()`, `getAvailableSlots()`, `addSlot()`, `removeSlot()`. |
+| `AvailabilitySchedule.java` | Model | Local value object. `fromSlots()` groups TimeSlots by date. `getDatesWithAvailability()` for calendar highlighting. |
+| `BookingActivity.java` | Activity | Calendar date selection → slots for date → `BookingConfirmationFragment` → atomic booking transaction. |
+| `BookingConfirmationFragment.java` | Fragment | BottomSheet with booking summary and confirm/cancel. |
+| `CustomCalendarView.java` | View | Custom calendar rendering with highlighted and selected date sets. |
+| `CounselorDashboardActivity.java` | Activity | TabLayout (Today/Week/Month). Master appointment list filtered client-side. Stats cards properly differentiated. |
+| `AvailabilitySetupActivity.java` | Activity | Counselor slot management: add via date/time pickers, swipe-to-delete. |
+| `AppointmentAdapter.java` | Adapter | Student name lookup via UserRepository. Status badge styling. No-Show wired to `updateAppointmentStatus()`. |
+| `EmergencyDialogFragment.java` | Fragment | Three dial buttons (Crisis Line, Campus Emergency, Dismiss). `ACTION_DIAL` — no CALL_PHONE permission. Offline capable. |
 
-### Key Technical Decisions
+### Key Technical Decision
 
-- **Atomic booking transaction.** `AppointmentRepository.bookAppointment()` uses `db.runTransaction()` to atomically check slot availability, mark the slot unavailable, and create the appointment document. A simple write without a transaction would allow two students to book the same slot simultaneously.
-- **Three-way booking callback.** The `OnBookingCallback` interface has three methods: `onSuccess()`, `onSlotTaken()`, and `onFailure()`. This distinguishes between a race-condition loss (slot taken by another user — show a specific message and remove the slot from UI) versus a general error (network failure — show a generic error).
-- **`ACTION_DIAL` vs `ACTION_CALL`.** The emergency button uses `ACTION_DIAL` which opens the dialer with the number pre-filled but does not make the call. This avoids the `CALL_PHONE` permission and gives the user a confirmation step — appropriate for preventing accidental calls.
-- **Repository pattern fully enforced.** After Sprint 3, no Activity anywhere in the codebase makes direct `db.collection()` calls. All Firestore access flows through one of the five repositories.
+**Atomic booking transaction.** `db.runTransaction()` atomically reads slot availability, marks unavailable, creates appointment. Without this, two students could book the same slot simultaneously. Three-way callback distinguishes race loss (`onSlotTaken`) from general failure (`onFailure`).
 
-### Data Flow: Atomic Booking Transaction
+### Data Flow: Atomic Booking
 
 ```
-Student taps "Confirm Booking" in BookingConfirmationFragment
-    → BookingActivity.onConfirm(slot)
-        → AppointmentRepository.bookAppointment(studentId, counselorId, slot, callback)
-            → db.runTransaction():
-                1. READ:  slots/{slotId} → check available == true
-                2. WRITE: slots/{slotId}.available = false
-                3. WRITE: appointments/{newId} = {studentId, counselorId, slotId, date, time, "CONFIRMED"}
-            → Transaction success → callback.onSuccess()
-                → Toast "Booked!" → navigate to StudentHomeActivity
-            → Transaction fail (available == false) → callback.onSlotTaken()
-                → Toast "Slot taken" → remove slot from UI → refresh
-            → Transaction error → callback.onFailure()
-                → Toast error message
-```
-
-### Data Flow: Dashboard Tab Filtering
-
-```
-CounselorDashboardActivity.loadAppointments()
-    → AppointmentRepository.getAppointmentsForCounselor(counselorId, callback)
-        → onSuccess(appointments):
-            masterAppointments = appointments
-            filterByTab(0)  // default to Today
-
-TabLayout.onTabSelected(tab):
-    → filterByTab(tab.getPosition())
-        → switch:
-            case 0 (Today):  filter where date == today
-            case 1 (Week):   filter where date in [weekStart, weekEnd]
-            case 2 (Month):  filter where date starts with "yyyy-MM"
-        → adapter.setData(filtered)
-        → updateStats(todayCount, totalCount, filteredCount)
+Student taps "Confirm" → BookingActivity.onConfirm(slot)
+    → AppointmentRepository.bookAppointment(studentId, counselorId, slot, cb)
+        → db.runTransaction():
+            1. READ  slots/{slotId} → check available == true
+            2. WRITE slots/{slotId}.available = false
+            3. WRITE appointments/{newId} = {..., "CONFIRMED"}
+        → success → cb.onSuccess() → navigate StudentHomeActivity
+        → available==false → cb.onSlotTaken() → remove slot from UI
+        → error → cb.onFailure() → show error toast
 ```
 
 ---
 
 ## 8. Sprint 4 — On-Leave Status and Anonymous Feedback (US-19, US-21)
 
-**Duration:** Week 4
-**Points:** 10 (5 + 5)
-**Stories:**
-- US-19: *As a counselor, I want to set a temporary 'on leave' status with a custom message and a colleague referral so that students are gracefully redirected.*
-- US-21: *As a student, I want to submit optional, fully anonymous post-session feedback after each appointment.*
-
-### Starting State
-
-All six core stories were complete and tested. The `Counselor` model already had `onLeave`, `onLeaveMessage`, and `referralCounselorId` fields (added in Sprint 2). The student-facing on-leave display (amber card, disabled booking) was working. But counselors had no way to edit their on-leave status — `CounselorProfileEditActivity` only had bio/language/gender/specialization fields. For feedback, `StudentHomeActivity` had a feedback dialog (RatingBar + comment) but it only showed a toast on submit — no Firestore persistence, no model class, no repository.
+**Duration:** Week 4 · **Points:** 10 (5 + 5)
 
 ### What Was Built
 
 | Deliverable | Type | Purpose |
 |---|---|---|
-| `FeedbackService.java` | Model | Firestore-mapped data container for the `feedback` collection. Fields: id, appointmentId, rating (1–5), comment (optional), submittedAt. **Intentionally has no `studentId` field** — anonymity is enforced at the schema level, not just the UI. |
-| `FeedbackRepository.java` | Repository | Wraps all `feedback` collection operations. `submitFeedback()` persists a `FeedbackService` object. `hasFeedbackForAppointment()` uses `limit(1)` as an existence check — on failure returns `false` (shows prompt again rather than suppressing it). |
-| `CounselorRepository.java` extension | Repository | Added `setOnLeaveStatus(counselorId, onLeave, leaveMessage, referralId, callback)`. Uses `update()` (not `set()`) to only touch the three leave fields without overwriting the rest of the counselor document. |
-| `AppointmentRepository.java` extension | Repository | Added `getCompletedAppointmentsNeedingFeedback(studentId, callback)`. Queries for appointments with `status == "COMPLETED"`. |
-| `CounselorProfileEditActivity.java` additions | Activity | Added on-leave section: `SwitchMaterial` toggle, leave message `TextInputLayout` (visible when toggle on), referral counselor dropdown (`AutoCompleteTextView` populated from `CounselorRepository.getAllCounselors()`, excluding self). Pre-fills existing leave state. On save, writes leave fields to Firestore. |
-| `CounselorProfileActivity.java` addition | Activity | Added "See Referred Counselor" button inside the on-leave card. Visible when `referralCounselorId` is set. Navigates to the referred counselor's profile. |
-| `CounselorAdapter.java` fix | Adapter | Fixed on-leave behavior: on-leave counselors now show "Currently Away" chip but their profile is still viewable (booking is disabled in the profile, not at the list level). |
-| `StudentHomeActivity.java` feedback wiring | Activity | `checkForPendingFeedback()` on activity load: queries completed appointments → checks each against `FeedbackRepository.hasFeedbackForAppointment()` → shows dismissible feedback prompt card for the most recent unreviewed appointment. `showFeedbackDialog(appointmentId)` persists to Firestore via `FeedbackRepository.submitFeedback()`. |
-| `activity_student_home.xml` addition | Layout | Feedback prompt card: title, counselor name subtitle, "Give Feedback" and "Dismiss" buttons. |
-| `FeedbackServiceTest.java` | Unit Test | Tests: no studentId field exists (verified via reflection), constructor sets fields, empty constructor, rating bounds, null comment allowed. |
-| `OnLeaveFlowTest.java` | UI Test | Tests: on-leave toggle displayed, toggle shows message field, toggle shows referral dropdown, on-leave badge in directory, on-leave card in profile. |
-| `FeedbackFlowTest.java` | UI Test | Tests: rating bar displayed, comment field displayed, zero-rating shows error, feedback prompt card appears for completed appointment. |
+| `FeedbackService.java` | Model | No `studentId` field — anonymity enforced at schema level, not just UI. Verified by reflection in unit test. |
+| `FeedbackRepository.java` | Repository | `submitFeedback()`, `hasFeedbackForAppointment()` (returns false on failure — shows prompt again rather than suppressing). |
+| `CounselorRepository` extension | Repository | `setOnLeaveStatus()` uses `update()` (not `set()`) to only touch three leave fields without overwriting rest of counselor document. |
+| On-leave UI in `CounselorProfileEditActivity` | Activity | SwitchMaterial toggle → message field + referral counselor dropdown (populated from getAllCounselors, excluding self). |
+| Feedback wiring in `StudentHomeActivity` | Activity | `checkForPendingFeedback()` → `hasFeedbackForAppointment()` → show prompt card → `showFeedbackDialog()` → persist. |
 
-### Key Technical Decisions
+### Key Technical Decision
 
-- **Anonymity at schema level.** The `FeedbackService` model class has no `studentId` field — not as a getter that returns null, but as a genuinely absent field. This ensures that even if someone inspects the Firestore document directly, they cannot trace feedback back to a student. Verified by a unit test that uses reflection to confirm no "studentId" field exists.
-- **Dedicated `setOnLeaveStatus()` vs reusing `updateCounselorProfile()`.** The existing `updateCounselorProfile()` uses `set()` which overwrites the entire document. If a counselor toggles leave from a quick setting, this would blank out other fields not loaded into the form. A targeted `update()` only touches the three leave fields.
-- **Failure-safe feedback check.** `hasFeedbackForAppointment()` returns `false` on Firestore failure. The worst case is the student sees the feedback prompt twice — better than silently losing feedback.
-
-### Data Flow: Feedback Submission
-
-```
-StudentHomeActivity.onCreate()
-    → checkForPendingFeedback()
-        → AppointmentRepository.getCompletedAppointmentsNeedingFeedback(studentId)
-            → onSuccess(completedList):
-                → FeedbackRepository.hasFeedbackForAppointment(latestAppt.getId())
-                    → onResult(false): showFeedbackPromptCard(appointment)
-                        → CounselorRepository.getCounselor() → display counselor name
-                        → "Give Feedback" → showFeedbackDialog(appointmentId)
-                            → User rates 1–5 stars, types comment
-                            → Submit:
-                                → FeedbackService(appointmentId, rating, comment)  // NO studentId
-                                → FeedbackRepository.submitFeedback(feedback)
-                                    → Firestore: feedback/{newId} = {appointmentId, rating, comment, submittedAt}
-                                    → onSuccess: Toast + hide card
-```
-
-### Data Flow: On-Leave Toggle
-
-```
-Counselor taps "Edit Profile" → CounselorProfileEditActivity
-    → CounselorRepository.getCounselor(uid) → pre-fill all fields
-    → Counselor toggles SwitchMaterial ON
-        → Message field + referral dropdown become visible
-        → CounselorRepository.getAllCounselors() → populate dropdown (exclude self)
-    → Counselor types message, selects referral, taps "Save"
-        → counselor.setOnLeave(true)
-        → counselor.setOnLeaveMessage(message)
-        → counselor.setReferralCounselorId(selectedId)
-        → CounselorRepository.updateCounselorProfile(uid, counselor)
-            → Firestore: counselors/{uid}.set(counselor)
-            → onSuccess: Toast + finish()
-
-Student browses directory → sees "Currently Away" chip
-    → Taps card → CounselorProfileActivity
-        → On-leave card shown with message
-        → "Book" button disabled
-        → "See Referred Counselor" button → navigates to referral's profile
-```
+**Anonymity at schema level.** The `FeedbackService` class has no `studentId` field whatsoever — not a getter returning null, but a genuinely absent field. Even direct Firestore inspection cannot trace feedback to a student.
 
 ---
 
-## 9. Sprint 4.5 — Integration Refinements (US-03, US-04, Homepage Wiring)
+## 9. Sprint 4.5 — Integration Refinements (US-02, US-03, US-04 partial)
 
 **Duration:** Week 5 (partial)
-**Stories:**
-- US-03: Slide-to-Cancel completion
-- US-04: Find My Match quiz expansion
-- Homepage filter chips and search bar wiring
-
-This sprint formalized concurrent developer work that existed outside the original PLAN.md scope. Features had UI but lacked full backend wiring or needed expansion.
 
 ### What Was Built
 
-#### Slide-to-Cancel — Session Card Refresh
-
-The slide-to-cancel flow was already ~95% functional: SeekBar triggers at ≥95% → confirmation dialog → `AppointmentRepository.cancelAppointment()` marks the appointment CANCELLED and restores the slot's availability. The only gap: after cancellation, `clearSessionCard()` hid the card but didn't check for the next upcoming appointment.
-
-**Fix:** Replace `clearSessionCard()` with `fetchUpcomingSession()` in the cancel success callback. This method already handles both cases — shows the next CONFIRMED appointment if one exists, or hides the card cleanly if none remain.
-
-#### Find My Match Quiz — Multi-Step Expansion
-
-The original quiz was a single 4-button category picker disguised as a quiz. Sprint 4.5 expanded it into a 3-question guided assessment:
-
-| Question | Options |
+| Feature | Details |
 |---|---|
-| Q1: "What's been on your mind lately?" | Emotional/Personal, Academic/Career, Relationships, Not sure/General |
-| Q2: "How long have you been dealing with this?" | Just started, A few weeks, More than a month, On and off |
-| Q3: "What kind of support are you looking for?" | Listener, Practical strategies, Understanding feelings, Crisis support |
+| **Discreet Mode (US-02)** | Eye button in StudentHomeActivity toggles `privacyOverlay` to disguise counseling content on-screen. Overlay exit button restores normal view. |
+| **Slide-to-Cancel refresh (US-03)** | After cancellation `clearSessionCard()` replaced with `fetchUpcomingSession()` — shows next confirmed appointment or hides card cleanly. |
+| **Multi-step quiz (US-04 partial)** | QuizActivity expanded from 1-question picker to 3-question guided assessment with step counter, ProgressBar, and back navigation. |
+| **Homepage filter chips** | ChipGroup programmatically built from `SpecializationTags.ALL_TAGS`. Each chip launches `CounselorListActivity(SPECIALIZATION=...)`. |
+| **Homepage search bar** | EditText passes `SEARCH_QUERY` extra to `CounselorListActivity` which pre-fills and immediately filters. |
 
-The activity manages quiz state with a step counter and `answers[]` array. A `ProgressBar` shows progress through the 3 questions. Back navigation returns to the previous question. After Q3, a result screen shows "We found your match — Dr. Baz" (the only counselor on the platform) with two options:
-- "View Profile" → `CounselorRepository.getAllCounselors()` → first counselor → `CounselorProfileActivity`
-- "Browse All Counselors" → `CounselorListActivity`
+---
 
-The `answers[]` structure is designed for future matching logic when more counselors join — question answers can feed into a scoring function against counselor specializations.
+## 10. Sprint 5 — Intake Matching and Waitlist Foundation (US-04, US-24)
 
-#### Homepage Filter Chips — Dynamic Wiring
+**Duration:** Week 6
 
-The 6 hardcoded TextViews ("All", "Academic Stress", "Career Anxiety", "General Therapy", "Relationships", "Mindfulness") were replaced with a `ChipGroup` programmatically populated from `SpecializationTags.ALL_TAGS`. Each chip launches `CounselorListActivity` with the corresponding specialization as an intent extra — reusing the exact same `SPECIALIZATION` intent-extra pathway that `QuizActivity` already uses.
+### Starting State
 
-#### Homepage Search Bar — Query Pass-Through
+The quiz existed but used a placeholder recommendation (first counselor found). No intake persistence, no real matching logic, no waitlist preference form, and no student-facing waitlist view had been built yet.
 
-The static search bar placeholder was replaced with an `EditText` + Go button. User types a query → `CounselorListActivity` receives it via a `SEARCH_QUERY` intent extra → pre-fills the search bar → `applyFilters()` runs immediately on load with the query, showing matching counselors.
+### What Was Built
 
-### How All Paths Connect
+| Deliverable | Type | Purpose |
+|---|---|---|
+| `IntakeAssessment.java` | Model | Stores quiz answers (primaryConcern, duration, supportType), urgencyLevel, recommendedSpecializations, matchedCounselorId. |
+| `IntakeAssessmentRepository.java` | Repository | `saveAssessment()`, `getLatestForStudent()`, `getRecommendationCounts()` for admin analytics. |
+| `IntakeMatcher.java` | Utility | `tagsForAnswers(answers)` maps quiz answer combinations to specialization tags. `scoreCounselor(counselor, tags)` computes tag overlap. `findBestCounselor(counselors, tags)` returns highest scorer, tie-broken by recommendation count. |
+| `WaitlistEntry.java` | Model | studentId, counselorId, status (ACTIVE/RESOLVED/CANCELLED), requestedAt (FIFO key). |
+| `WaitlistOffer.java` | Model | Links a WaitlistEntry to a specific offered slot. |
+| `WaitlistRepository.java` | Repository | `joinWaitlist()` (dedup — no duplicate entries per counselor), `getActiveWaitlistForCounselorOrdered()`, `resolveEntry()`. |
+| `QuizActivity` hardened | Activity | Saves IntakeAssessment, runs IntakeMatcher against live counselor data, routes to matched counselor's profile. |
+
+### Key Technical Decision
+
+**Specialization overlap scoring.** `IntakeMatcher.scoreCounselor()` counts how many of the student's mapped tags appear in the counselor's specializations list. Tie-breaking by `recommendationCounts` (how many times that counselor was previously matched) creates a virtuous cycle where well-matched counselors surface more often.
+
+---
+
+## 11. Sprint 6 — Counselor Workflow: Notes, Crisis, Student Profile (US-12–15, US-25)
+
+**Duration:** Week 7
+
+### What Was Built
+
+| Deliverable | Type | Purpose |
+|---|---|---|
+| `StudentProfileActivity.java` | Activity | Counselor views student name, pronouns, latest intake assessment (concern + urgency), and session note history for this student. |
+| `SessionHistoryActivity.java` | Activity | Chronological list of all appointments for a given student, viewable by counselor. |
+| `SessionNote.java` | Model | appointmentId, counselorId, noteText, templateKey, appointmentDate. |
+| `NoteTemplate.java` | Utility | 5 templates: Academic Stress, Anxiety, Follow-up, Crisis, General. `getTemplateText(key)` returns prefill text. |
+| `SessionNoteRepository.java` | Repository | `saveNote()`, `updateNote()`, `getNoteForAppointment()`. |
+| `CrisisEscalation.java` | Model | appointmentId, counselorId, studentId, severity (MODERATE/HIGH/IMMEDIATE), actionTaken, notes, resolved flag. |
+| `CrisisEscalationRepository.java` | Repository | `createEscalation()` with batch write that stamps `crisisEscalationId` on the appointment. |
+| `CrisisEscalationDialogFragment.java` | Dialog | Severity radio picker, action-taken field, notes field, Save/Cancel. |
+| Dashboard waitlist count | `CounselorDashboardActivity` | `waitlistCount` stat card from WaitlistRepository (US-25). |
+| Adapter wiring | `AppointmentAdapter` | Profile button → StudentProfileActivity, Notes button → session note dialog, Crisis button → CrisisEscalationDialogFragment. |
+
+---
+
+## 12. Sprint 7 — Buffer Time and Calendar Sync (US-08, US-09)
+
+**Duration:** Week 8
+
+### What Was Built
+
+| Deliverable | Type | Purpose |
+|---|---|---|
+| `AvailabilitySettings.java` | Model | bufferMinutes (0/10/15/30), externalCalendarEnabled, calendarProvider. |
+| `AvailabilitySettingsRepository.java` | Repository | `getSettings()`, `saveSettings()` — one document per counselor. |
+| `AvailabilitySettingsActivity.java` | Activity | RadioGroup for buffer selection. Switches for calendar provider. |
+| `BufferTimeValidator.java` | Utility | `hasConflict(slots, newSlot, bufferMin)` — checks that no existing slot falls within the buffer window of the proposed new slot. `isWithinBlockedWindow()` for time-gate checks. |
+| `CalendarSyncHelper.java` | Utility | `buildInsertEventIntent(appt)` — constructs an `Intent.ACTION_INSERT` for Android's calendar app with appointment date/time/title pre-filled. |
+| `AvailabilitySetupActivity` hardened | Activity | Loads buffer settings on start, calls `canAddSlotWithBuffer()` before adding a slot. |
+| Waitlist on cancel | `AppointmentRepository` | `cancelAppointment()` now triggers `getNextActiveEntry()` → `markOffered()` for waitlist auto-offer. |
+
+### Key Technical Decision
+
+**Buffer validation at slot-add time (counselor side), not at booking time (student side).** If a slot exists and is marked `available`, it was already validated. Re-validating at booking would require loading all counselor slots for every booking attempt — expensive and adding latency to the critical booking path.
+
+---
+
+## 13. Sprint 8 — Waitlist Hardening: Preference Requests and Auto-Resolution
+
+**Duration:** Week 9
+
+### Problem
+
+The Sprint 5 waitlist was structurally present but functionally minimal: no date/time preferences captured from students, no student-facing list view, no counselor queue view, and auto-offer on cancellation was a legacy mechanism. Students could join a waitlist but had no way to see their position or express when they wanted an appointment.
+
+### What Was Built
+
+| Deliverable | Type | Purpose |
+|---|---|---|
+| `WaitlistEntry` redesign | Model | Added: `preferredDates` (List\<String\>), `preferredStartTime`, `preferredEndTime`. Status simplified to ACTIVE/RESOLVED/CANCELLED. |
+| `WaitlistMatcher.java` | Utility | `matches(entry, slot)` — returns true if slot date is in preferred dates AND slot time falls within preferred time window. `findFirstMatch(entry, slots)` finds first matching slot from available list. |
+| `WaitlistRequestActivity.java` | Activity | Date multi-select via `CustomCalendarView`, time window picker (start/end popups), free-text note. Validates and submits a `WaitlistEntry`. |
+| `StudentWaitlistActivity.java` | Activity | Student's personal waitlist tab. Lists active entries with counselor name and status. Cancel confirmation. |
+| `WaitlistAdapter.java` | Adapter | Renders student waitlist entries. Status badge (ACTIVE/RESOLVED/CANCELLED). |
+| `CounselorWaitlistActivity.java` | Activity | Counselor's waitlist queue — FIFO-ordered active entries with student names and preferences. "Create Slot" shortcut pre-populates date/time from top entry. |
+| `CounselorWaitlistAdapter.java` | Adapter | Renders counselor waitlist queue entries. |
+| Auto-resolution on slot creation | `AvailabilityRepository` | After adding a slot, `WaitlistMatcher.findFirstMatch()` runs against ACTIVE entries. If found, `WaitlistRepository.resolveEntry()` auto-books for the matched student. |
+
+### Data Flow: Auto-Resolution
 
 ```
-StudentHomeActivity
-    ├── Search Bar (EditText) → CounselorListActivity(SEARCH_QUERY="...")
-    ├── Filter Chips (from SpecializationTags) → CounselorListActivity(SPECIALIZATION="...")
-    ├── "Find My Match" → QuizActivity → Q1→Q2→Q3 → Result
-    │     ├── "View Profile" → CounselorProfileActivity(Dr. Baz)
-    │     └── "Browse All" → CounselorListActivity
-    ├── Session Card + Slide-to-Cancel → cancel → fetchUpcomingSession()
-    ├── Feedback Prompt → FeedbackDialog → FeedbackRepository
-    └── Emergency FAB → EmergencyDialogFragment → ACTION_DIAL
+Counselor creates new slot (AddSlotActivity / GenerateSlotsActivity)
+    → AvailabilityRepository.addSlot()
+        → Firestore: slot written
+        → WaitlistRepository.getActiveWaitlistForCounselorOrdered()
+            → for each entry: WaitlistMatcher.matches(entry, newSlot)
+                → first match found:
+                    → AppointmentRepository.bookAppointment(...)
+                    → WaitlistRepository.resolveEntry(entryId)
 ```
 
 ---
 
-## 10. Final Class Inventory
+## 14. Sprint 9 — Dashboard Overhaul, Notes Hardening, No-Show Safeguards
+
+**Duration:** Week 10
+
+### Problems Addressed
+
+| Problem | Fix |
+|---|---|
+| Session note always creates new — no upsert | `SessionNoteRepository.getNoteForAppointment()` → edit existing if found |
+| No-show fires immediately on tap | Confirmation dialog added before status change |
+| Cancelled/no-show appointments appear in active list | Active-only filter applied on appointment load |
+| Note history shows save timestamp not session date | Note timestamp sourced from `appointmentDate` field |
+| Stats cards count all-time totals | Live count from real-time listener, decrements on cancel |
+| Logout without confirmation | AlertDialog confirmation before `FirebaseAuth.signOut()` |
+
+### What Was Built
+
+- Session note upsert: `SessionNoteRepository.updateNote()` used when note already exists for appointment.
+- No-show time gate: cannot mark no-show if appointment time hasn't passed.
+- No-show confirmation: orange-themed AlertDialog with "Mark No-Show" / "Cancel".
+- Active-only appointment filter: `status == CONFIRMED` filter applied before displaying in active tab.
+- Dashboard UI redesign: rounded cards, pink accent, cleaner layout.
+- `item_appointment.xml` redesign: new layout with session info prominence.
+
+---
+
+## 15. Sprint 9.5 — Rolling Hardening: Cache, Slot Overhaul, Real-Time Listeners
+
+**Duration:** Continuous between Sprint 9 and Sprint 10 (three phases)
+
+### Phase A — Dashboard Hardening and Session Management
+
+| Problem | Resolution |
+|---|---|
+| No way to delete a session note | Delete button added to note history dialog |
+| Note history timestamp shows save time | Anchored to `appointmentDate` |
+| Dashboard polls Firestore on every `onResume` | Snapshot listener replaces poll-on-resume |
+| Appointment list forces full Firestore round-trip | `SessionCache` with background refresh |
+| Two stale `loadAppointments()` calls | Deduplicated; single call path |
+
+### Phase B — Slot Management Overhaul
+
+| Problem | Resolution |
+|---|---|
+| Slot list is flat unformatted text | Multi-view-type adapter (date header + slot row) |
+| Deleting a slot has no confirmation | AlertDialog: "Delete slot?" with date/time shown |
+| Booked slots deletable like available ones | Booked slots show lock icon; delete disabled |
+| No calendar/past-date guard on add slot | `AddSlotActivity` with `CustomCalendarView` and past-date rejection |
+| No way to generate a full workday of slots | `GenerateSlotsActivity`: multi-date picker, start/end time, break windows, auto-generate |
+
+### Phase C — Real-Time Listeners, Booking Guards, Past Sessions
+
+| Problem | Resolution |
+|---|---|
+| Snapshot listener fires redundant initial callback | `isFirstLoad` guard skips initial callback |
+| Waitlist count fetched unnecessarily | Lazy load: count fetched only when waitlist tab selected |
+| Students can book two appointments same day | `getAppointmentsForStudentOnDate()` check before confirming booking |
+| No-show time gate missing | Appointment time parsed; no-show disabled if appointment hasn't passed |
+| No way to view past booked sessions | `PastSessionsActivity` with chronological completed/no-show list |
+| Counselors can't change display name | Display name field added to `CounselorProfileEditActivity` |
+| Expired slots (past dates, available=true) polluting available list | Filter: `available == true AND date >= today` |
+
+### New Files Created
+
+| File | Purpose |
+|---|---|
+| `AddSlotActivity.java` | Single-slot add with `CustomCalendarView` and past-date guard |
+| `GenerateSlotsActivity.java` | Bulk slot generation with break windows |
+| `PastSessionsActivity.java` | Counselor's past (completed/no-show) appointment list |
+| `SessionNoteHistoryAdapter.java` | Renders note history in chronological order |
+| `SessionCache.java` (hardened) | Singleton with per-collection invalidation; background refresh |
+
+### Firestore Impact
+
+New collection: `recommendationCounts/{counselorId}` — tracks how many intake assessments matched each counselor. Used by `IntakeMatcher` for tie-breaking.
+
+### Test Coverage Added
+
+39 new test methods across buffer validation, waitlist matching, intake matcher, session note repository, and booking guard logic.
+
+---
+
+## 16. Sprint 10 — Admin Reminders, Secure Messaging, Returning Student (US-16, US-17, US-18)
+
+**Duration:** Week 11
+
+### What Was Built
+
+| Deliverable | Type | Purpose |
+|---|---|---|
+| `ReminderSettings.java` | Model | `enabled24Hour`, `enabled1Hour`, `message24Hour`, `message1Hour`. `defaultSettings()` factory. |
+| `ReminderRecord.java` | Model | appointmentId, studentId, reminderType ("24_HOUR"/"1_HOUR"), scheduledFor, delivered. |
+| `ReminderRepository.java` | Repository | `getSettings()`, `saveSettings()`, `getDueRemindersForStudent()`. |
+| `ReminderScheduler.java` | Scheduler | `generateReminderRecords(appointments, settings)` → produces list of ReminderRecord objects to be persisted. |
+| `ReminderSettingsActivity.java` | Activity | Admin form: 24-hour and 1-hour toggles with custom message fields. |
+| `AdminDashboardActivity.java` | Activity | Admin landing page with reminder settings management and logout. |
+| `SecureMessage.java` | Model | counselorId, studentId, senderId, messageText, sessionDate, read. `getThreadId()` builds `{counselorId}_{studentId}`. |
+| `SecureMessageRepository.java` | Repository | `listenToThread()`, `sendMessage()`, `markThreadRead()`. |
+| `MessageThreadActivity.java` | Activity | Full messaging UI: thread loaded on open, real-time subscription, send with sessionDate/Time context. |
+| `SecureMessageAdapter.java` | Adapter | Renders messages with sender alignment and date dividers. |
+| `ReturningStudentHelper.java` | Utility | `isReturningStudent(appointments)` — returns true if student has prior completed/no-show appointments. Called at booking to stamp `returningStudent` field. |
+
+### Firestore Schema: Messaging (Sprint 10)
+
+Sprint 10 implemented messaging as flat `secureMessages/{id}` keyed by appointment. This was replaced in Sprint 11 — see below.
+
+---
+
+## 17. Sprint 11 — Messaging Thread Architecture, Counselor UX Declutter, Crisis Admin
+
+**Duration:** Week 12
+
+### Problems Identified in Sprint 10
+
+| Problem | Root Cause | Impact |
+|---|---|---|
+| Messages stored per-appointment, not per counselor-student pair | `secureMessages` flat collection | No cross-session thread view; full conversation history inaccessible |
+| Counselor appointment cards cluttered with 6 action buttons | All actions inline on card face | Counselors can't quickly skim appointment list |
+| Crisis escalations invisible to admins | `AdminDashboardActivity` only showed reminders | Escalations filed but never actioned |
+
+### 17.1 Messaging Thread Architecture
+
+**Firestore schema changed from per-appointment to per-thread:**
+
+```
+messageThreads/{counselorId_studentId}/        ← thread document
+messageThreads/{counselorId_studentId}/messages/{id}  ← sub-collection
+```
+
+`SecureMessage.java` simplified: removed `appointmentId`, `receiverId`; added `sessionDate`, `sessionTime` so messages carry their session context without requiring appointment lookups.
+
+`SecureMessageRepository.java` fully rewritten with thread-keyed paths and real-time snapshot listeners via `listenToThread()`.
+
+`SecureMessageAdapter.java` now supports two view types: `TYPE_MESSAGE` and `TYPE_DATE_DIVIDER`. Session date dividers automatically inserted when message date changes within the thread.
+
+### 17.2 Counselor Appointment Card Declutter
+
+**`item_appointment.xml`** simplified to show only: student name, date/time, status badge, returning badge, trailing chevron. All action buttons removed from card face.
+
+**`AppointmentAdapter.java`** stripped of action handlers. `itemView` click opens `ManageSessionActivity`.
+
+**`ManageSessionActivity.java`** (new) — dedicated entry point for all appointment management actions, organized into sections:
+- Student + session info card
+- SESSION NOTES: RecyclerView of note history + add/edit note
+- SESSION ACTIONS: Mark Attended, Mark No-Show, File Crisis Escalation, Open Message Thread
+
+One-time crisis guard: `crisisEscalationId` field checked before allowing a second escalation on the same appointment.
+
+### 17.3 Crisis Escalation Dialog Redesign
+
+`CrisisEscalationDialogFragment.java` redesigned with:
+- Custom white/pink card matching `EmergencyDialogFragment` style
+- Severity radio chips (Moderate / High / Immediate)
+- Action-taken radio group
+- Two direct-dial emergency buttons
+- Notes field
+- `OnEscalationSavedListener` callback interface
+
+### 17.4 Admin Crisis Alerts Tab
+
+`AdminDashboardActivity` gains a `TabLayout` with two tabs:
+- **Reminders** — existing reminder settings management
+- **Crisis Alerts** — live feed of unresolved crisis escalations
+
+`CrisisEscalationRepository` extended with `getUnresolvedEscalations()` and `markResolved()`.
+
+`CrisisAlertAdapter.java` (new) — renders crisis alert cards with severity-colored strip, student/counselor info, and "Mark Resolved" button that updates Firestore.
+
+---
+
+## 18. Final Class Inventory
 
 ### Model Classes (Firestore-mapped)
 
-| Class | Firestore Collection | Fields | Sprint |
-|---|---|---|---|
-| `Student` | `users` | uid, name, email, preferredName, pronouns, role, createdAt | Sprint 1 |
-| `Counselor` | `counselors` | id, uid, name, bio, specializations, language, gender, onLeave, onLeaveMessage, referralCounselorId | Sprint 1 (base), Sprint 2 (fields) |
-| `Appointment` | `appointments` | id, studentId, counselorId, slotId, date, time, status | Pre-existing |
-| `TimeSlot` | `slots` | id, counselorId, date, time, available | Pre-existing |
-| `FeedbackService` | `feedback` | id, appointmentId, rating, comment, submittedAt (no studentId) | Sprint 4 |
-| `AvailabilitySchedule` | (local only) | counselorId, slotsByDate | Sprint 3 |
+| Class | Collection | Sprint |
+|---|---|---|
+| `Student` | `users` | 1 |
+| `Counselor` | `counselors` | 1 (base), 2 (fields) |
+| `Appointment` | `appointments` | Pre-existing |
+| `TimeSlot` | `Slots/{uid}/slots` | Pre-existing |
+| `FeedbackService` | `feedback` | 4 |
+| `AvailabilitySchedule` | (local only) | 3 |
+| `IntakeAssessment` | `intakeAssessments` | 5 |
+| `WaitlistEntry` | `waitlistEntries` | 5, extended 8 |
+| `WaitlistOffer` | `waitlistOffers` | 5 |
+| `SessionNote` | `sessionNotes` | 6 |
+| `CrisisEscalation` | `crisisEscalations` | 6 |
+| `AvailabilitySettings` | `availabilitySettings` | 7 |
+| `ReminderSettings` | `reminderSettings` | 10 |
+| `ReminderRecord` | `reminderRecords` | 10 |
+| `SecureMessage` | `messageThreads/.../messages` | 10 (model), 11 (schema) |
 
 ### Repository Classes
 
-| Class | Collection | Key Methods | Sprint |
-|---|---|---|---|
-| `UserRepository` | `users` | createUser, getCurrentUser, getUserName, getCurrentUserRole | Sprint 1, extended Sprint 3 |
-| `CounselorRepository` | `counselors` | getAllCounselors, getCounselor, updateSpecializations, updateCounselorProfile, setOnLeaveStatus | Sprint 2, extended Sprint 4 |
-| `AppointmentRepository` | `appointments` + `slots` | bookAppointment (transaction), cancelAppointment, updateAppointmentStatus, getAppointmentsForCounselor, getAppointmentsForStudent, getCompletedAppointmentsNeedingFeedback | Sprint 3, extended Sprint 4 |
-| `AvailabilityRepository` | `slots` | getSlotsForCounselor, getAvailableSlotsForCounselor, addSlot, removeSlot | Sprint 3 |
-| `FeedbackRepository` | `feedback` | submitFeedback, hasFeedbackForAppointment | Sprint 4 |
+| Class | Sprint |
+|---|---|
+| `UserRepository` | 1 |
+| `CounselorRepository` | 2 |
+| `AppointmentRepository` | 3 |
+| `AvailabilityRepository` | 3 |
+| `FeedbackRepository` | 4 |
+| `IntakeAssessmentRepository` | 5 |
+| `WaitlistRepository` | 5 |
+| `SessionNoteRepository` | 6 |
+| `CrisisEscalationRepository` | 6 |
+| `AvailabilitySettingsRepository` | 7 |
+| `ReminderRepository` | 10 |
+| `SecureMessageRepository` | 10 (rewritten 11) |
 
-### Constants Classes
+### Utility / Helper Classes
 
 | Class | Purpose | Sprint |
 |---|---|---|
-| `UserRole` | STUDENT, COUNSELOR, ADMIN role strings | Sprint 1 |
-| `SpecializationTags` | 8 predefined counselor specialization tag strings + ALL_TAGS array | Sprint 2 |
+| `UserRole` | Role string constants | 1 |
+| `SpecializationTags` | 8 tags + ALL_TAGS | 2 |
+| `IntakeMatcher` | Quiz answer → tag → counselor scoring | 5 |
+| `WaitlistMatcher` | Preference → slot matching | 8 |
+| `BufferTimeValidator` | Slot conflict detection | 7 |
+| `CalendarSyncHelper` | Android calendar insert intent | 7 |
+| `NoteTemplate` | 5 note templates with prefill text | 6 |
+| `ReturningStudentHelper` | Prior appointment detection | 10 |
+| `SessionCache` | In-memory Firestore cache singleton | 9.5 |
+| `ReminderScheduler` | Generates ReminderRecord list from appointments | 10 |
+| `AppToast` | Cross-activity toast scheduling | 9.5 |
 
 ### Activity Classes
 
-| Class | Role | User Type | Sprint |
+| Class | Role | User | Sprint |
 |---|---|---|---|
-| `LoginActivity` | Login + role selection + auto-redirect | All | Pre-existing, updated Sprint 1 |
-| `RegisterActivity` | Registration form + Firebase Auth + Firestore write | All | Sprint 1 |
-| `PrivacyPolicyActivity` | Privacy policy gate after registration | All | Sprint 1 |
-| `StudentHomeActivity` | Student dashboard: welcome, crisis banner, quiz, session card, feedback, search, chips | Student | Sprint 1 (base), enhanced throughout |
-| `CounselorDashboardActivity` | Counselor dashboard: tabbed appointments, stats, availability management | Counselor | Merged work, overhauled Sprint 3 |
-| `CounselorListActivity` | Counselor directory with multi-filter search | Student | Merged work, enhanced Sprint 2 |
-| `CounselorProfileActivity` | Full counselor profile view + booking entry + on-leave display | Student | Sprint 2, extended Sprint 4 |
-| `CounselorProfileEditActivity` | Counselor profile editor: bio, tags, on-leave toggle | Counselor | Sprint 2, extended Sprint 4 |
-| `BookingActivity` | Calendar + slot selection + booking confirmation | Student | Merged work, rebuilt Sprint 3 |
-| `AvailabilitySetupActivity` | Counselor slot management (add/remove) | Counselor | Sprint 3 |
-| `CalendarActivity` | Student appointment calendar by date | Student | Merged work, refactored Sprint 3 |
-| `HistoryActivity` | Student appointment history | Student | Merged work, refactored Sprint 3 |
-| `QuizActivity` | Find My Match multi-step questionnaire | Student | Merged work, expanded Sprint 4.5 |
+| `MainActivity` | Auth state check / splash | All | Pre-existing |
+| `HomeActivity` | Legacy stub | — | Pre-existing |
+| `LoginActivity` | Login + role routing | All | Pre-existing, 1 |
+| `RegisterActivity` | Registration | All | 1 |
+| `PrivacyPolicyActivity` | Policy gate | All | 1 |
+| `StudentHomeActivity` | Student dashboard | Student | 1, enhanced throughout |
+| `CounselorDashboardActivity` | Counselor dashboard | Counselor | Merged, 3, 9, 9.5, 10, 11 |
+| `CounselorListActivity` | Counselor directory | Student | Merged, 2 |
+| `CounselorProfileActivity` | Counselor profile view | Student | 2, 4 |
+| `CounselorProfileEditActivity` | Profile editing | Counselor | 2, 4, 9.5 |
+| `BookingActivity` | Slot selection + booking | Student | Merged, 3, 9.5 |
+| `AvailabilitySetupActivity` | Slot management hub | Counselor | 3, 9.5 |
+| `AddSlotActivity` | Single slot add | Counselor | 9.5 |
+| `GenerateSlotsActivity` | Bulk slot generation | Counselor | 9.5 |
+| `AvailabilitySettingsActivity` | Buffer + calendar settings | Counselor | 7 |
+| `CalendarActivity` | Student appointment calendar | Student | Merged, 3 |
+| `HistoryActivity` | Student appointment history | Student | Merged, 3 |
+| `QuizActivity` | Intake quiz | Student | Merged, 4.5, 5 |
+| `StudentProfileActivity` | Student triage view | Counselor | 6 |
+| `SessionHistoryActivity` | Student session list | Counselor | 6 |
+| `ManageSessionActivity` | Appointment actions hub | Counselor | 11 |
+| `SessionNoteActivity` | Note editing + templates | Counselor | 6, 9 |
+| `PastSessionsActivity` | Completed session list | Counselor | 9.5 |
+| `MessageThreadActivity` | Secure messaging UI | Both | 10, 11 |
+| `StudentWaitlistActivity` | Student waitlist entries | Student | 8 |
+| `WaitlistRequestActivity` | Waitlist preference form | Student | 8 |
+| `CounselorWaitlistActivity` | Counselor waitlist queue | Counselor | 8 |
+| `ReminderSettingsActivity` | Admin reminder config | Admin | 10 |
+| `AdminDashboardActivity` | Admin landing | Admin | 10, 11 |
 
-### Fragment Classes
+### Fragment / Dialog Classes
 
-| Class | Type | Purpose | Sprint |
-|---|---|---|---|
-| `BookingConfirmationFragment` | BottomSheetDialogFragment | Booking summary + confirm button | Sprint 3 |
-| `EmergencyDialogFragment` | DialogFragment | Crisis line dial dialog (offline-capable) | Sprint 3 |
+| Class | Type | Sprint |
+|---|---|---|
+| `BookingConfirmationFragment` | BottomSheetDialogFragment | 3 |
+| `EmergencyDialogFragment` | DialogFragment | 3 |
+| `CrisisEscalationDialogFragment` | DialogFragment | 6, redesigned 11 |
 
 ### Adapter Classes
 
-| Class | Binds | Used By | Sprint |
-|---|---|---|---|
-| `CounselorAdapter` | Counselor → card | CounselorListActivity | Merged work, enhanced Sprint 2 |
-| `AppointmentAdapter` | Appointment → card (counselor view) | CounselorDashboardActivity | Merged work, enhanced Sprint 3 |
-| `StudentAppointmentAdapter` | Appointment → card (student view) | CalendarActivity, HistoryActivity | Merged work |
-| `TimeSlotAdapter` | TimeSlot → card | BookingActivity | Merged work |
+| Class | Binds | Sprint |
+|---|---|---|
+| `CounselorAdapter` | Counselor → card | Merged, 2 |
+| `AppointmentAdapter` | Appointment → counselor card | Merged, 3, 9, 11 |
+| `StudentAppointmentAdapter` | Appointment → student card | Merged |
+| `TimeSlotAdapter` | TimeSlot → slot card | Merged |
+| `WaitlistAdapter` | WaitlistEntry → student card | 8 |
+| `CounselorWaitlistAdapter` | WaitlistEntry → counselor card | 8 |
+| `CrisisAlertAdapter` | CrisisEscalation → admin card | 11 |
+| `SecureMessageAdapter` | SecureMessage → message bubble | 10, 11 |
+| `SessionNoteHistoryAdapter` | SessionNote → history row | 9.5 |
 
-### Total: 34 Java classes (6 models, 5 repositories, 2 constants, 13 activities, 2 fragments, 4 adapters, 2 legacy stubs)
+**Total: ~80 Java classes across 15 models, 12 repositories, 11 utilities, 27 activities, 3 dialogs, 9 adapters, 1 custom view, 2 legacy stubs.**
 
 ---
 
-## 11. Test Coverage Summary
+## 19. Test Coverage Summary
 
 ### Unit Tests (JUnit — `src/test/`)
 
-| Test Class | Covers | Tests | Sprint |
-|---|---|---|---|
-| `StudentTest.java` | Student model | 5 (default role, constructor, empty constructor, setters, timestamp) | Sprint 1 |
-| `CounselorTest.java` | Counselor model + SpecializationTags | 7 (onLeave default, specializations, empty constructor, setters, toggle, message, tags verification) | Sprint 2 |
-| `AppointmentTest.java` | Appointment model | 3+ (empty constructor, setters, status values) | Sprint 3 |
-| `AvailabilityScheduleTest.java` | AvailabilitySchedule model | 5 (filters unavailable, date subset, empty date, available dates set, empty input) | Sprint 3 |
-| `FeedbackServiceTest.java` | FeedbackService model | 5 (no studentId field, constructor, empty constructor, rating bounds, null comment) | Sprint 4 |
+| Test Class | Covers | Sprint |
+|---|---|---|
+| `StudentTest` | Student model | 1 |
+| `CounselorTest` | Counselor model + SpecializationTags | 2 |
+| `AppointmentTest` | Appointment model | 3 |
+| `AvailabilityScheduleTest` | AvailabilitySchedule | 3 |
+| `FeedbackServiceTest` | FeedbackService (anonymity via reflection) | 4 |
+| `IntakeAssessmentTest` | IntakeAssessment model | 5 |
+| `IntakeMatcherTest` | Matcher scoring + tag mapping | 5 |
+| `WaitlistEntryTest` | WaitlistEntry model | 5 |
+| `SessionNoteTest` | SessionNote model | 6 |
+| `NoteTemplateTest` | NoteTemplate utility | 6 |
+| `CrisisEscalationTest` | CrisisEscalation model | 6 |
+| `AvailabilitySettingsTest` | AvailabilitySettings model | 7 |
+| `BufferTimeValidatorTest` | Buffer conflict detection | 7 |
+| `CalendarSyncHelperTest` | Calendar intent building | 7 |
 
 ### UI Tests (Espresso — `src/androidTest/`)
 
-| Test Class | Covers | Tests | Sprint |
+| Test Class | Covers | Sprint |
+|---|---|---|
+| `RegistrationFlowTest` | RegisterActivity validation | 1 |
+| `LoginRoleRoutingTest` | LoginActivity role selection | 1 |
+| `CounselorDirectoryTest` | CounselorListActivity filtering | 2 |
+| `BookingFlowTest` | BookingActivity UI | 3 |
+| `CounselorDashboardTest` | CounselorDashboardActivity | 3 |
+| `EmergencyButtonTest` | EmergencyDialogFragment | 3 |
+| `OnLeaveFlowTest` | On-leave UI end-to-end | 4 |
+| `FeedbackFlowTest` | Feedback UI end-to-end | 4 |
+| `IntakeQuizFlowTest` | QuizActivity full flow | 5 |
+| `WaitlistFlowTest` | Waitlist join + student view | 5 |
+| `StudentProfileFlowTest` | StudentProfileActivity | 6 |
+| `SessionNotesFlowTest` | Session note dialog | 6 |
+| `CrisisEscalationFlowTest` | Crisis dialog | 6 |
+| `AvailabilitySettingsFlowTest` | Buffer settings UI | 7 |
+| `BufferBookingFlowTest` | Buffer enforcement in add-slot | 7 |
+
+**Total: ~40 unit tests, ~60 UI tests across 29 test files.**
+
+---
+
+## 20. User Story Traceability Matrix
+
+| US | Title | Sprint | Status |
 |---|---|---|---|
-| `RegistrationFlowTest.java` | RegisterActivity form validation | 5 (fields visible, invalid email, password mismatch, short password, empty name) | Sprint 1 |
-| `LoginRoleRoutingTest.java` | LoginActivity role selection | 4 (role buttons, counselor button text, admin button text, sign-up link) | Sprint 1 |
-| `CounselorDirectoryTest.java` | CounselorListActivity filtering | 5 (core elements, language dropdown, gender dropdown, empty state, clear search) | Sprint 2 |
-| `BookingFlowTest.java` | BookingActivity UI | 3+ (calendar displayed, counselor name, slot list on date tap) | Sprint 3 |
-| `CounselorDashboardTest.java` | CounselorDashboardActivity | 6 (TabLayout, appointment list, Today tab, Week tab, tab switch, add-slot banner) | Sprint 3 |
-| `EmergencyButtonTest.java` | EmergencyDialogFragment | 5 (FAB visible, dialog opens, crisis line, campus security, dismiss) | Sprint 3 |
-| `OnLeaveFlowTest.java` | On-leave UI flow | 5 (toggle displayed, message field, referral dropdown, directory badge, profile card) | Sprint 4 |
-| `FeedbackFlowTest.java` | Feedback UI flow | 4 (rating bar, comment field, zero-rating error, prompt card) | Sprint 4 |
+| US-01 | Booking Flow | 3 | **COMPLETE** |
+| US-02 | Discreet Mode | 4.5 | **COMPLETE** |
+| US-03 | Slide-to-Cancel | 4.5 | **COMPLETE** |
+| US-04 | Intake Quiz + Matching | 4.5 (partial), 5 (complete) | **COMPLETE** |
+| US-05/10 | Counselor Dashboard | 3, 9, 9.5 | **COMPLETE** |
+| US-06 | Specialization Tags | 2 | **COMPLETE** |
+| US-07 | Language Preferences | 2 | **COMPLETE** (filter + profile edit) |
+| US-08 | Buffer Time | 7 | **COMPLETE** |
+| US-09 | Calendar Sync | 7 | **COMPLETE** (Android calendar intent) |
+| US-11 | No-Show Tracking | 3, 9, 9.5 | **COMPLETE** (time gate + confirmation) |
+| US-12 | Session Notes | 6, 9 | **COMPLETE** (upsert) |
+| US-13 | Session History | 6 | **COMPLETE** |
+| US-14 | Student Profile / Triage View | 6 | **COMPLETE** |
+| US-15 | Crisis Escalation | 6, 11 | **COMPLETE** (redesigned dialog) |
+| US-16 | Admin Reminders | 10 | **COMPLETE** |
+| US-17 | Returning Student Indicator | 10 | **COMPLETE** |
+| US-18 | Secure Messaging | 10, 11 | **COMPLETE** (thread architecture) |
+| US-19 | On-Leave Status | 4 | **COMPLETE** |
+| US-20 | Emergency Button | 3 | **COMPLETE** |
+| US-21 | Anonymous Feedback | 4 | **COMPLETE** |
+| US-22 | Registration + Auth | 1 | **COMPLETE** |
+| US-23 | Counselor Directory | 2 | **COMPLETE** |
+| US-24 | Waitlist (join + resolve) | 5, 8 | **COMPLETE** |
+| US-25 | Waitlist Count (counselor) | 6 | **COMPLETE** |
 
-**Total: ~25 unit tests, ~37 UI tests**
+### Additional Stories Beyond Original Backlog
+
+| ID | Title | Sprint | Notes |
+|---|---|---|---|
+| US-26 | Counselor Registration via App | changes.md | `RegisterActivity` creates both `users/{uid}` and `counselors/{uid}` — no Firebase console setup needed |
+| US-27 | Student Calendar View | Merged + 3 | `CalendarActivity` + `CustomCalendarView` |
+| US-28 | Student Appointment History | Merged + 3 | `HistoryActivity` — chronological past appointments |
+| US-29 | Full Counselor Profile Edit | 2, 4, 9.5 | Bio, language, gender, specializations, on-leave, display name |
+| US-30 | Bulk Slot Generation | 9.5 | `GenerateSlotsActivity` — multi-date, time range, break windows |
+| US-31 | Admin Crisis Alerts | 11 | Unresolved escalation feed with resolve action |
 
 ---
 
-## 12. User Story Traceability Matrix
-
-| US | Title | Priority | Points | Sprint | Model | Repository | Activity | Test |
-|---|---|---|---|---|---|---|---|---|
-| **US-22** | Student Registration | P0 | 8 | 1 | Student, UserRole | UserRepository | LoginActivity, RegisterActivity, PrivacyPolicyActivity, StudentHomeActivity | StudentTest, RegistrationFlowTest, LoginRoleRoutingTest |
-| **US-23** | Counselor Directory | P0 | 8 | 2 | Counselor | CounselorRepository | CounselorListActivity, CounselorProfileActivity | CounselorTest, CounselorDirectoryTest |
-| **US-06** | Specialization Tags | P1 | 5 | 2 | SpecializationTags | CounselorRepository | CounselorProfileEditActivity | CounselorTest |
-| **US-01** | Booking Flow | P0 | 13 | 3 | AvailabilitySchedule | AppointmentRepository, AvailabilityRepository | BookingActivity, BookingConfirmationFragment | AvailabilityScheduleTest, AppointmentTest, BookingFlowTest |
-| **US-05/10** | Counselor Dashboard | P0 | 8 | 3 | — | AppointmentRepository, AvailabilityRepository | CounselorDashboardActivity, AvailabilitySetupActivity, AppointmentAdapter | CounselorDashboardTest |
-| **US-20** | Emergency Button | P0 | 3 | 3 | — | — | EmergencyDialogFragment, StudentHomeActivity | EmergencyButtonTest |
-| **US-19** | On-Leave Status | P2 | 5 | 4 | — | CounselorRepository | CounselorProfileEditActivity, CounselorProfileActivity, CounselorAdapter | OnLeaveFlowTest |
-| **US-21** | Anonymous Feedback | P2 | 5 | 4 | FeedbackService | FeedbackRepository, AppointmentRepository | StudentHomeActivity | FeedbackServiceTest, FeedbackFlowTest |
-| **US-03** | Slide-to-Cancel | — | — | 4.5 | — | AppointmentRepository | StudentHomeActivity | — |
-| **US-04** | Find My Match Quiz | — | — | 4.5 | — | CounselorRepository | QuizActivity | — |
-
----
-
-## 13. Retrospective — Lessons Across Sprints
+## 21. Retrospective — Lessons Across Sprints
 
 ### What Went Well
 
-1. **Repository pattern from day one.** Establishing `UserRepository` in Sprint 1 set the architectural standard. Every subsequent sprint followed the same pattern, making the codebase consistent and the data layer testable.
+1. **Repository pattern from day one.** Establishing `UserRepository` in Sprint 1 set the architectural standard. Every subsequent sprint followed it, making the data layer testable and consistent.
 
-2. **Integration-first approach.** Firestore connectivity was live from Sprint 1. No feature was ever "UI only" — every screen that touched data had real Firestore reads/writes, even if the UI was rough initially.
+2. **Integration-first approach.** Firestore connectivity was live from Sprint 1. No feature was ever UI-only — every screen had real Firestore reads/writes.
 
-3. **Incremental story delivery.** Each sprint delivered a demonstrable, end-to-end capability. Sprint 1: register and log in. Sprint 2: browse and filter. Sprint 3: book and manage. Sprint 4: leave and feedback. The app was always in a runnable state.
+3. **Incremental story delivery.** Each sprint delivered a demonstrable end-to-end capability. The app was always in a runnable state.
 
-4. **Concurrent development integration.** Teammate Shahbaz's parallel work on dashboards and booking was substantial. Rather than discarding or rewriting it, the team formalized it — identifying what was complete, what was partial, and building the missing layers (repositories, tests) on top.
+4. **Concurrent development integration.** Teammate Shahbaz's parallel work was substantial. Rather than discarding it, the team identified what was complete, what was partial, and built the missing layers on top.
+
+5. **Feature depth over breadth.** When features were built (waitlist, messaging), they were built properly — with preference inputs, auto-resolution, thread architecture — rather than minimal stubs.
 
 ### What Could Be Improved
 
-1. **Collection naming alignment.** The PLAN.md specified `timeSlots` but implementation used `slots`. This was caught and standardized in Sprint 3, but earlier alignment would have avoided confusion.
+1. **Collection naming alignment.** PLAN.md specified `timeSlots` but implementation used `slots`. Caught and standardized in Sprint 3, but earlier alignment would have avoided confusion.
 
-2. **Action button placeholders.** The `AppointmentAdapter` still has placeholder toasts for Join (video call), Notes, and Profile buttons. These depend on Phase 4 features (video integration, session records) but the stubbed buttons give an unfinished impression.
+2. **N+1 query pattern in adapters.** Both `AppointmentAdapter` (student name) and `StudentAppointmentAdapter` (counselor name) make one Firestore read per list item. A batch-fetch strategy would scale better. Partially addressed by `SessionCache`.
 
-3. **N+1 query pattern in adapters.** Both `AppointmentAdapter` (student name lookup) and `StudentAppointmentAdapter` (counselor name lookup) make one Firestore read per visible list item. For typical appointment counts this is acceptable, but a batch-fetch strategy would scale better.
+3. **Sprint 3 scope creep.** Collapsing booking + dashboard + emergency into one sprint was successful (shared repository dependency) but made it the largest sprint (24 points). Better to split with shared repos planned upfront.
 
-4. **Sprint scope creep.** Sprint 3 collapsed two planned sprints into one (booking + dashboard + emergency). This was successful because the work shared a repository dependency, but it made the sprint significantly larger (24 points) than others.
+4. **Messaging architecture revision.** The Sprint 10 per-appointment messaging design required a full rewrite in Sprint 11 to support per-thread architecture. The thread-keyed design should have been the initial design.
 
 ### Architecture Evolution
 
 ```
-Sprint 1:  [LoginActivity] → [UserRepository] → Firestore /users
-                                                   ↑
-Sprint 2:  [CounselorListActivity] → [CounselorRepository] → Firestore /counselors
-                                                                 ↑
-Sprint 3:  [BookingActivity] → [AppointmentRepository] → Firestore /appointments
-           [BookingActivity] → [AvailabilityRepository] → Firestore /slots
-           [CounselorDashboard] → [AppointmentRepository] (shared)
-           [EmergencyDialog] → (no Firestore — offline)
-                                                                 ↑
-Sprint 4:  [StudentHomeActivity] → [FeedbackRepository] → Firestore /feedback
+Sprint 1:  [Login/Register] → [UserRepository] → Firestore /users
+                                                        ↑
+Sprint 2:  [CounselorListActivity] → [CounselorRepository] → /counselors
+                                                        ↑
+Sprint 3:  [BookingActivity] → [AppointmentRepository] → /appointments
+           [BookingActivity] → [AvailabilityRepository] → /slots (atomic transaction)
+                                                        ↑
+Sprint 4:  [StudentHomeActivity] → [FeedbackRepository] → /feedback
            [ProfileEditActivity] → [CounselorRepository] (extended)
-                                                                 ↑
-Sprint 4.5: [QuizActivity] → [CounselorRepository] (reused)
-            [StudentHomeActivity] → [CounselorListActivity] (wiring only)
+                                                        ↑
+Sprint 5:  [QuizActivity] → [IntakeAssessmentRepository] → /intakeAssessments
+           [ProfileActivity] → [WaitlistRepository] → /waitlistEntries
+                                                        ↑
+Sprint 6:  [ManageSession] → [SessionNoteRepository] → /sessionNotes
+           [ManageSession] → [CrisisEscalationRepository] → /crisisEscalations
+                                                        ↑
+Sprint 7:  [AvailabilitySetup] → [AvailabilitySettingsRepository] → /availabilitySettings
+                                                        ↑
+Sprint 8:  [WaitlistRequest] → [WaitlistRepository] (preference matching)
+           [CounselorWaitlist] → auto-resolution on slot create
+                                                        ↑
+Sprints 9–9.5: [Dashboard] → real-time snapshot listener (not poll)
+               [BookingActivity] → [SessionCache] (avoids redundant reads)
+                                                        ↑
+Sprint 10: [AdminDashboard] → [ReminderRepository] → /reminderSettings
+           [MessageThread] → [SecureMessageRepository] → /secureMessages (flat, replaced)
+                                                        ↑
+Sprint 11: [MessageThread] → [SecureMessageRepository] → /messageThreads/{id}/messages
+           [ManageSession] → all appointment actions consolidated
+           [AdminDashboard] → [CrisisEscalationRepository] → /crisisEscalations (admin tab)
 ```
 
-Each sprint added a new repository or extended an existing one. By Sprint 4, five repositories covered five Firestore collections, and every Activity accessed data exclusively through this layer.
+Each sprint added a repository or extended an existing one. By Sprint 11, 12 repositories cover 12 Firestore collections, and every Activity accesses data exclusively through this layer.
 
 ---
 
-*This document consolidates the full development cycle from SPRINT-1.md through SPRINT-4.5.md plus the PLAN.md architectural foundation. For detailed implementation code (method signatures, layout XML, string resources), refer to the individual sprint documents.*
+*This document is the Phase 4 final deliverable. It consolidates all sprint implementation records from SPRINT-1.md through SPRINT-11.md, the PLAN.md architectural foundation, SPRINT_1-7_STATUS_REPORT.md audit, and changes.md data-layer fixes. For full implementation code (method signatures, layout XML, string resources, test cases), refer to the individual sprint documents in `documentation/sprints/`.*

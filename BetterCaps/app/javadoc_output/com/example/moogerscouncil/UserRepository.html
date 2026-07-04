@@ -114,18 +114,23 @@ loadScripts(document, 'script');</script>
 <div class="block">Callback for role-only fetch operations used for post-login routing.</div>
 </div>
 <div class="col-first odd-row-color"><code>static interface&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="UserRepository.OnUserCreatedCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">UserRepository.OnUserCreatedCallback</a></code></div>
+<div class="col-second odd-row-color"><code><a href="UserRepository.OnStudentFetchedCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">UserRepository.OnStudentFetchedCallback</a></code></div>
 <div class="col-last odd-row-color">
-<div class="block">Callback for user creation operations.</div>
+<div class="block">Callback for student document lookups by UID.</div>
 </div>
 <div class="col-first even-row-color"><code>static interface&nbsp;</code></div>
-<div class="col-second even-row-color"><code><a href="UserRepository.OnUserFetchedCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">UserRepository.OnUserFetchedCallback</a></code></div>
+<div class="col-second even-row-color"><code><a href="UserRepository.OnUserCreatedCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">UserRepository.OnUserCreatedCallback</a></code></div>
 <div class="col-last even-row-color">
-<div class="block">Callback for user fetch operations that return a full <a href="Student.html" title="class in com.example.moogerscouncil"><code>Student</code></a> object.</div>
+<div class="block">Callback for user creation operations.</div>
 </div>
 <div class="col-first odd-row-color"><code>static interface&nbsp;</code></div>
-<div class="col-second odd-row-color"><code><a href="UserRepository.OnUserNameCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">UserRepository.OnUserNameCallback</a></code></div>
+<div class="col-second odd-row-color"><code><a href="UserRepository.OnUserFetchedCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">UserRepository.OnUserFetchedCallback</a></code></div>
 <div class="col-last odd-row-color">
+<div class="block">Callback for user fetch operations that return a full <a href="Student.html" title="class in com.example.moogerscouncil"><code>Student</code></a> object.</div>
+</div>
+<div class="col-first even-row-color"><code>static interface&nbsp;</code></div>
+<div class="col-second even-row-color"><code><a href="UserRepository.OnUserNameCallback.html" class="type-name-link" title="interface in com.example.moogerscouncil">UserRepository.OnUserNameCallback</a></code></div>
+<div class="col-last even-row-color">
 <div class="block">Callback for name-only user lookups.</div>
 </div>
 </div>
@@ -181,9 +186,15 @@ loadScripts(document, 'script');</script>
  </div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUserName(java.lang.String,com.example.moogerscouncil.UserRepository.OnUserNameCallback)" class="member-name-link">getUserName</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uid,
- <a href="UserRepository.OnUserNameCallback.html" title="interface in com.example.moogerscouncil">UserRepository.OnUserNameCallback</a>&nbsp;callback)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStudentById(java.lang.String,com.example.moogerscouncil.UserRepository.OnStudentFetchedCallback)" class="member-name-link">getStudentById</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uid,
+ <a href="UserRepository.OnStudentFetchedCallback.html" title="interface in com.example.moogerscouncil">UserRepository.OnStudentFetchedCallback</a>&nbsp;callback)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Fetches a student document by Firebase Auth UID.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getUserName(java.lang.String,com.example.moogerscouncil.UserRepository.OnUserNameCallback)" class="member-name-link">getUserName</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uid,
+ <a href="UserRepository.OnUserNameCallback.html" title="interface in com.example.moogerscouncil">UserRepository.OnUserNameCallback</a>&nbsp;callback)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Fetches only the <code>name</code> field for a given user UID.</div>
 </div>
 </div>
@@ -242,6 +253,19 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>callback</code> - Receives the Student on success, or an Exception on failure.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="getStudentById(java.lang.String,com.example.moogerscouncil.UserRepository.OnStudentFetchedCallback)">
+<h3>getStudentById</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">getStudentById</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uid,
+ <a href="UserRepository.OnStudentFetchedCallback.html" title="interface in com.example.moogerscouncil">UserRepository.OnStudentFetchedCallback</a>&nbsp;callback)</span></div>
+<div class="block">Fetches a student document by Firebase Auth UID.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>uid</code> - Student UID.</dd>
+<dd><code>callback</code> - Receives the student or a failure.</dd>
 </dl>
 </section>
 </li>

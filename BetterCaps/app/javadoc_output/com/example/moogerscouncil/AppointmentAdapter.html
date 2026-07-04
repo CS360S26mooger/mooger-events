@@ -94,14 +94,8 @@ loadScripts(document, 'script');</script>
 <span class="extends-implements">extends androidx.recyclerview.widget.RecyclerView.Adapter&lt;<a href="AppointmentAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">AppointmentAdapter.ViewHolder</a>&gt;</span></div>
 <div class="block">RecyclerView adapter for the counselor's appointment dashboard cards.
 
- <p>Each card shows:
- <ul>
-   <li>Student name (async lookup via <a href="UserRepository.html" title="class in com.example.moogerscouncil"><code>UserRepository</code></a>)</li>
-   <li>Date and time</li>
-   <li>Status badge (color-coded: green/grey/red)</li>
-   <li>No-Show button wired to <a href="AppointmentRepository.html" title="class in com.example.moogerscouncil"><code>AppointmentRepository</code></a></li>
- </ul>
- </p></div>
+ <p>Each card shows student name, date, time, and a color-coded status badge.
+ Tapping opens <a href="ManageSessionActivity.html" title="class in com.example.moogerscouncil"><code>ManageSessionActivity</code></a> for all per-session actions.</p></div>
 </section>
 <section class="summary">
 <ul class="summary-list">
@@ -146,7 +140,7 @@ loadScripts(document, 'script');</script>
 <section class="method-summary" id="method-summary">
 <h2>Method Summary</h2>
 <div id="method-summary-table">
-<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="method-summary-table-tab0" role="tab" aria-selected="true" aria-controls="method-summary-table.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table', 3)" class="active-table-tab">All Methods</button><button id="method-summary-table-tab1" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab1', 3)" class="table-tab">Static Methods</button><button id="method-summary-table-tab2" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab2', 3)" class="table-tab">Instance Methods</button><button id="method-summary-table-tab4" role="tab" aria-selected="false" aria-controls="method-summary-table.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('method-summary-table', 'method-summary-table-tab4', 3)" class="table-tab">Concrete Methods</button></div>
 <div id="method-summary-table.tabpanel" role="tabpanel" aria-labelledby="method-summary-table-tab0">
 <div class="summary-table three-column-summary">
 <div class="table-header col-first">Modifier and Type</div>
@@ -155,17 +149,23 @@ loadScripts(document, 'script');</script>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>int</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getItemCount()" class="member-name-link">getItemCount</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onBindViewHolder(com.example.moogerscouncil.AppointmentAdapter.ViewHolder,int)" class="member-name-link">onBindViewHolder</a><wbr>(<a href="AppointmentAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">AppointmentAdapter.ViewHolder</a>&nbsp;holder,
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static boolean</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#isNoShowWindowOpen(java.lang.String,java.lang.String)" class="member-name-link">isNoShowWindowOpen</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;time)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="block">Returns true if the current time is at least 10 minutes past the slot start time.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onBindViewHolder(com.example.moogerscouncil.AppointmentAdapter.ViewHolder,int)" class="member-name-link">onBindViewHolder</a><wbr>(<a href="AppointmentAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">AppointmentAdapter.ViewHolder</a>&nbsp;holder,
  int&nbsp;position)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AppointmentAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">AppointmentAdapter.ViewHolder</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onCreateViewHolder(android.view.ViewGroup,int)" class="member-name-link">onCreateViewHolder</a><wbr>(android.view.ViewGroup&nbsp;parent,
- int&nbsp;viewType)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setData(java.util.List)" class="member-name-link">setData</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a>&gt;&nbsp;newList)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AppointmentAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">AppointmentAdapter.ViewHolder</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#onCreateViewHolder(android.view.ViewGroup,int)" class="member-name-link">onCreateViewHolder</a><wbr>(android.view.ViewGroup&nbsp;parent,
+ int&nbsp;viewType)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">&nbsp;</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setData(java.util.List)" class="member-name-link">setData</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a>&gt;&nbsp;newList)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Replaces the current appointment list and notifies the adapter.</div>
 </div>
 </div>
@@ -196,7 +196,7 @@ loadScripts(document, 'script');</script>
 <div class="block">Creates a new adapter.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
-<dd><code>context</code> - Activity context for inflation and toasts.</dd>
+<dd><code>context</code> - Activity context for inflation and intents.</dd>
 <dd><code>appointments</code> - Initial appointment list (may be replaced via <a href="#setData(java.util.List)"><code>setData(java.util.List&lt;com.example.moogerscouncil.Appointment&gt;)</code></a>).</dd>
 </dl>
 </section>
@@ -213,8 +213,7 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="setData(java.util.List)">
 <h3>setData</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setData</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a>&gt;&nbsp;newList)</span></div>
-<div class="block">Replaces the current appointment list and notifies the adapter.
- Called by <a href="CounselorDashboardActivity.html" title="class in com.example.moogerscouncil"><code>CounselorDashboardActivity</code></a> when the tab changes.</div>
+<div class="block">Replaces the current appointment list and notifies the adapter.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>newList</code> - The filtered appointment list for the current tab.</dd>
@@ -253,6 +252,21 @@ loadScripts(document, 'script');</script>
 <dl class="notes">
 <dt>Specified by:</dt>
 <dd><code>getItemCount</code>&nbsp;in class&nbsp;<code>androidx.recyclerview.widget.RecyclerView.Adapter&lt;<a href="AppointmentAdapter.ViewHolder.html" title="class in com.example.moogerscouncil">AppointmentAdapter.ViewHolder</a>&gt;</code></dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="isNoShowWindowOpen(java.lang.String,java.lang.String)">
+<h3>isNoShowWindowOpen</h3>
+<div class="member-signature"><span class="modifiers">public static</span>&nbsp;<span class="return-type">boolean</span>&nbsp;<span class="element-name">isNoShowWindowOpen</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;date,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;time)</span></div>
+<div class="block">Returns true if the current time is at least 10 minutes past the slot start time.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>date</code> - ISO date string "yyyy-MM-dd".</dd>
+<dd><code>time</code> - Time string (HH:mm or h:mm a).</dd>
+<dt>Returns:</dt>
+<dd>true if no-show marking window is open.</dd>
 </dl>
 </section>
 </li>

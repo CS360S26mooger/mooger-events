@@ -1,21 +1,24 @@
 @startuml BetterCAPS_Class_Diagram
 
-' ── Rendering: top-down, narrow ──
+' ════════════════════════════════════════
+'  LAYOUT — top-to-bottom, lightweight (no ortho, minimal hidden spine)
+' ════════════════════════════════════════
 top to bottom direction
+
 skinparam classAttributeIconSize 0
-skinparam classFontSize 9
-skinparam packageFontSize 11
-skinparam nodesep 18
-skinparam ranksep 35
-skinparam wrapWidth 160
+skinparam classFontSize 10
+skinparam packageFontSize 12
+skinparam nodesep 30
+skinparam ranksep 50
 skinparam packageStyle rectangle
+skinparam shadowing false
+hide circle
 
-title BetterCAPS — Phase 3 Class Diagram (Sprints 1–11)
+title BetterCAPS — Phase 3 UML Class Diagram (Sprints 1–11)\nPackage: com.example.moogerscouncil
 
 ' ════════════════════════════════════════
-'  CONSTANTS
+'  LAYER 1 — CONSTANTS
 ' ════════════════════════════════════════
-
 package "Constants" #E8F5E9 {
   class UserRole <<final>> {
     + {static} STUDENT : String
@@ -23,37 +26,57 @@ package "Constants" #E8F5E9 {
     + {static} ADMIN : String
   }
   class SpecializationTags <<final>> {
+    + {static} ANXIETY : String
+    + {static} ACADEMIC_STRESS : String
+    + {static} GRIEF : String
+    + {static} RELATIONSHIPS : String
+    + {static} CAREER_GUIDANCE : String
+    + {static} DEPRESSION : String
+    + {static} TRAUMA : String
+    + {static} FAMILY_ISSUES : String
     + {static} ALL_TAGS : String[]
   }
 }
 
 ' ════════════════════════════════════════
-'  CORE MODELS
+'  LAYER 2 — CORE MODELS
 ' ════════════════════════════════════════
-
 package "Core Models" #F5F5DC {
   class Student {
     - uid : String
     - name : String
     - email : String
+    - preferredName : String
     - pronouns : String
     - role : String
     - createdAt : Timestamp
+    --
+    + Student()
+    + getters / setters
   }
   class Counselor {
     - id : String
+    - uid : String
     - name : String
+    - bio : String
     - specializations : List<String>
+    - language : String
+    - gender : String
     - isOnLeave : Boolean
     - referralCounselorId : String
+    --
+    + getters / setters
   }
   class Appointment {
     - id : String
     - studentId : String
     - counselorId : String
+    - slotId : String
     - date : String
     - time : String
     - status : String
+    --
+    + getters / setters
   }
   class TimeSlot {
     - id : String
@@ -63,65 +86,51 @@ package "Core Models" #F5F5DC {
     - available : boolean
     --
     + book()
+    + getters / setters
   }
   class FeedbackService {
     - id : String
     - appointmentId : String
     - rating : int
     - comment : String
+    - submittedAt : Timestamp
+    --
+    + getters / setters
   }
   class AvailabilitySchedule {
     - counselorId : String
-    - slotsByDate : Map<String,List<TimeSlot>>
+    - slotsByDate : Map<String, List<TimeSlot>>
     --
-    + {static} fromSlots() : AvailabilitySchedule
+    + {static} fromSlots(cId, slots)
     + getSlotsForDate(date) : List<TimeSlot>
     + getDatesWithAvailability() : Set<String>
   }
 }
 
 ' ════════════════════════════════════════
-'  FEATURE MODELS — Session & Settings
+'  LAYER 3 — FEATURE MODELS (Sprints 7–11)
 ' ════════════════════════════════════════
-
-package "Session & Settings Models" #FFF9C4 {
+package "Feature Models" #FFF9C4 {
   class AvailabilitySettings {
     - counselorId : String
     - bufferMinutes : int
     - externalCalendarEnabled : boolean
     - calendarProvider : String
+    - exportIcsEnabled : boolean
+    --
+    + getters / setters
   }
   class SessionNote {
     - id : String
     - appointmentId : String
     - counselorId : String
-    - noteText : String
-    - templateKey : String
-    - appointmentDate : String
-  }
-  class ReminderSettings {
-    - enabled24Hour : boolean
-    - enabled1Hour : boolean
-    - message24Hour : String
-    - message1Hour : String
-    --
-    + {static} defaultSettings() : ReminderSettings
-  }
-  class ReminderRecord {
-    - id : String
-    - appointmentId : String
     - studentId : String
-    - reminderType : String
-    - scheduledFor : Timestamp
-    - delivered : boolean
+    - templateKey : String
+    - noteText : String
+    - privateToCounselor : boolean
+    --
+    + getters / setters
   }
-}
-
-' ════════════════════════════════════════
-'  FEATURE MODELS — Crisis, Intake & Messaging
-' ════════════════════════════════════════
-
-package "Crisis, Intake & Messaging Models" #FFE0E0 {
   class CrisisEscalation {
     - id : String
     - appointmentId : String
@@ -130,354 +139,359 @@ package "Crisis, Intake & Messaging Models" #FFE0E0 {
     - severity : String
     - actionTaken : String
     - resolved : boolean
+    --
+    + getters / setters
   }
   class IntakeAssessment {
     - id : String
     - studentId : String
     - primaryConcern : String
-    - urgencyLevel : int
+    - duration : String
+    - supportType : String
+    - urgencyLevel : String
     - recommendedSpecializations : List<String>
     - matchedCounselorId : String
+    - active : boolean
+    --
+    + getters / setters
   }
   class SecureMessage {
     - id : String
     - counselorId : String
     - studentId : String
     - senderId : String
+    - senderRole : String
     - messageText : String
     - read : boolean
     --
     + getThreadId() : String
+    + getters / setters
   }
-}
-
-' ════════════════════════════════════════
-'  FEATURE MODELS — Waitlist
-' ════════════════════════════════════════
-
-package "Waitlist Models" #E8F5E9 {
   class WaitlistEntry {
     - id : String
     - studentId : String
     - counselorId : String
+    - assessmentId : String
+    - reason : String
     - preferredDates : List<String>
     - preferredStartTime : String
     - preferredEndTime : String
     - status : String
-    - requestedAt : Timestamp
+    --
+    + getters / setters
   }
   class WaitlistOffer {
     - id : String
     - waitlistEntryId : String
-    - studentId : String
     - slotId : String
     - status : String
     - offeredAt : Timestamp
+    - expiresAt : Timestamp
+    --
+    + getters / setters
+  }
+  class ReminderSettings {
+    - enabled24Hour : boolean
+    - enabled1Hour : boolean
+    - message24Hour : String
+    - message1Hour : String
+    --
+    + {static} defaultSettings() : ReminderSettings
+    + getters / setters
+  }
+  class ReminderRecord {
+    - id : String
+    - appointmentId : String
+    - studentId : String
+    - reminderType : String
+    - delivered : boolean
+    - scheduledFor : Timestamp
+    --
+    + getters / setters
   }
 }
 
 ' ════════════════════════════════════════
-'  CORE REPOSITORIES
+'  LAYER 4 — CORE REPOSITORIES
 ' ════════════════════════════════════════
-
 package "Core Repositories" #E3F2FD {
   class UserRepository {
     + createUser(student, cb)
     + getCurrentUser(cb)
-    + getCurrentUserRole(cb)
     + getUserName(uid, cb)
+    + getCurrentUserRole(cb)
   }
   class CounselorRepository {
     + getAllCounselors(cb)
     + getCounselor(id, cb)
     + updateSpecializations(id, tags, cb)
-    + setOnLeaveStatus(id, onLeave, msg, refId, cb)
+    + updateCounselorProfile(id, c, cb)
+    + setOnLeaveStatus(id, on, msg, refId, cb)
   }
   class AppointmentRepository {
-    + bookAppointment(studentId, counselorId, slot, cb)
-    + cancelAppointment(apptId, slotId, cb)
+    + bookAppointment(stuId, cId, slot, cb)
     + updateAppointmentStatus(apptId, status, cb)
-    + getAppointmentsForCounselor(id, cb)
-    + getAppointmentsForStudent(id, cb)
-    + getCompletedAppointmentsNeedingFeedback(id, cb)
+    + cancelAppointment(apptId, slotId, cb)
+    + getAppointmentsForCounselor(cId, cb)
+    + getAppointmentsForStudent(stuId, cb)
+    + getCompletedAppointmentsNeedingFeedback(stuId, cb)
   }
   class AvailabilityRepository {
-    + getSlotsForCounselor(id, cb)
-    + getAvailableSlotsForCounselor(id, cb)
-    + addSlot(counselorId, date, time, cb)
+    + getSlotsForCounselor(cId, cb)
+    + getAvailableSlotsForCounselor(cId, cb)
+    + addSlot(cId, date, time, cb)
     + removeSlot(slotId, cb)
   }
   class FeedbackRepository {
-    + submitFeedback(feedback, cb)
+    + submitFeedback(fb, cb)
     + hasFeedbackForAppointment(apptId, cb)
   }
 }
 
 ' ════════════════════════════════════════
-'  FEATURE REPOSITORIES — Session & Settings
+'  LAYER 5 — FEATURE REPOSITORIES
 ' ════════════════════════════════════════
-
-package "Session & Settings Repositories" #DCEDC8 {
+package "Feature Repositories" #DCEDC8 {
   class AvailabilitySettingsRepository {
-    + getSettings(counselorId, cb)
+    + getSettings(cId, cb)
     + saveSettings(settings, cb)
   }
   class ReminderRepository {
-    + getSettings(counselorId, cb)
+    + getSettings(cb)
     + saveSettings(settings, cb)
-    + getDueRemindersForStudent(studentId, cb)
+    + getDueRemindersForStudent(stuId, cb)
+    + getPendingReminderCount(cb)
+    + createReminderRecordIfMissing(appt, type, msg, when, cb)
   }
   class SessionNoteRepository {
-    + getNoteForAppointment(appointmentId, cb)
+    + getNoteForAppointment(cId, sId, apptId, cb)
+    + getNotesForCounselorStudent(cId, sId, cb)
     + saveNote(note, cb)
-    + updateNote(noteId, text, cb)
+    + updateNote(cId, sId, noteId, text, key, cb)
+    + deleteNote(cId, sId, noteId, cb)
   }
-}
-
-' ════════════════════════════════════════
-'  FEATURE REPOSITORIES — Crisis, Intake & Messaging
-' ════════════════════════════════════════
-
-package "Crisis, Intake & Messaging Repositories" #FFCDD2 {
   class CrisisEscalationRepository {
-    + createEscalation(escalation, cb)
+    + createEscalation(esc, cb)
     + getUnresolvedEscalations(cb)
-    + markResolved(id, cb)
+    + markResolved(escId, cb)
   }
   class IntakeAssessmentRepository {
-    + saveAssessment(assessment, cb)
-    + getLatestForStudent(studentId, cb)
+    + saveAssessment(a, cb)
+    + updateMatchedCounselor(asmtId, cId, name, cb)
+    + getLatestForStudent(stuId, cb)
+    + getActiveForStudent(stuId, cb)
     + getRecommendationCounts(cb)
+    + incrementRecommendationCount(cId)
   }
   class SecureMessageRepository {
-    + listenToThread(counselorId, studentId, cb)
-    + sendMessage(message, cb)
-    + markThreadRead(threadId, uid, cb)
+    + getThreadMessages(cId, sId, cb)
+    + listenToThread(cId, sId, cb)
+    + hasUnreadInThread(cId, sId, role, cb)
+    + sendMessage(cId, sId, date, time, sender, role, text, cb)
+    + markThreadRead(cId, sId, role, cb)
   }
-}
-
-' ════════════════════════════════════════
-'  FEATURE REPOSITORIES — Waitlist
-' ════════════════════════════════════════
-
-package "Waitlist Repository" #C8E6C9 {
   class WaitlistRepository {
     + joinWaitlist(entry, cb)
-    + resolveEntry(entryId, cb)
-    + getActiveWaitlistForCounselorOrdered(counselorId, cb)
+    + resolveEntry(entryId, slotId, apptId, cb)
+    + cancelEntry(entryId, cb)
+    + getActiveWaitlistForStudent(stuId, cb)
+    + getActiveWaitlistForCounselor(cId, cb)
+    + getActiveWaitlistCountForCounselor(cId, cb)
   }
 }
 
 ' ════════════════════════════════════════
-'  UTILITIES — Matching & Validation
+'  LAYER 6 — UTILITIES
 ' ════════════════════════════════════════
-
-package "Matching & Validation Utilities" #F3E5F5 {
+package "Utilities" #EDE7F6 {
   class BufferTimeValidator <<utility>> {
-    + {static} hasConflict(slots, newSlot, bufferMin) : boolean
-    + {static} isWithinBlockedWindow(slot, bufferMin) : boolean
+    + {static} hasConflict(slots, date, time, buf) : boolean
+    + {static} parseMinutes(hhmm) : int
   }
   class IntakeMatcher <<utility>> {
-    + {static} tagsForAnswers(answers) : List<String>
-    + {static} scoreCounselor(counselor, tags) : int
-    + {static} findBestCounselor(counselors, tags) : Counselor
+    + {static} tagsForAnswers(c, s, u) : List<String>
+    + {static} scoreCounselor(c, a) : int
+    + {static} findBestCounselor(list, a) : Counselor
   }
   class WaitlistMatcher <<utility>> {
-    + {static} matches(entry, slot) : boolean
-    + {static} findFirstMatch(entry, slots) : TimeSlot
+    + {static} matches(entry, date, time) : boolean
+    + {static} findFirstMatch(entries, date, time) : WaitlistEntry
+    + {static} findFirstMatchingSlot(slots, dates, s, e) : TimeSlot
   }
   class ReturningStudentHelper <<utility>> {
-    + {static} markReturningStudents(appointments, cb)
-    + {static} isReturningStudent(appointments) : boolean
+    + {static} markReturningStudents(appts)
+    + {static} isReturningStudent(appts, current) : boolean
   }
-}
-
-' ════════════════════════════════════════
-'  UTILITIES — App & Calendar
-' ════════════════════════════════════════
-
-package "App & Calendar Utilities" #EDE7F6 {
   class CalendarSyncHelper <<utility>> {
-    + {static} buildInsertEventIntent(appt) : Intent
-    + {static} buildIcsLine(appt) : String
+    + {static} buildInsertEventIntent(appt, name) : Intent
+    + {static} buildIcsLine(appt, name) : String
   }
   class NoteTemplate <<utility>> {
     + {static} getDisplayName(key) : String
     + {static} getTemplateText(key) : String
   }
   class AppToast <<utility>> {
-    + {static} show(context, msg)
-    + {static} scheduleForNextActivity(msg)
-    + {static} consumePending(context)
+    + {static} scheduleForNextActivity(msg, dur)
+    + {static} consumePending(ctx)
+    + {static} show(ctx, msg, dur)
   }
   class SessionCache <<singleton>> {
-    - {static} instance : SessionCache
     + {static} getInstance() : SessionCache
-    + getStudent() : Student
-    + putCounselors(list)
-    + invalidateAppointments()
+    + getStudent(uid) / putStudent(s)
+    + getCounselors() / putCounselors(list)
+    + getStudentAppointments(stuId) / put...
+    + getSlots(key) / putSlots(key, slots)
+    + invalidateSlots(keys) / clearAll()
   }
   class ReminderScheduler {
-    + generateReminderRecords(appointments, settings) : List<ReminderRecord>
+    - reminderRepository : ReminderRepository
+    - appointmentRepository : AppointmentRepository
+    --
+    + generateReminderRecords(cb)
   }
 }
 
 ' ════════════════════════════════════════
-'  CORE ADAPTERS
+'  LAYER 7 — ADAPTERS
 ' ════════════════════════════════════════
-
-package "Core Adapters" #FFF3E0 {
+package "Adapters" #FFF3E0 {
   class CounselorAdapter {
     + setData(list)
-    + onBindViewHolder()
+    + onBindViewHolder(h, p)
   }
   class AppointmentAdapter {
+    - userRepository : UserRepository
+    - appointmentRepository : AppointmentRepository
+    --
     + setData(list)
-    + onBindViewHolder()
-    - applyStatusBadge()
-    - markNoShow()
+    - markNoShow(apt, h, p)
   }
   class StudentAppointmentAdapter {
-    + onBindViewHolder()
-    - statusLabel()
-    - statusColour()
+    - counselorRepository : CounselorRepository
+    --
+    - statusLabel(s) : String
   }
   class TimeSlotAdapter {
-    + setData(list)
-    + onBindViewHolder()
+    - listener : OnBookClickListener
+    --
+    + setData(slots)
   }
-  interface "TimeSlotAdapter.\nOnBookClickListener" as OnBookClick {
+  interface "TimeSlotAdapter.OnBookClickListener" as OnBookClickListener {
     + onBookClick(slot)
   }
-}
-
-' ════════════════════════════════════════
-'  FEATURE ADAPTERS
-' ════════════════════════════════════════
-
-package "Feature Adapters" #FFE0B2 {
   class WaitlistAdapter {
-    + onBindViewHolder()
-    - statusLabel()
+    - cancelListener : OnCancelClickListener
   }
   class CounselorWaitlistAdapter {
-    + onBindViewHolder()
+    - slotListener : OnCreateSlotClickListener
   }
   class CrisisAlertAdapter {
-    + setData(list)
-    - applySeverityStyle()
+    - repository : CrisisEscalationRepository
+    --
+    + setData(data)
   }
   class SecureMessageAdapter {
-    + setMessages(list)
-    - buildDividerLabel()
+    - currentUid : String
+    --
+    + setMessages(msgs)
   }
   class SessionNoteHistoryAdapter {
-    + onBindViewHolder()
-    - buildTimestamp()
   }
 }
 
 ' ════════════════════════════════════════
-'  SHARED UI COMPONENTS
+'  LAYER 8 — SHARED UI
 ' ════════════════════════════════════════
-
 package "Shared UI" #E0F7FA {
   class CustomCalendarView <<View>> {
     - highlightedDates : Set<String>
     - selectedDates : Set<String>
+    - listener : OnDateClickListener
     --
     + setHighlightedDates(dates)
-    + rebuildGrid()
+    + setSelectedDates(dates)
+    + setOnDateClickListener(l)
+    + setMinDate(ms)
+    + getSelectedDate() : String
+  }
+  class EmergencyDialogFragment <<Dialog>> {
+    + {static} newInstance()
+    - dialNumber(num)
   }
   class CrisisEscalationDialogFragment <<Dialog>> {
-    + {static} newInstance() : CrisisEscalationDialogFragment
-    - saveEscalation()
+    + {static} newInstance(apptId, cId, sId)
+    + onCreateDialog(s) : Dialog
   }
 }
 
 ' ════════════════════════════════════════
-'  AUTH FLOW
+'  LAYER 9 — AUTH FLOW
 ' ════════════════════════════════════════
-
 package "Auth Flow" #FCE4EC {
-  class MainActivity <<Activity>> {
-    - checkAuthState()
-  }
+  class MainActivity <<Activity>>
   class LoginActivity <<Activity>> {
+    - userRepository : UserRepository
+    --
     - attemptLogin()
-    - routeToHome()
-    - selectRole()
-  }
-  class RegisterActivity <<Activity>> {
-    - attemptRegistration()
-    - validateInputs()
-  }
-  class PrivacyPolicyActivity <<Activity>> {
     - routeToHome(role)
   }
-  class HomeActivity <<Activity>> {
+  class RegisterActivity <<Activity>> {
+    - userRepository : UserRepository
+    --
+    - attemptRegistration()
+    - validateInputs() : boolean
+  }
+  class PrivacyPolicyActivity <<Activity>> {
+    + {static} EXTRA_ROLE : String
+    --
+    - routeToHome(role)
   }
 }
 
 ' ════════════════════════════════════════
-'  STUDENT UI — Core
+'  LAYER 10 — STUDENT UI
 ' ════════════════════════════════════════
-
 package "Student UI" #E8EAF6 {
   class StudentHomeActivity <<Activity>> {
+    - upcomingAppointment : Appointment
+    --
     - fetchUpcomingSession()
     - handleCancellation()
     - checkForPendingFeedback()
-    - showFeedbackDialog()
-    - maskPII() / unmaskPII()
+    - activateDiscreetMode()
   }
   class BookingActivity <<Activity>> {
-    - loadSlots()
-    - showSlotsForDate()
+    - schedule : AvailabilitySchedule
+    --
+    - loadSlots(date)
     + onBookClick(slot)
   }
   class BookingConfirmationFragment <<BottomSheet>> {
-    + {static} newInstance()
-    + setOnConfirmListener()
+    + {static} newInstance(name, slot)
+    + setOnConfirmListener(l)
   }
   class CalendarActivity <<Activity>> {
-    - fetchAppointmentsForDate()
+    - fetchAppointmentsForDate(date)
   }
   class HistoryActivity <<Activity>> {
     - fetchHistory()
   }
   class QuizActivity <<Activity>> {
-    - displayQuestion(step)
-    - advanceStep()
-    - showResult()
+    - startMatching(spec)
   }
-  class EmergencyDialogFragment <<Dialog>> {
-    + {static} newInstance()
-    - dialNumber(phone)
-  }
-}
-
-' ════════════════════════════════════════
-'  STUDENT UI — Extended
-' ════════════════════════════════════════
-
-package "Student Extended UI" #D1C4E9 {
   class StudentWaitlistActivity <<Activity>> {
     - loadEntries()
-    - resolveCounselorNames()
-    - confirmCancel()
+    - confirmCancel(entry)
   }
   class WaitlistRequestActivity <<Activity>> {
-    - showTimePopup()
     - validateAndSubmit()
-    - submitWaitlistEntry()
+    - submitWaitlistEntry(s, e)
   }
   class ReminderSettingsActivity <<Activity>> {
-    - loadSettings()
-    - saveSettings()
+    - loadSettings() / saveSettings()
   }
   class SessionHistoryActivity <<Activity>> {
-    - loadHistory()
+    - loadHistory(stuId)
   }
   class StudentProfileActivity <<Activity>> {
     - loadStudent()
@@ -487,28 +501,57 @@ package "Student Extended UI" #D1C4E9 {
 }
 
 ' ════════════════════════════════════════
-'  COUNSELOR UI — Core
+'  LAYER 11 — COUNSELOR UI
 ' ════════════════════════════════════════
-
 package "Counselor UI" #F3E5F5 {
   class CounselorDashboardActivity <<Activity>> {
-    - subscribeToAppointments()
-    - filterByTab(index)
-    - loadWaitlistCount()
+    - loadAppointments()
+    - filterByTab(idx)
   }
   class CounselorListActivity <<Activity>> {
-    - setupSearchBar()
-    - buildSpecializationChips()
+    - loadCounselors()
     - applyFilters()
   }
   class CounselorProfileActivity <<Activity>> {
     - loadProfile()
-    - populateUI()
   }
   class CounselorProfileEditActivity <<Activity>> {
     - loadCurrentProfile()
-    - loadReferralCounselors()
     - saveProfile()
+  }
+  class AvailabilitySetupActivity <<Activity>> {
+    - loadSlots()
+    - addSlot(date, time)
+  }
+  class AddSlotActivity <<Activity>> {
+    - confirmCreateSlot()
+    - tryAutoResolveWaitlist(slot)
+  }
+  class GenerateSlotsActivity <<Activity>> {
+    - computeAndConfirm(dur, buf)
+    - doGenerateSlots(perDate, total)
+  }
+  class AvailabilitySettingsActivity <<Activity>> {
+    - loadSettings() / saveSettings()
+  }
+  class CounselorWaitlistActivity <<Activity>> {
+    - loadQueue()
+    - createSlotAndResolve(entry, d, t, dlg)
+  }
+  class ManageSessionActivity <<Activity>> {
+    + onEscalationSaved(escId)
+    - loadNotes()
+    - openMessages()
+    - openCrisisDialog()
+  }
+  class MessageThreadActivity <<Activity>> {
+    - subscribeToMessages()
+    - markRead() / sendMessage()
+  }
+  class SessionNoteActivity <<Activity>> {
+    + {static} newIntent(...)
+    - applyTemplate(key)
+    - saveNote() / deleteNote()
   }
   class PastSessionsActivity <<Activity>> {
     - loadPastSessions()
@@ -516,283 +559,114 @@ package "Counselor UI" #F3E5F5 {
 }
 
 ' ════════════════════════════════════════
-'  COUNSELOR UI — Availability
+'  LAYER 12 — ADMIN UI
 ' ════════════════════════════════════════
-
-package "Counselor Availability UI" #CE93D8 {
-  class AvailabilitySetupActivity <<Activity>> {
-    - loadSlots()
-    - showDatePicker()
-    - addSlot()
-    - attachSwipeToDelete()
-  }
-  class AddSlotActivity <<Activity>> {
-    - onDateSelected()
-    - confirmCreateSlot()
-    - loadExistingSlotDates()
-  }
-  class GenerateSlotsActivity <<Activity>> {
-    - onDateTapped()
-    - showAddBreakDialog()
-    - computeAndConfirm()
-  }
-  class AvailabilitySettingsActivity <<Activity>> {
-    - loadSettings()
-    - saveSettings()
-    - applySettings()
-  }
-}
-
-' ════════════════════════════════════════
-'  COUNSELOR UI — Sessions & Messaging
-' ════════════════════════════════════════
-
-package "Counselor Sessions UI" #BA68C8 {
-  class CounselorWaitlistActivity <<Activity>> {
-    - loadQueue()
-    - resolveStudentNames()
-    - showCreateSlotDialog()
-  }
-  class ManageSessionActivity <<Activity>> {
-    - loadNotes()
-    - openManageSession()
-    - confirmMarkAttended()
-  }
-  class MessageThreadActivity <<Activity>> {
-    - subscribeToMessages()
-    - sendMessage()
-    - markRead()
-  }
-  class SessionNoteActivity <<Activity>> {
-    - buildTemplateChips()
-    - saveNote()
-    - applyTemplate()
-  }
-}
-
-' ════════════════════════════════════════
-'  ADMIN UI
-' ════════════════════════════════════════
-
 package "Admin UI" #FFCDD2 {
   class AdminDashboardActivity <<Activity>> {
+    - reminderScheduler : ReminderScheduler
+    --
     - loadReminderSummary()
-    - loadCrisisAlerts()
     - generateReminderRecords()
+    - loadCrisisAlerts()
   }
 }
 
 ' ════════════════════════════════════════
-'  RELATIONSHIPS — Model internals
+'  RELATIONSHIPS — curated, high-signal only
 ' ════════════════════════════════════════
 
+' Models
 Student ..> UserRole
 AvailabilitySchedule o-- TimeSlot
+Counselor ..> Counselor
+WaitlistOffer ..> WaitlistEntry
+WaitlistOffer ..> TimeSlot
+TimeSlotAdapter +-- OnBookClickListener
 
-' ════════════════════════════════════════
-'  RELATIONSHIPS — Core Repository → Model
-' ════════════════════════════════════════
-
+' Repo → Model (one each)
 UserRepository ..> Student
 CounselorRepository ..> Counselor
 AppointmentRepository ..> Appointment
-AppointmentRepository ..> TimeSlot
 AvailabilityRepository ..> TimeSlot
 FeedbackRepository ..> FeedbackService
-
-' ════════════════════════════════════════
-'  RELATIONSHIPS — Feature Repository → Model
-' ════════════════════════════════════════
-
 AvailabilitySettingsRepository ..> AvailabilitySettings
-ReminderRepository ..> ReminderRecord
 ReminderRepository ..> ReminderSettings
 SessionNoteRepository ..> SessionNote
 CrisisEscalationRepository ..> CrisisEscalation
 IntakeAssessmentRepository ..> IntakeAssessment
 SecureMessageRepository ..> SecureMessage
 WaitlistRepository ..> WaitlistEntry
-WaitlistRepository ..> WaitlistOffer
 
-' ════════════════════════════════════════
-'  RELATIONSHIPS — Utility → Model / Repo
-' ════════════════════════════════════════
-
+' Util ↔ key collaborators
 IntakeMatcher ..> Counselor
 IntakeMatcher ..> IntakeAssessment
 WaitlistMatcher ..> WaitlistEntry
-WaitlistMatcher ..> TimeSlot
-BufferTimeValidator ..> TimeSlot
-ReminderScheduler ..> ReminderRecord
-ReminderScheduler ..> ReminderSettings
-ReminderScheduler ..> AppointmentRepository
+ReminderScheduler ..> ReminderRepository
 SessionCache ..> Student
-SessionCache ..> Counselor
-SessionCache ..> Appointment
 
-' ════════════════════════════════════════
-'  RELATIONSHIPS — Core Adapter → Model
-' ════════════════════════════════════════
-
+' Adapters → models
 CounselorAdapter ..> Counselor
 AppointmentAdapter ..> Appointment
-AppointmentAdapter ..> UserRepository
-AppointmentAdapter ..> AppointmentRepository
 StudentAppointmentAdapter ..> Appointment
-StudentAppointmentAdapter ..> CounselorRepository
 TimeSlotAdapter ..> TimeSlot
-TimeSlotAdapter +-- OnBookClick
-
-' ════════════════════════════════════════
-'  RELATIONSHIPS — Feature Adapter → Model
-' ════════════════════════════════════════
-
 WaitlistAdapter ..> WaitlistEntry
 CounselorWaitlistAdapter ..> WaitlistEntry
 CrisisAlertAdapter ..> CrisisEscalation
-CrisisAlertAdapter ..> CrisisEscalationRepository
 SecureMessageAdapter ..> SecureMessage
 SessionNoteHistoryAdapter ..> SessionNote
 
-' ════════════════════════════════════════
-'  RELATIONSHIPS — Auth Flow
-' ════════════════════════════════════════
-
+' Auth flow
 MainActivity ..> LoginActivity
-LoginActivity ..> UserRepository
-LoginActivity ..> RegisterActivity
 LoginActivity ..> StudentHomeActivity
 LoginActivity ..> CounselorDashboardActivity
-RegisterActivity ..> UserRepository
-RegisterActivity ..> Student
 RegisterActivity ..> PrivacyPolicyActivity
-PrivacyPolicyActivity ..> StudentHomeActivity
-PrivacyPolicyActivity ..> CounselorDashboardActivity
 
-' ════════════════════════════════════════
-'  RELATIONSHIPS — Student UI → Repos
-' ════════════════════════════════════════
-
-StudentHomeActivity ..> UserRepository
+' Student UI → repos / shared
 StudentHomeActivity ..> AppointmentRepository
-StudentHomeActivity ..> FeedbackRepository
-StudentHomeActivity ..> CounselorRepository
-StudentHomeActivity ..> SessionCache
 StudentHomeActivity ..> EmergencyDialogFragment
-StudentHomeActivity ..> QuizActivity
-StudentHomeActivity ..> CalendarActivity
-StudentHomeActivity ..> HistoryActivity
-StudentHomeActivity ..> CounselorListActivity
-
 BookingActivity ..> AvailabilityRepository
-BookingActivity ..> AppointmentRepository
-BookingActivity ..> AvailabilitySchedule
 BookingActivity ..> TimeSlotAdapter
-BookingActivity ..> BookingConfirmationFragment
-BookingActivity ..> CalendarSyncHelper
-BookingActivity ..|> OnBookClick
-
-CalendarActivity ..> AppointmentRepository
-CalendarActivity ..> CustomCalendarView
-HistoryActivity ..> AppointmentRepository
-
-QuizActivity ..> CounselorListActivity
-QuizActivity ..> CounselorRepository
+BookingActivity ..|> OnBookClickListener
 QuizActivity ..> IntakeMatcher
 QuizActivity ..> IntakeAssessmentRepository
-
-' ════════════════════════════════════════
-'  RELATIONSHIPS — Student Extended UI → Repos
-' ════════════════════════════════════════
-
 StudentWaitlistActivity ..> WaitlistRepository
-StudentWaitlistActivity ..> CounselorRepository
-StudentWaitlistActivity ..> WaitlistAdapter
-
 WaitlistRequestActivity ..> WaitlistRepository
 WaitlistRequestActivity ..> CustomCalendarView
-
 ReminderSettingsActivity ..> ReminderRepository
-
-StudentProfileActivity ..> UserRepository
-StudentProfileActivity ..> IntakeAssessmentRepository
 StudentProfileActivity ..> SessionNoteRepository
-StudentProfileActivity ..> AppointmentRepository
 
-' ════════════════════════════════════════
-'  RELATIONSHIPS — Counselor UI → Repos
-' ════════════════════════════════════════
-
+' Counselor UI → repos / shared
 CounselorDashboardActivity ..> AppointmentRepository
-CounselorDashboardActivity ..> AvailabilityRepository
-CounselorDashboardActivity ..> CounselorRepository
-CounselorDashboardActivity ..> AppointmentAdapter
-CounselorDashboardActivity ..> WaitlistRepository
-CounselorDashboardActivity ..> SessionCache
-CounselorDashboardActivity ..> AvailabilitySetupActivity
-CounselorDashboardActivity ..> CounselorProfileEditActivity
-CounselorDashboardActivity ..> CounselorWaitlistActivity
-
 CounselorListActivity ..> CounselorRepository
-CounselorListActivity ..> CounselorAdapter
 CounselorListActivity ..> SpecializationTags
-
-CounselorProfileActivity ..> CounselorRepository
-CounselorProfileActivity ..> BookingActivity
-
-CounselorProfileEditActivity ..> CounselorRepository
-CounselorProfileEditActivity ..> SpecializationTags
-
-PastSessionsActivity ..> AppointmentRepository
-
-' ════════════════════════════════════════
-'  RELATIONSHIPS — Counselor Availability UI
-' ════════════════════════════════════════
-
 AvailabilitySetupActivity ..> AvailabilityRepository
-AvailabilitySetupActivity ..> AddSlotActivity
-AvailabilitySetupActivity ..> GenerateSlotsActivity
-AvailabilitySetupActivity ..> AvailabilitySettingsActivity
 AvailabilitySetupActivity ..> BufferTimeValidator
-AvailabilitySetupActivity ..> AvailabilitySettingsRepository
-
-AddSlotActivity ..> AvailabilityRepository
-AddSlotActivity ..> CustomCalendarView
-
-GenerateSlotsActivity ..> AvailabilityRepository
+AddSlotActivity ..> WaitlistMatcher
 GenerateSlotsActivity ..> BufferTimeValidator
-GenerateSlotsActivity ..> CustomCalendarView
-
-AvailabilitySettingsActivity ..> AvailabilitySettingsRepository
-
-' ════════════════════════════════════════
-'  RELATIONSHIPS — Counselor Sessions UI
-' ════════════════════════════════════════
-
 CounselorWaitlistActivity ..> WaitlistRepository
-CounselorWaitlistActivity ..> UserRepository
-CounselorWaitlistActivity ..> CounselorWaitlistAdapter
-CounselorWaitlistActivity ..> WaitlistMatcher
-
 ManageSessionActivity ..> SessionNoteRepository
-ManageSessionActivity ..> AppointmentRepository
 ManageSessionActivity ..> CrisisEscalationDialogFragment
-ManageSessionActivity ..> StudentProfileActivity
-ManageSessionActivity ..> SessionNoteActivity
-
 MessageThreadActivity ..> SecureMessageRepository
-MessageThreadActivity ..> SecureMessageAdapter
-
-SessionNoteActivity ..> SessionNoteRepository
 SessionNoteActivity ..> NoteTemplate
 
-' ════════════════════════════════════════
-'  RELATIONSHIPS — Admin UI
-' ════════════════════════════════════════
-
+' Admin UI
 AdminDashboardActivity ..> ReminderRepository
 AdminDashboardActivity ..> CrisisEscalationRepository
-AdminDashboardActivity ..> CrisisAlertAdapter
 AdminDashboardActivity ..> ReminderScheduler
+
+' ════════════════════════════════════════
+'  HIDDEN VERTICAL SPINE — one link per package transition
+' ════════════════════════════════════════
+UserRole                     -[hidden]down- Student
+AvailabilitySchedule         -[hidden]down- AvailabilitySettings
+ReminderRecord               -[hidden]down- UserRepository
+FeedbackRepository           -[hidden]down- AvailabilitySettingsRepository
+WaitlistRepository           -[hidden]down- BufferTimeValidator
+ReminderScheduler            -[hidden]down- CounselorAdapter
+SessionNoteHistoryAdapter    -[hidden]down- CustomCalendarView
+CrisisEscalationDialogFragment -[hidden]down- MainActivity
+PrivacyPolicyActivity        -[hidden]down- StudentHomeActivity
+StudentProfileActivity       -[hidden]down- CounselorDashboardActivity
+PastSessionsActivity         -[hidden]down- AdminDashboardActivity
 
 @enduml

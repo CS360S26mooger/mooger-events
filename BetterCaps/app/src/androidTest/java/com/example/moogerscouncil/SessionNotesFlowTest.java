@@ -23,24 +23,25 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 public class SessionNotesFlowTest {
 
     @Test
-    public void notesButtonOpensDialogAndTemplateIsVisible() {
+    public void notesButtonOpensActivityAndTemplateIsVisible() {
         try (ActivityScenario<StudentProfileActivity> scenario =
                      ActivityScenario.launch(makeIntent())) {
             onView(withId(R.id.buttonAddSessionNote)).perform(click());
-            onView(withText(R.string.add_session_note)).check(matches(isDisplayed()));
+            onView(withText(R.string.session_notes_title)).check(matches(isDisplayed()));
             onView(withText(NoteTemplate.getDisplayName(NoteTemplate.ACADEMIC_STRESS)))
                     .check(matches(isDisplayed()));
         }
     }
 
     @Test
-    public void selectingTemplateFillsTextField() {
+    public void selectingTemplateFillsSectionFields() {
         try (ActivityScenario<StudentProfileActivity> scenario =
                      ActivityScenario.launch(makeIntent())) {
             onView(withId(R.id.buttonAddSessionNote)).perform(click());
             onView(withText(NoteTemplate.getDisplayName(NoteTemplate.ACADEMIC_STRESS)))
                     .perform(click());
-            onView(withId(R.id.editSessionNote)).check(matches(isDisplayed()));
+            // Template should populate the summary field
+            onView(withId(R.id.editNoteSummary)).check(matches(isDisplayed()));
         }
     }
 

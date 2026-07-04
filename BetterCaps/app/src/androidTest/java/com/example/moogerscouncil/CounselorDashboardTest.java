@@ -68,7 +68,9 @@ public class CounselorDashboardTest {
     public void testTodayTabIsPresent() throws InterruptedException {
         try (ActivityScenario<CounselorDashboardActivity> scenario = ActivityScenario.launch(makeIntent())) {
             Thread.sleep(1000);
-            onView(withText(R.string.tab_today)).check(matches(isDisplayed()));
+            // Qualify the matcher to look inside the TabLayout to avoid matching the stat card
+            onView(allOf(withText(R.string.tab_today), isDescendantOfA(withId(R.id.tabLayout))))
+                    .check(matches(isDisplayed()));
         }
     }
 

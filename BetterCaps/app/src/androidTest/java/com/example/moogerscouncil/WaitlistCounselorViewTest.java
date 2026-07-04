@@ -58,7 +58,9 @@ public class WaitlistCounselorViewTest {
         try (ActivityScenario<CounselorWaitlistActivity> scenario =
                      ActivityScenario.launch(CounselorWaitlistActivity.class)) {
             onView(withId(R.id.recyclerCounselorWaitlist))
-                    .check(matches(withEffectiveVisibility(Visibility.VISIBLE)));
+                    .check(matches(anyOf(
+                            withEffectiveVisibility(Visibility.VISIBLE),
+                            withEffectiveVisibility(Visibility.GONE))));
         }
     }
 

@@ -8,6 +8,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.LargeTest;
 
+import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -90,6 +91,17 @@ public class OnLeaveFlowTest {
     public void testToggleShowsReferralDropdown() throws Exception {
         signInCounselor();
         try (ActivityScenario<CounselorProfileEditActivity> scenario = ActivityScenario.launch(editProfileIntent())) {
+            Thread.sleep(2000); // Wait for profile to load
+
+            // If it's already checked, uncheck it first to have a clean start for the test
+            scenario.onActivity(activity -> {
+                SwitchMaterial sw = activity.findViewById(R.id.switchOnLeave);
+                if (sw.isChecked()) {
+                    sw.setChecked(false);
+                }
+            });
+            Thread.sleep(500);
+
             onView(withId(R.id.layoutReferralCounselor)).check(matches(not(isDisplayed())));
             onView(withId(R.id.switchOnLeave)).perform(click());
             onView(withId(R.id.layoutReferralCounselor)).check(matches(isDisplayed()));

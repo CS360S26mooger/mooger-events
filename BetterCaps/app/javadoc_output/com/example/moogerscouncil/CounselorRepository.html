@@ -153,31 +153,46 @@ loadScripts(document, 'script');</script>
 <div class="table-header col-second">Method</div>
 <div class="table-header col-last">Description</div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAllCounselors(com.example.moogerscouncil.CounselorRepository.OnCounselorsLoadedCallback)" class="member-name-link">getAllCounselors</a><wbr>(<a href="CounselorRepository.OnCounselorsLoadedCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnCounselorsLoadedCallback</a>&nbsp;callback)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#createCounselorProfile(java.lang.String,java.lang.String,com.example.moogerscouncil.CounselorRepository.OnUpdateCallback)" class="member-name-link">createCounselorProfile</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;authUid,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="CounselorRepository.OnUpdateCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnUpdateCallback</a>&nbsp;callback)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Fetches all counselor documents from Firestore.</div>
+<div class="block">Creates a new counselor document at <code>counselors/{authUid}</code>.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCounselor(java.lang.String,com.example.moogerscouncil.CounselorRepository.OnCounselorFetchedCallback)" class="member-name-link">getCounselor</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
- <a href="CounselorRepository.OnCounselorFetchedCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnCounselorFetchedCallback</a>&nbsp;callback)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getAllCounselors(com.example.moogerscouncil.CounselorRepository.OnCounselorsLoadedCallback)" class="member-name-link">getAllCounselors</a><wbr>(<a href="CounselorRepository.OnCounselorsLoadedCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnCounselorsLoadedCallback</a>&nbsp;callback)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Fetches a single counselor by their Firestore document ID.</div>
+<div class="block">Fetches all counselor documents from Firestore.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setOnLeaveStatus(java.lang.String,boolean,java.lang.String,java.lang.String,com.example.moogerscouncil.CounselorRepository.OnUpdateCallback)" class="member-name-link">setOnLeaveStatus</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCounselor(java.lang.String,com.example.moogerscouncil.CounselorRepository.OnCounselorFetchedCallback)" class="member-name-link">getCounselor</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="CounselorRepository.OnCounselorFetchedCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnCounselorFetchedCallback</a>&nbsp;callback)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Fetches a single counselor by their Firestore document ID.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setOnLeaveStatus(java.lang.String,boolean,java.lang.String,java.lang.String,com.example.moogerscouncil.CounselorRepository.OnUpdateCallback)" class="member-name-link">setOnLeaveStatus</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
  boolean&nbsp;onLeave,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;leaveMessage,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;referralId,
  <a href="CounselorRepository.OnUpdateCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnUpdateCallback</a>&nbsp;callback)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Updates only the on-leave status fields for a counselor.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#stampAuthUid(java.lang.String,java.lang.String,com.example.moogerscouncil.CounselorRepository.OnUpdateCallback)" class="member-name-link">stampAuthUid</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorDocId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;authUid,
+ <a href="CounselorRepository.OnUpdateCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnUpdateCallback</a>&nbsp;callback)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Stamps the Firebase Auth UID onto a counselor's Firestore document.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateCounselorProfile(java.lang.String,com.example.moogerscouncil.Counselor,com.example.moogerscouncil.CounselorRepository.OnUpdateCallback)" class="member-name-link">updateCounselorProfile</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
  <a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a>&nbsp;counselor,
  <a href="CounselorRepository.OnUpdateCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnUpdateCallback</a>&nbsp;callback)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Overwrites all profile fields for a counselor.</div>
+<div class="block">Updates editable profile fields for a counselor without touching other fields
+ (e.g.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#updateSpecializations(java.lang.String,java.util.List,com.example.moogerscouncil.CounselorRepository.OnUpdateCallback)" class="member-name-link">updateSpecializations</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
@@ -260,21 +275,56 @@ loadScripts(document, 'script');</script>
 </section>
 </li>
 <li>
+<section class="detail" id="createCounselorProfile(java.lang.String,java.lang.String,com.example.moogerscouncil.CounselorRepository.OnUpdateCallback)">
+<h3>createCounselorProfile</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">createCounselorProfile</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;authUid,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;name,
+ <a href="CounselorRepository.OnUpdateCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnUpdateCallback</a>&nbsp;callback)</span></div>
+<div class="block">Creates a new counselor document at <code>counselors/{authUid}</code>.
+ Called by <a href="RegisterActivity.html" title="class in com.example.moogerscouncil"><code>RegisterActivity</code></a> when a counselor account is created so that
+ the Firestore document ID always equals the Firebase Auth UID — no manual
+ Firebase console provisioning needed.
+
+ <p>Only writes the immutable fields (<code>uid</code>, <code>name</code>). All other
+ fields (bio, specializations, etc.) are empty and editable via the profile screen.</p></div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>authUid</code> - Firebase Auth UID — used as both the document ID and the <code>uid</code> field.</dd>
+<dd><code>name</code> - The counselor's display name from the registration form.</dd>
+<dd><code>callback</code> - Success/failure callback.</dd>
+</dl>
+</section>
+</li>
+<li>
 <section class="detail" id="updateCounselorProfile(java.lang.String,com.example.moogerscouncil.Counselor,com.example.moogerscouncil.CounselorRepository.OnUpdateCallback)">
 <h3>updateCounselorProfile</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">updateCounselorProfile</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
  <a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a>&nbsp;counselor,
  <a href="CounselorRepository.OnUpdateCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnUpdateCallback</a>&nbsp;callback)</span></div>
-<div class="block">Overwrites all profile fields for a counselor.
- Used by <code>CounselorProfileEditActivity</code> when saving bio,
- language, gender, and specializations together.
-
- <p>Uses <code>set()</code> so this also creates the document if it does
- not yet exist (first-time profile setup).</p></div>
+<div class="block">Updates editable profile fields for a counselor without touching other fields
+ (e.g. <code>name</code>) that are not exposed in the profile edit screen.
+ Uses <code>update()</code> so the document must already exist.</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>counselorId</code> - The Firestore document ID.</dd>
-<dd><code>counselor</code> - The updated <a href="Counselor.html" title="class in com.example.moogerscouncil"><code>Counselor</code></a> object — all fields overwritten.</dd>
+<dd><code>counselor</code> - The updated <a href="Counselor.html" title="class in com.example.moogerscouncil"><code>Counselor</code></a> object — only editable fields written.</dd>
+<dd><code>callback</code> - Success/failure callback.</dd>
+</dl>
+</section>
+</li>
+<li>
+<section class="detail" id="stampAuthUid(java.lang.String,java.lang.String,com.example.moogerscouncil.CounselorRepository.OnUpdateCallback)">
+<h3>stampAuthUid</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">stampAuthUid</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorDocId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;authUid,
+ <a href="CounselorRepository.OnUpdateCallback.html" title="interface in com.example.moogerscouncil">CounselorRepository.OnUpdateCallback</a>&nbsp;callback)</span></div>
+<div class="block">Stamps the Firebase Auth UID onto a counselor's Firestore document.
+ Called by <a href="CounselorDashboardActivity.html" title="class in com.example.moogerscouncil"><code>CounselorDashboardActivity</code></a> on login so that the student-side
+ slot query (which uses <code>counselor.getUid()</code>) always has the correct value.</div>
+<dl class="notes">
+<dt>Parameters:</dt>
+<dd><code>counselorDocId</code> - The Firestore document ID.</dd>
+<dd><code>authUid</code> - The Firebase Auth UID of the logged-in counselor.</dd>
 <dd><code>callback</code> - Success/failure callback.</dd>
 </dl>
 </section>

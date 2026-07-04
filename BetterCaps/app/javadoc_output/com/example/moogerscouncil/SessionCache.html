@@ -118,36 +118,57 @@ loadScripts(document, 'script');</script>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Call on logout to wipe everything.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCounselors()" class="member-name-link">getCounselors</a>()</code></div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a>&gt;</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCounselorAppointments(java.lang.String)" class="member-name-link">getCounselorAppointments</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns the cached counselor list if still fresh, or null if expired/absent.</div>
+<div class="block">Returns the cached counselor appointment list if still fresh, or null if expired/absent.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="SessionCache.html" title="class in com.example.moogerscouncil">SessionCache</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance()" class="member-name-link">getInstance</a>()</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCounselors()" class="member-name-link">getCounselors</a>()</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the cached counselor list if present, or null if never loaded.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code>static <a href="SessionCache.html" title="class in com.example.moogerscouncil">SessionCache</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4"><code><a href="#getInstance()" class="member-name-link">getInstance</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab1 method-summary-table-tab4">
 <div class="block">Returns the singleton instance.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="AvailabilitySettings.html" title="class in com.example.moogerscouncil">AvailabilitySettings</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSettings(java.lang.String)" class="member-name-link">getSettings</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the cached settings for the given counselor, or null if not cached.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a></code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSingleCounselor(java.lang.String)" class="member-name-link">getSingleCounselor</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns the cached single counselor if still fresh and matching the ID.</div>
+<div class="block">Returns the cached counselor for the given ID if still fresh, or null if
+ expired or not stored.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Student.html" title="class in com.example.moogerscouncil">Student</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStudent(java.lang.String)" class="member-name-link">getStudent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uid)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="TimeSlot.html" title="class in com.example.moogerscouncil">TimeSlot</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getSlots(java.lang.String)" class="member-name-link">getSlots</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorKey)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the cached available-slot list for the given counselor key (uid or doc ID),
+ or null if not yet pre-warmed.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="Student.html" title="class in com.example.moogerscouncil">Student</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStudent(java.lang.String)" class="member-name-link">getStudent</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;uid)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns the cached student if still fresh, or null if expired/absent.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a>&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStudentAppointments(java.lang.String)" class="member-name-link">getStudentAppointments</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId)</code></div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;<a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a>&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getStudentAppointments(java.lang.String)" class="member-name-link">getStudentAppointments</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Returns the cached appointment list for the given student, or null if not yet loaded.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#invalidateAppointments()" class="member-name-link">invalidateAppointments</a>()</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns the cached appointment list if still fresh and for the same student,
- or null if expired/absent/wrong student.</div>
+<div class="block">Call after a booking or cancellation to force appointment refresh.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#invalidateAppointments()" class="member-name-link">invalidateAppointments</a>()</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#invalidateCounselorAppointments()" class="member-name-link">invalidateCounselorAppointments</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Call after a booking or cancellation to force appointment refresh.</div>
+<div class="block">Call after a no-show, slot deletion, or any counselor-side mutation.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#invalidateCounselors()" class="member-name-link">invalidateCounselors</a>()</code></div>
@@ -155,25 +176,53 @@ loadScripts(document, 'script');</script>
 <div class="block">Call after profile edit to force counselor list refresh.</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#putCounselors(java.util.List)" class="member-name-link">putCounselors</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a>&gt;&nbsp;counselors)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#invalidateSettings()" class="member-name-link">invalidateSettings</a>()</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Call after saving new settings.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#invalidateSlots(java.lang.String...)" class="member-name-link">invalidateSlots</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>...&nbsp;counselorKeys)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Removes cached slots for the given counselor keys (call after booking).</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#putCounselorAppointments(java.lang.String,java.util.List)" class="member-name-link">putCounselorAppointments</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a>&gt;&nbsp;appointments)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Stores the counselor appointment list.</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#putCounselors(java.util.List)" class="member-name-link">putCounselors</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a>&gt;&nbsp;counselors)</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Stores the counselor list in cache.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#putSettings(java.lang.String,com.example.moogerscouncil.AvailabilitySettings)" class="member-name-link">putSettings</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="AvailabilitySettings.html" title="class in com.example.moogerscouncil">AvailabilitySettings</a>&nbsp;settings)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Stores the availability settings in cache.</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#putSingleCounselor(java.lang.String,com.example.moogerscouncil.Counselor)" class="member-name-link">putSingleCounselor</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
  <a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a>&nbsp;counselor)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Stores a single counselor in cache.</div>
+<div class="block">Stores a counselor under the given key (doc ID or Auth UID).</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#putStudent(com.example.moogerscouncil.Student)" class="member-name-link">putStudent</a><wbr>(<a href="Student.html" title="class in com.example.moogerscouncil">Student</a>&nbsp;student)</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#putSlots(java.lang.String,java.util.List)" class="member-name-link">putSlots</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorKey,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="TimeSlot.html" title="class in com.example.moogerscouncil">TimeSlot</a>&gt;&nbsp;slots)</code></div>
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Stores the student profile in cache.</div>
+<div class="block">Stores the available-slot list under the given key (uid or doc ID, or both).</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#putStudentAppointments(java.lang.String,java.util.List)" class="member-name-link">putStudentAppointments</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
- <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a>&gt;&nbsp;appointments)</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#putStudent(com.example.moogerscouncil.Student)" class="member-name-link">putStudent</a><wbr>(<a href="Student.html" title="class in com.example.moogerscouncil">Student</a>&nbsp;student)</code></div>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
+<div class="block">Stores the student profile in cache.</div>
+</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#putStudentAppointments(java.lang.String,java.util.List)" class="member-name-link">putStudentAppointments</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a>&gt;&nbsp;appointments)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Stores the student appointment list in cache.</div>
 </div>
 </div>
@@ -222,7 +271,8 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getCounselors()">
 <h3>getCounselors</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a>&gt;</span>&nbsp;<span class="element-name">getCounselors</span>()</div>
-<div class="block">Returns the cached counselor list if still fresh, or null if expired/absent.</div>
+<div class="block">Returns the cached counselor list if present, or null if never loaded.
+ No TTL — the list is session-scoped and cleared on logout via <a href="#clearAll()"><code>clearAll()</code></a>.</div>
 </section>
 </li>
 <li>
@@ -236,8 +286,9 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getStudentAppointments(java.lang.String)">
 <h3>getStudentAppointments</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a>&gt;</span>&nbsp;<span class="element-name">getStudentAppointments</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;studentId)</span></div>
-<div class="block">Returns the cached appointment list if still fresh and for the same student,
- or null if expired/absent/wrong student.</div>
+<div class="block">Returns the cached appointment list for the given student, or null if not yet loaded.
+ Session-scoped — invalidated explicitly by booking/cancellation via
+ <a href="#invalidateAppointments()"><code>invalidateAppointments()</code></a>, not by a TTL.</div>
 </section>
 </li>
 <li>
@@ -252,7 +303,9 @@ loadScripts(document, 'script');</script>
 <section class="detail" id="getSingleCounselor(java.lang.String)">
 <h3>getSingleCounselor</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a></span>&nbsp;<span class="element-name">getSingleCounselor</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId)</span></div>
-<div class="block">Returns the cached single counselor if still fresh and matching the ID.</div>
+<div class="block">Returns the cached counselor for the given ID if still fresh, or null if
+ expired or not stored. Accepts both Firestore doc IDs and Auth UIDs as keys
+ since <a href="#putSingleCounselor(java.lang.String,com.example.moogerscouncil.Counselor)"><code>putSingleCounselor(java.lang.String, com.example.moogerscouncil.Counselor)</code></a> stores under both.</div>
 </section>
 </li>
 <li>
@@ -260,7 +313,75 @@ loadScripts(document, 'script');</script>
 <h3>putSingleCounselor</h3>
 <div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">putSingleCounselor</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
  <a href="Counselor.html" title="class in com.example.moogerscouncil">Counselor</a>&nbsp;counselor)</span></div>
-<div class="block">Stores a single counselor in cache.</div>
+<div class="block">Stores a counselor under the given key (doc ID or Auth UID).</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getSlots(java.lang.String)">
+<h3>getSlots</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="TimeSlot.html" title="class in com.example.moogerscouncil">TimeSlot</a>&gt;</span>&nbsp;<span class="element-name">getSlots</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorKey)</span></div>
+<div class="block">Returns the cached available-slot list for the given counselor key (uid or doc ID),
+ or null if not yet pre-warmed. Session-scoped — invalidated after a booking.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="putSlots(java.lang.String,java.util.List)">
+<h3>putSlots</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">putSlots</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorKey,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="TimeSlot.html" title="class in com.example.moogerscouncil">TimeSlot</a>&gt;&nbsp;slots)</span></div>
+<div class="block">Stores the available-slot list under the given key (uid or doc ID, or both).</div>
+</section>
+</li>
+<li>
+<section class="detail" id="invalidateSlots(java.lang.String...)">
+<h3>invalidateSlots</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">invalidateSlots</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>...&nbsp;counselorKeys)</span></div>
+<div class="block">Removes cached slots for the given counselor keys (call after booking).</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getCounselorAppointments(java.lang.String)">
+<h3>getCounselorAppointments</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a>&gt;</span>&nbsp;<span class="element-name">getCounselorAppointments</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId)</span></div>
+<div class="block">Returns the cached counselor appointment list if still fresh, or null if expired/absent.
+ Invalidated explicitly after no-show, slot changes, etc.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="putCounselorAppointments(java.lang.String,java.util.List)">
+<h3>putCounselorAppointments</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">putCounselorAppointments</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;<a href="Appointment.html" title="class in com.example.moogerscouncil">Appointment</a>&gt;&nbsp;appointments)</span></div>
+<div class="block">Stores the counselor appointment list.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="invalidateCounselorAppointments()">
+<h3>invalidateCounselorAppointments</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">invalidateCounselorAppointments</span>()</div>
+<div class="block">Call after a no-show, slot deletion, or any counselor-side mutation.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="getSettings(java.lang.String)">
+<h3>getSettings</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="AvailabilitySettings.html" title="class in com.example.moogerscouncil">AvailabilitySettings</a></span>&nbsp;<span class="element-name">getSettings</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId)</span></div>
+<div class="block">Returns the cached settings for the given counselor, or null if not cached.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="putSettings(java.lang.String,com.example.moogerscouncil.AvailabilitySettings)">
+<h3>putSettings</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">putSettings</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;counselorId,
+ <a href="AvailabilitySettings.html" title="class in com.example.moogerscouncil">AvailabilitySettings</a>&nbsp;settings)</span></div>
+<div class="block">Stores the availability settings in cache.</div>
+</section>
+</li>
+<li>
+<section class="detail" id="invalidateSettings()">
+<h3>invalidateSettings</h3>
+<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">invalidateSettings</span>()</div>
+<div class="block">Call after saving new settings.</div>
 </section>
 </li>
 <li>
